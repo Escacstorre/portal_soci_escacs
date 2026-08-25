@@ -61,9 +61,9 @@ class IniciSociPantalla extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                BotoGran(titol: t('fitxa'), icon: Icons.badge, onTap: () => st.go('fitxaHome')),
+                BotoGran(titol: t('fitxa'), icon: Icons.badge, onTap: () => st.go('fitxaInici')),
                 const SizedBox(width: 16),
-                BotoGran(titol: t('classes'), icon: Icons.school, onTap: () => st.go('classesHome')),
+                BotoGran(titol: t('classes'), icon: Icons.school, onTap: () => st.go('classesInici')),
               ],
             ),
           ],

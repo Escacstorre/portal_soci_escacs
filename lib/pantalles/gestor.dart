@@ -13,18 +13,29 @@ class AdminIniciPantalla extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
     final st = Estat.i;
-    return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Text('${t('benvingut')} ${st.user?['nom'] ?? ''}',
-            style: estilTitol),
-        const SizedBox(height: 18),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          BotoGran(titol: t('escola'), icon: Icons.school, onTap: () => st.go('escola')),
-          const SizedBox(width: 12),
-          BotoGran(titol: t('pagatTab'), icon: Icons.payments, onTap: () => st.go('pagat')),
+    return Stack(children: [
+      Center(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text('${t('benvingut')} ${st.user?['nom'] ?? ''}',
+              style: estilTitol),
+          const SizedBox(height: 18),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            BotoGran(titol: t('escola'), icon: Icons.school, onTap: () => st.go('escola')),
+            const SizedBox(width: 12),
+            BotoGran(titol: t('pagatTab'), icon: Icons.payments, onTap: () => st.go('pagat')),
+          ]),
         ]),
-      ]),
-    );
+      ),
+      Positioned(
+        bottom: 24,
+        right: 24,
+        child: FloatingActionButton(
+          onPressed: () => st.go('config'),
+          backgroundColor: pri,
+          child: const Icon(Icons.settings, color: Colors.white),
+        ),
+      ),
+    ]);
   }
 }
 

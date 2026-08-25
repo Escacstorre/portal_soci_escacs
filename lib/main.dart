@@ -77,9 +77,9 @@ class _ArrelState extends State<Arrel> {
         return const RegistrePantalla();
       case 'selector':
         return const SelectorPantalla();
-      case 'homeSoci':
+      case 'iniciSoci':
         return const IniciSociPantalla();
-      case 'classesHome':
+      case 'classesInici':
         return const ClassesIniciPantalla();
       case 'classesAlta':
         return const ClassesAltaPantalla();
@@ -87,7 +87,7 @@ class _ArrelState extends State<Arrel> {
         return const ClassesAlumnesPantalla();
       case 'trimestres':
         return TrimestresPantalla(alumneId: Estat.i.vistaActual.dades as String);
-      case 'fitxaHome':
+      case 'fitxaInici':
         return const FitxaIniciPantalla();
       case 'jugadorAlta':
         return const JugadorAltaPantalla();
@@ -99,7 +99,7 @@ class _ArrelState extends State<Arrel> {
         return const ProfePantalla();
       case 'profeAlumnes':
         return const ProfeAlumnesPantalla();
-      case 'adminHome':
+      case 'adminInici':
         return const AdminIniciPantalla();
       case 'escola':
         return const EscolaPantalla();
@@ -166,6 +166,6 @@ class _ArrelState extends State<Arrel> {
   PreferredSizeWidget? _appBar(String v) {
     if (v == 'login' || v == 'selector') return null;
     if (v == 'registre') return Capcalera(torna: true, tancaSessio: false);
-    return Capcalera(torna: !const ['homeSoci', 'classesHome', 'fitxaHome', 'adminHome', 'profe'].contains(v));
+    return Capcalera(torna: !const ['iniciSoci', 'classesInici', 'fitxaInici', 'adminInici', 'profe'].contains(v));
   }
 }

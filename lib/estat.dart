@@ -184,7 +184,7 @@ class Estat {
       profeTrim = 0;
       reset('profe');
     } else if (r == 'Junta' || r == 'Admin') {
-      reset('adminHome');
+      reset('adminInici');
     } else {
       unawaited(carregaInici());
     }
@@ -198,7 +198,7 @@ class Estat {
 
   Future<void> carregaInici() async {
     await _carregaTot();
-    reset('homeSoci', inici);
+    reset('iniciSoci', inici);
   }
 
   Future<void> recarregaTot() => _carregaTot();
@@ -206,8 +206,8 @@ class Estat {
   Future<void> refrescaUI() async {
     buidaCachu();
     final v = vistaActual.nom;
-    const socil = ['homeSoci', 'classesHome', 'classesAlta', 'classesAlumnes', 'trimestres', 'fitxaHome', 'jugadorAlta', 'jugadors', 'jugadorAnys'];
-    const gestl = ['adminHome', 'escola', 'pagat', 'altaRapida'];
+    const socil = ['iniciSoci', 'classesInici', 'classesAlta', 'classesAlumnes', 'trimestres', 'fitxaInici', 'jugadorAlta', 'jugadors', 'jugadorAnys'];
+    const gestl = ['adminInici', 'escola', 'pagat', 'altaRapida'];
     ocupats++;
     _notificaOcupat();
     try {

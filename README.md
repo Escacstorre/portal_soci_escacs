@@ -3,9 +3,9 @@
 Frontend del Portal de Socis del **Club d'Escacs Torredembarra**, fet amb **Flutter Web** i allotjat a
 **GitHub Pages**: `https://escacstorre.github.io/portal_soci_escacs/`
 
-El backend és **Google Apps Script** (Codi.gs). El Flutter s'hi comunica mitjançant un
-**iframe pont amb postMessage**. Apps Script fa les operacions (Sheet, Gmail, Drive)
-i retorna la confirmació a Flutter (snakebar).
+El backend és **Google Apps Script** (Codi.gs). El Flutter s'hi comunica mitjançant
+**HTTP POST directe** (`fetch`) cap a `doPost(e)` del Codi.gs. Apps Script fa les operacions (Sheet, Gmail, Drive)
+i retorna la confirmació a Flutter (snackbar).
 
 ---
 
@@ -15,15 +15,16 @@ i retorna la confirmació a Flutter (snakebar).
 lib/
 ├─ main.dart         → arrencada, tema, router de vistes + overlays globals (progrés/toast)
 ├─ estat.dart        → Estat singleton: sessió, caché de lectures, navegació, crides
-├─ pont.dart         → transport cap a Apps Script (iframe pont + postMessage)
+├─ pont.dart         → transport cap a Apps Script (HTTP POST → doPost)
 ├─ models.dart       → models tipats (DadesSoci, GestorDades, ProfeDades…)
 ├─ traduccions.dart  → traduccions: Apps Script > fallback local
-├─ ginys.dart        → colors, Capcalera, xips, CampText, selector d'arxius, idioma…
+├─ estils.dart       → colors del club, TextStyles, decoracions i widgets (IconaClub SVG, Carda, BotoGran…)
+├─ ginys.dart        → Capcalera, IdiomaMenu, xips, CampText, selector d'arxius…
 └─ pantalles/
    ├─ acces.dart       → IniciSessioPantalla · RegistrePantalla · SelectorPantalla
    ├─ soci.dart        → IniciSociPantalla, ClassesInici/Alta/AlumnesPantalla, TrimestresPantalla, FitxaIniciPantalla, Jugadors/Anys/AltaPantalla
    ├─ profe.dart       → ProfePantalla, ProfeAlumnesPantalla, FilaDataInici
-   ├─ gestor.dart      → AdminIniciPantalla, PagatPantalla, EdicioSociPantalla, JugadorEdicioPantalla, AlumneEdicioPantalla, AltaRapidaPantalla, EscolaPantalla
+   ├─ gestor.dart      → AdminIniciPantalla (amb ⚙), PagatPantalla, EdicioSociPantalla, JugadorEdicioPantalla, AlumneEdicioPantalla, AltaRapidaPantalla, EscolaPantalla
    └─ configuracio.dart → ConfiguracioPantalla, EditorBloc, PestanyaUsuaris, PestanyaNeteja, FormulariUsuari
 ```
 
@@ -31,7 +32,7 @@ lib/
 
 ```text
 Flutter Web (frontend bonit)
-    ↕ postMessage (bridge)
+    ↕ HTTP POST (fetch → doPost)
 Apps Script (backend)
     ├── Google Sheets (dades)
     ├── Gmail (correus)
@@ -46,16 +47,16 @@ Login.html = backup
 
 ### Flux de dades
 
-1. `Estat.i.crida(fn, args)` és l'única porta al backend.
+1. `Estat.i.call(fn, args)` és l'única porta al backend.
 2. Si `fn` és una lectura va amb **caché de 90 s**; si és escriptura neteja la caché i mostra la barra de progrés.
-3. El transport (`pont.dart`) envia `{tipo:'ps-call',id,fn,args}` com a string JSON via `postMessage`
-   a un iframe ocult d'1px carregat de `.../exec?page=bridge`; `Bridge.html` fa `google.script.run` i respon
-   `{tipo:'ps-resp',id,ok,data}`. Timeout 90 s → `ExcepcioPortal`.
+3. El transport (`pont.dart`) fa **POST** amb cos `{"fn": "...", "args": [...]}` (Content-Type `text/plain`,
+   sense preflight CORS) cap a l'URL `/exec`; `doPost(e)` del Codi.gs fa dispatch a la funció i respon
+   `{ok:true, data:...}` o `{ok:false, data:"#CLAU#"}`. Timeout 90 s → `ExcepcioPortal`.
 4. Si el backend respon `SESSIO_CADUCADA`, l'app fa **logout automàtic** i torna al login.
 
 **Correus i arxius** (via Apps Script):
-- Els correus es envien amb `MailApp.sendEmail()` a través del bridge.
-- Els arxius es pujen a Google Drive com a base64 a través del bridge.
+- Els correus els envia `enviarCorreu_()` (MailApp) des del backend.
+- Els arxius es pugen a Google Drive com a base64 (`guardarArxiu_`).
 
 ### Navegació
 
@@ -67,13 +68,13 @@ Stack propi de `Vista(nom, dades)` **sincronitzat amb l'historial del navegador*
 ## Idiomes
 
 - CA i ES de fàbrica (fallback local al codi compilat).
-- Les traduccions del servidor (Apps Script) via `getTraduccions()`.
+- Les traduccions del servidor (Apps Script) via `obtenirTraduccions()`.
 - El canvi d'idioma és un **desplegable** 🌐 a la capçalera.
 - Els errors del backend arriben com `#CLAU|p0#` i es tradueixen amb paràmetres `{0}`.
 
 ## Colors / disseny
 
-Tota la paleta viu a `ginys.dart`:
+Tota la paleta viu a `estils.dart`:
 
 ```dart
 const pri = Color(0xFF051EF5);      // blau intens (web club)
@@ -115,9 +116,9 @@ flutter build web --release --base-href /portal_soci_escacs/
 
 Documentat al README del projecte principal (`H:\Mi unidad\Web\Soci\README.md`).
 
-- `Codi.gs` amb branca `doGet(e)` → `?page=bridge` serveix `Bridge.html`
-- **Correus**: `MailApp.sendEmail()` amb plantilles de la fulla `Config`
-- **Arxius**: `guardarArxiu_()` puja a Google Drive, `getArxiu()` descarrega
+- `Codi.gs` amb `doGet(e)` (serveix `Login.html`, el fallback HTML) i `doPost(e)` (API JSON per al Flutter)
+- **Correus**: `enviarCorreu_()` amb plantilles de la fulla `Config`
+- **Arxius**: `guardarArxiu_()` puja a Google Drive, `obtenirArxiu()` descarrega
 - **Menu Sheet**: gestió d'admins, triggers, eines (exportar CSV, estadístiques, netejar sessions)
 - Desplegar sempre amb *Implementar → Nueva versión*
 
