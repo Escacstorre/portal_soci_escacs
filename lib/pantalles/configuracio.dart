@@ -33,11 +33,11 @@ class _ConfiguracioPantallaState extends State<ConfiguracioPantalla> with Single
           isScrollable: true,
           onTap: _tab,
           tabs: [
-            Tab(text: t('clubBloc')),
-            Tab(text: t('correusBloc')),
-            if (admin) Tab(text: t('usuarisBloc')),
-            if (admin) Tab(text: t('sistemaBloc')),
-            if (admin) Tab(text: t('netegaBloc')),
+            Tab(icon: Icon(Icons.tune, size: 20), text: t('clubBloc')),
+            Tab(icon: Icon(Icons.email, size: 20), text: t('correusBloc')),
+            if (admin) Tab(icon: Icon(Icons.people, size: 20), text: t('usuarisBloc')),
+            if (admin) Tab(icon: Icon(Icons.build, size: 20), text: t('sistemaBloc')),
+            if (admin) Tab(icon: Icon(Icons.delete_sweep, size: 20), text: t('netegaBloc')),
           ],
         ),
         Expanded(

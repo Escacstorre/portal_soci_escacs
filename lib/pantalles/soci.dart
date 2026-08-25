@@ -17,31 +17,45 @@ class IniciSociPantalla extends StatelessWidget {
     final d = st.inici;
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            Text('${t('benvingut')} ${d?.nom ?? ''}',
-                style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: titol)),
-            const SizedBox(height: 8),
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 6,
-              children: [
-                Text('${t('quotaAny')} ${d?.any ?? ''}: '),
-                XipQuota(quota: d?.quota ?? ''),
-                if (d?.quotaRebut != null)
-                  TextButton(
-                    onPressed: () => obrirUrl(d!.quotaRebut!.url),
-                    child: Text('(${t('veureRebut')})', style: const TextStyle(fontSize: 13)),
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [BoxShadow(color: pri.withValues(alpha: .08), blurRadius: 16, offset: const Offset(0, 4))],
+              ),
+              child: Column(
+                children: [
+                  Icon(Icons.sports_esports, size: 48, color: pri),
+                  const SizedBox(height: 12),
+                  Text('${t('benvingut')} ${d?.nom ?? ''}',
+                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: titol)),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 6,
+                    children: [
+                      Text('${t('quotaAny')} ${d?.any ?? ''}: '),
+                      XipQuota(quota: d?.quota ?? ''),
+                      if (d?.quotaRebut != null)
+                        TextButton(
+                          onPressed: () => obrirUrl(d!.quotaRebut!.url),
+                          child: Text('(${t('veureRebut')})', style: const TextStyle(fontSize: 13)),
+                        ),
+                    ],
                   ),
-              ],
+                ],
+              ),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _Gran(titol: t('fitxa'), icon: Icons.badge, onTap: () => st.go('fitxaHome')),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
                 _Gran(titol: t('classes'), icon: Icons.school, onTap: () => st.go('classesHome')),
               ],
             ),
@@ -61,18 +75,20 @@ class _Gran extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 150,
-      height: 110,
+      width: 160,
+      height: 120,
       child: FilledButton.tonal(
         style: FilledButton.styleFrom(
             backgroundColor: Colors.white,
             foregroundColor: pri,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 0,
+            shadowColor: pri.withValues(alpha: .08)),
         onPressed: onTap,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(icon, size: 34),
-          const SizedBox(height: 6),
-          Text(titol, style: const TextStyle(fontWeight: FontWeight.w700)),
+          Icon(icon, size: 40),
+          const SizedBox(height: 8),
+          Text(titol, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
         ]),
       ),
     );

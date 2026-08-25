@@ -234,9 +234,6 @@ class Estat {
   }
 
   Future<bool> arrenca() async {
-    // Carrega traduccions directament del full Google Sheets (en paral·lel).
-    unawaited(i18n.carregaDelFull());
-
     Map<String, dynamic>? cfg;
     try {
       final raw = html.window.localStorage['ps_cfg'];

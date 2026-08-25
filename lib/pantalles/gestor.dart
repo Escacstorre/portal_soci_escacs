@@ -695,51 +695,90 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
 
   Widget _festius() {
     final t = Estat.i.i18n.t;
-    final ctrl = TextEditingController();
     final festius = _escola?.festius ?? const <String>[];
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Carda(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(t('afigData'), style: const TextStyle(fontSize: 14)),
-            const SizedBox(height: 8),
-            Row(children: [
-              Expanded(child: CampText(controller: ctrl, hint: '2026-12-25')),
-              FilledButton.icon(
-                icon: const Icon(Icons.add, size: 18),
-                label: Text(t('afig')),
+            Text(t('festius'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: titol)),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.calendar_today, size: 20),
+                label: Text('Selecciona una data', style: const TextStyle(fontSize: 14)),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
                 onPressed: () async {
-                  final v = ctrl.text.trim();
-                  if (v.isEmpty) return;
-                  await Estat.i.call('setFestiu', [Estat.i.token, v]);
-                  Estat.i.buidaCachu();
-                  ctrl.clear();
-                  Estat.i.mostraOk();
-                  setState(() => _fut = carregaGestor());
+                  final d = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime(2100),
+                    locale: Locale(Estat.i.i18n.lang.toLowerCase()),
+                  );
+                  if (d != null) {
+                    final data = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+                    await Estat.i.call('setFestiu', [Estat.i.token, data]);
+                    Estat.i.buidaCachu();
+                    Estat.i.mostraOk();
+                    setState(() => _fut = carregaGestor());
+                  }
                 },
               ),
-            ]),
-            InkWell(
-              onTap: () async {
-                final d = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2020), lastDate: DateTime(2100));
-                if (d != null) {
-                  ctrl.text = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
-                }
-              },
-              child: Padding(padding: const EdgeInsets.symmetric(vertical: 6), child: Text('📅', style: const TextStyle(fontSize: 20))),
             ),
           ]),
         ),
-        ...festius.map((f) => ItemLlista(children: [
-              Expanded(child: Text(f)),
-              IconButton(icon: const Icon(Icons.delete_outline, color: Colors.grey), onPressed: () async {
-                await Estat.i.call('esborrarFestiu', [Estat.i.token, f]);
-                Estat.i.buidaCachu();
-                Estat.i.mostraOk();
-                setState(() => _fut = carregaGestor());
-              }),
-            ])),
+        if (festius.isEmpty)
+          Carda(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(t('noDefinit'), style: const TextStyle(color: textCol, fontSize: 14)),
+              ),
+            ),
+          )
+        else ...[
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 8),
+            child: Text('${t('festius')} (${festius.length})', style: const TextStyle(fontSize: 13, color: textCol)),
+          ),
+          ...festius.map((f) => Carda(
+            child: Row(
+              children: [
+                const Icon(Icons.event_busy, size: 20, color: vermell),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(f, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey),
+                  onPressed: () async {
+                    final ok = await showDialog<bool>(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        title: Text(t('elimina')),
+                        content: Text('Eliminar el festiu $f?'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t('torna'))),
+                          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('🗑')),
+                        ],
+                      ),
+                    );
+                    if (ok != true) return;
+                    await Estat.i.call('esborrarFestiu', [Estat.i.token, f]);
+                    Estat.i.buidaCachu();
+                    Estat.i.mostraOk();
+                    setState(() => _fut = carregaGestor());
+                  },
+                ),
+              ],
+            ),
+          )),
+        ],
       ],
     );
   }

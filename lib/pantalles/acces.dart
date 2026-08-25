@@ -32,58 +32,120 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 400),
-          child: Column(
-            children: [
-              const Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: IdiomaMenu(),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [suau, Colors.white],
+        ),
+      ),
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: IdiomaMenu(),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Carda(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(t('inicia').toUpperCase(),
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: titol)),
-                    const SizedBox(height: 14),
-                    CampText(controller: u, hint: t('usuari'), teclat: TextInputType.emailAddress),
-                    CampText(controller: p, hint: t('contra'), obscure: true),
-                    if (err != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Text(err!, style: const TextStyle(color: vermell, fontSize: 13)),
+                const SizedBox(height: 24),
+                Container(
+                  padding: const EdgeInsets.all(28),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: pri.withValues(alpha: .12),
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
                       ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(onPressed: _ferLogin, child: Text(t('inicia'))),
-                    ),
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () => Estat.i.reset('registre'),
-                        child: Text(t('registrar')),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            Icon(Icons.sports_esports, size: 56, color: pri),
+                            const SizedBox(height: 12),
+                            Text(
+                              Estat.i.club.isNotEmpty ? Estat.i.club : 'Portal Socis',
+                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: titol),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Center(
-                      child: TextButton(
-                        onPressed: () => setState(() => err = t('msgOblida')),
-                        child: Text(t('oblida'), style: const TextStyle(fontSize: 13)),
+                      const SizedBox(height: 28),
+                      Text(t('inicia'),
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: textCol)),
+                      const SizedBox(height: 14),
+                      TextField(
+                        controller: u,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: t('usuari'),
+                          prefixIcon: const Icon(Icons.email_outlined, size: 20),
+                          isDense: true,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: p,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: t('contra'),
+                          prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                          isDense: true,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      if (err != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Text(err!, style: const TextStyle(color: vermell, fontSize: 13)),
+                        ),
+                      const SizedBox(height: 4),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 44,
+                        child: FilledButton(
+                          onPressed: _ferLogin,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: pri,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                          child: Text(t('inicia'), style: const TextStyle(fontSize: 15)),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Center(
+                        child: TextButton(
+                          onPressed: () => Estat.i.reset('registre'),
+                          child: Text(t('registrar'), style: TextStyle(color: pri, fontSize: 14)),
+                        ),
+                      ),
+                      Center(
+                        child: TextButton(
+                          onPressed: () => setState(() => err = t('msgOblida')),
+                          child: Text(t('oblida'), style: const TextStyle(fontSize: 13, color: textCol)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

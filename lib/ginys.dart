@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'traduccions.dart';
 import 'estat.dart';
 
-const pri = Color(0xFF1A5FB4);
-const titol = Color(0xFF1B2733);
-const textCol = Color(0xFF3D4A57);
-const suau = Color(0xFFF4F6F8);
+const pri = Color(0xFF051EF5);
+const titol = Color(0xFF060201);
+const textCol = Color(0xFF666666);
+const suau = Color(0xFFF3F3F3);
 const verd = Color(0xFF2E7D32);
-const taronja = Color(0xFFB36B00);
+const taronja = Color(0xFFF9A825);
 const vermell = Color(0xFFC62828);
 
 const _nomsIdioma = {'CA': 'Català', 'ES': 'Español'};
