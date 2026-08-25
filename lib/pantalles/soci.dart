@@ -29,7 +29,7 @@ class IniciSociPantalla extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Icon(Icons.sports_esports, size: 48, color: pri),
+                  Icon(Icons.castle, size: 48, color: pri),
                   const SizedBox(height: 12),
                   Text('${t('benvingut')} ${d?.nom ?? ''}',
                       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: titol)),

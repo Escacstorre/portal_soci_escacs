@@ -74,7 +74,7 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                       Center(
                         child: Column(
                           children: [
-                            Icon(Icons.sports_esports, size: 56, color: pri),
+                            Icon(Icons.castle, size: 56, color: pri),
                             const SizedBox(height: 12),
                             Text(
                               Estat.i.club.isNotEmpty ? Estat.i.club : 'Portal Socis',
