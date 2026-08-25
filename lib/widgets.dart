@@ -1,0 +1,268 @@
+import 'dart:async';
+import 'dart:html' as html;
+
+import 'package:flutter/material.dart';
+
+import 'i18n.dart';
+import 'state.dart';
+
+const pri = Color(0xFF1A5FB4);
+const titol = Color(0xFF1B2733);
+const textCol = Color(0xFF3D4A57);
+const suau = Color(0xFFF4F6F8);
+
+class Hdr extends StatelessWidget implements PreferredSizeWidget {
+  const Hdr({super.key, this.torna = false});
+  final bool torna;
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    final st = Estat.i;
+    final rols = st.rols;
+    return AppBar(
+      backgroundColor: Colors.white,
+      foregroundColor: titol,
+      surfaceTintColor: Colors.white,
+      elevation: 0.5,
+      leading: torna
+          ? IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => st.back())
+          : null,
+      automaticallyImplyLeading: false,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          tooltip: st.i18n.t('refrescat'),
+          onPressed: () => st.refrescaUI(),
+        ),
+        InkWell(
+          onTap: togglaLang,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: Text('🌐 ${st.i18n.lang}',
+                  style: const TextStyle(fontSize: 15, color: textCol)),
+            ),
+          ),
+        ),
+        if (rols.length > 1)
+          TextButton(
+            onPressed: () => st.go('selector'),
+            child: Text(st.i18n.t('canviaRol'), style: const TextStyle(fontSize: 13)),
+          ),
+        Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: TextButton(
+            onPressed: () => st.logoutUI(),
+            child: Text(st.i18n.t('tanca'), style: const TextStyle(fontSize: 13)),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+void togglaLang() {
+  final i18n = I18n.instance;
+  final lls = i18n.langs;
+  i18n.lang = lls[(lls.indexOf(i18n.lang) + 1) % lls.length];
+  html.window.localStorage['ps_lang'] = i18n.lang;
+  Estat.i.refres();
+}
+
+class EstatChip extends StatelessWidget {
+  const EstatChip({super.key, required this.estat});
+  final String estat;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Estat.i.i18n.t;
+    Color color; String txt;
+    if (estat == 'Validat') {
+      color = const Color(0xFF2E7D32);
+      txt = t('pagat').replaceAll('Pagat', 'Validat');
+    } else if (estat == 'En revisió') {
+      color = const Color(0xFFB36B00);
+      txt = t('enRev');
+    } else {
+      color = Colors.grey.shade600;
+      txt = t('pendent');
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(color: color.withOpacity(.12), borderRadius: BorderRadius.circular(999)),
+      child: Text(txt, style: TextStyle(color: color, fontSize: 12.5)),
+    );
+  }
+}
+
+class QuotaChip extends StatelessWidget {
+  const QuotaChip({super.key, required this.quota});
+  final String quota;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Estat.i.i18n.t;
+    late Color color; late String txt;
+    if (quota == 'pagat') {
+      color = const Color(0xFF2E7D32); txt = t('pagat');
+    } else if (quota == 'rebutjat') {
+      color = const Color(0xFFC62828); txt = t('rebujat');
+    } else {
+      color = const Color(0xFFB36B00); txt = t('enRev');
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(color: color.withOpacity(.12), borderRadius: BorderRadius.circular(999)),
+      child: Text(txt, style: TextStyle(color: color, fontSize: 13)),
+    );
+  }
+}
+
+class Carda extends StatelessWidget {
+  const Carda({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(.06), blurRadius: 8, offset: const Offset(0, 2))],
+      ),
+      child: child,
+    );
+  }
+}
+
+class ItemLlista extends StatelessWidget {
+  const ItemLlista({super.key, required this.children, this.onTap});
+  final List<Widget> children;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Row(children: [...children]),
+      ),
+    );
+  }
+}
+
+class CampText extends StatelessWidget {
+  const CampText({super.key, required this.controller, this.hint, this.teclat, this.obscure = false, this.onChanged});
+  final TextEditingController controller;
+  final String? hint;
+  final TextInputType? teclat;
+  final bool obscure;
+  final ValueChanged<String>? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: TextField(
+        controller: controller,
+        obscureText: obscure,
+        keyboardType: teclat,
+        onChanged: onChanged,
+        decoration: InputDecoration(hintText: hint, isDense: true),
+      ),
+    );
+  }
+}
+
+Future<Map<String, dynamic>?> triaArxiu(String accept) async {
+  final completer = Completer<Map<String, dynamic>?>();
+  final inp = html.InputElement(type: 'file')
+    ..accept = accept
+    ..style.display = 'none';
+  html.document.body?.append(inp);
+  inp.onChange.listen((_) async {
+    try {
+      final f = inp.files?.first;
+      if (f == null) {
+        completer.complete(null);
+        return;
+      }
+      if (f.size > 5 * 1024 * 1024) {
+        Estat.i.ferr('Màxim 5 MB');
+        completer.complete(null);
+        return;
+      }
+      final reader = html.FileReader();
+      final done = Completer<String>();
+      reader.onLoadEnd.listen((_) => done.complete(reader.result as String));
+      reader.readAsDataUrl(f);
+      final dataUrl = await done.future;
+      completer.complete({'name': f.name, 'mimeType': f.type, 'data': dataUrl.split(',')[1]});
+    } catch (_) {
+      completer.complete(null);
+    }
+  });
+  inp.click();
+  unawaited(completer.future.whenComplete(() => inp.remove()));
+  return completer.future;
+}
+
+void obrirUrl(String url) {
+  html.window.open(url, '_blank');
+}
+
+void descarregarArxiu(String contingut, String mime, String nom) {
+  final blob = html.Blob([contingut], mime);
+  final url = html.Url.createObjectUrlFromBlob(blob);
+  final a = html.AnchorElement(href: url)..download = nom;
+  html.document.body?.append(a);
+  a.click();
+  a.remove();
+  Future.delayed(const Duration(seconds: 2), () => html.Url.revokeObjectUrl(url));
+}
+
+void imprimirFormulari(Map d) async {
+  final t = Estat.i.i18n.t;
+  final dynamic w = html.window.open('', '_blank');
+  if (w == null) return;
+  final linia = '<div style="border-bottom:1px solid #333;height:26px;margin:14px 0"></div>';
+  final sb = StringBuffer();
+  sb.write('<html><head><title>${d['club']}</title>');
+  sb.write('<style>body{font-family:sans-serif;padding:24px;color:#222}h1{font-size:20px}h2{font-size:15px;margin-top:18px}.preu td{padding:3px 0;font-size:14px}.preu td:last-child{text-align:right}</style></head><body>');
+  sb.write('<h1>${d['club']} — ${t('portalSocis')}</h1>');
+  sb.write('<p>${t('compte')} <b>${d['compte']}</b></p>');
+  sb.write('<h2>SOCI</h2>');
+  for (final camp in ['Nom:', 'DNI:', 'Telèfon:', 'Email:', 'Núm. Banc:', 'Contrasenya:']) {
+    sb.write('<p><b>$camp</b>$linia</p>');
+  }
+  sb.write('<h2>ALUMNES</h2>');
+  for (var i = 1; i <= 3; i++) {
+    sb.write('<p><b>Alumne $i:</b>$linia</p><p>[ 1r ] &nbsp;[ 2n ] &nbsp;[ 3r ]</p>');
+  }
+  sb.write('<h2>PREUS</h2><table class="preu">');
+  final bases = (d['bases'] as List?) ?? const [];
+  for (var i = 0; i < 3 && i < bases.length; i++) {
+    sb.write('<tr><td>Base ${i + 1} trim</td><td>${bases[i]} €</td></tr>');
+  }
+  sb.write('<tr><td>${t('trimJunts')}</td><td>${d['junts']} €</td></tr>');
+  sb.write('<tr><td>${t('serSoci')}</td><td>${d['quota']} €</td></tr></table>');
+  sb.write('</body></html>');
+  w.document?.write(sb.toString());
+  w.document?.close();
+  w.focus();
+  w.print();
+}
