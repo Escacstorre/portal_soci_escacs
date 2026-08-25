@@ -194,13 +194,38 @@ class SociGestor {
   }
 }
 
+class EstatPag {
+  const EstatPag({this.id, this.estat = 'Pendent'});
+  final dynamic id;
+  final String estat;
+
+  bool get validat => estat == 'Validat';
+  bool get teRebut => id != null;
+
+  static EstatPag de(dynamic m) {
+    final d = _mp(m);
+    final e = _s(d['estat']);
+    return EstatPag(id: d['id'], estat: e.isEmpty ? 'Pendent' : e);
+  }
+}
+
 class PersonaGestor {
-  const PersonaGestor({required this.id, required this.nom, this.cognoms = '', required this.idSoci, required this.soci});
+  const PersonaGestor({
+    required this.id,
+    required this.nom,
+    this.cognoms = '',
+    required this.idSoci,
+    required this.soci,
+    this.pagActual = const EstatPag(),
+    this.pagVinent = const EstatPag(),
+  });
   final String id;
   final String nom;
   final String cognoms;
   final String idSoci;
   final String soci;
+  final EstatPag pagActual;
+  final EstatPag pagVinent;
 
   static PersonaGestor de(dynamic m) {
     final d = _mp(m);
@@ -210,6 +235,8 @@ class PersonaGestor {
       cognoms: _s(d['cognoms']),
       idSoci: _s(d['idSoci']),
       soci: _s(d['soci']),
+      pagActual: d['pagActual'] != null ? EstatPag.de(d['pagActual']) : const EstatPag(),
+      pagVinent: d['pagVinent'] != null ? EstatPag.de(d['pagVinent']) : const EstatPag(),
     );
   }
 }
@@ -238,11 +265,12 @@ class EscolaConfig {
 }
 
 class GestorDades {
-  const GestorDades({required this.socis, required this.escola, this.fitxes = const [], this.alumnes = const []});
+  const GestorDades({required this.socis, required this.escola, this.fitxes = const [], this.alumnes = const [], this.anyFed = ''});
   final List<SociGestor> socis;
   final EscolaConfig escola;
   final List<PersonaGestor> fitxes;
   final List<PersonaGestor> alumnes;
+  final String anyFed;
 
   static GestorDades de(dynamic m) {
     final d = _mp(m);
@@ -251,6 +279,7 @@ class GestorDades {
       escola: EscolaConfig.de(d['escola']),
       fitxes: _ll(d['fitxes']).map(PersonaGestor.de).toList(),
       alumnes: _ll(d['alumnes']).map(PersonaGestor.de).toList(),
+      anyFed: _s(d['anyFed']).isEmpty ? '${DateTime.now().year}' : _s(d['anyFed']),
     );
   }
 }

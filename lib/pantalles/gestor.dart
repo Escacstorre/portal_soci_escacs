@@ -118,6 +118,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
   }
 
   Widget _validacioQuota(SociGestor s) {
+    final t = Estat.i.i18n.t;
     if (s.estat == 'Actiu') {
       return InkWell(
         borderRadius: BorderRadius.circular(999),
@@ -126,7 +127,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(color: verd.withValues(alpha: .12), borderRadius: BorderRadius.circular(999)),
           child: Text(
-            s.caducitat.isNotEmpty ? 'Vigent · ${mostraData(s.caducitat)}' : 'Vigent',
+            s.caducitat.isNotEmpty ? '${t('vigent')} · ${mostraData(s.caducitat)}' : t('vigent'),
             style: const TextStyle(fontSize: 11.5, color: verd, fontWeight: FontWeight.w600),
           ),
         ),
@@ -138,17 +139,18 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
         textStyle: const TextStyle(fontSize: 12),
       ),
       onPressed: () => _dialogAnys(s),
-      child: const Text('Validar'),
+      child: Text(t('validar')),
     );
   }
 
   Future<void> _dialogAnys(SociGestor s) async {
+    final t = Estat.i.i18n.t;
     var anys = 1;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setD) => AlertDialog(
-          title: Text('${s.nom} — anys de quota pagats', style: const TextStyle(fontSize: 17)),
+          title: Text('${s.nom} — ${t('anysQuota')}', style: const TextStyle(fontSize: 17)),
           content: Wrap(
             spacing: 6,
             children: [
@@ -457,12 +459,12 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         const Text('FEDERACIÓ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
         const SizedBox(height: 6),
         if (jugadors.isEmpty) const Text('—'),
-        ...jugadors.map((j) => ItemLlista(
+          ...jugadors.map((j) => ItemLlista(
               onTap: () => Estat.i.go('jugEdit', {'id': j['id'], 'sociId': widget.sociId}),
               children: [
                 Expanded(child: Text('${j['nom'] ?? ''} ${j['cognoms'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold))),
-                _chkAny(j['anyActual'], '$anyFed'),
-                _chkAny(j['anyVinent'], '${anyFed + 1}'),
+                _chkAny(j['anyActual'], '${j['id']}', '$anyFed'),
+                _chkAny(j['anyVinent'], '${j['id']}', '${anyFed + 1}'),
                 IconButton(icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey), onPressed: () async {
                   await Estat.i.call('eliminarJugador', [Estat.i.token, j['id']]);
                   Estat.i.buidaCachu();
@@ -474,22 +476,27 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     );
   }
 
-  Widget _chkAny(dynamic info, String etiqueta) {
-    if (info == null) {
-      return Padding(padding: const EdgeInsets.only(left: 4), child: Text('$etiqueta ○', style: const TextStyle(fontSize: 12, color: textCol)));
-    }
-    final m = (info as Map).cast<String, dynamic>();
+  Widget _chkAny(dynamic info, String jugadorId, String any) {
+    final m = (info as Map?)?.cast<String, dynamic>();
+    final validat = m != null && m['estat'] == 'Validat';
     return Row(mainAxisSize: MainAxisSize.min, children: [
-      Text(etiqueta, style: const TextStyle(fontSize: 12.5)),
+      Text(any, style: const TextStyle(fontSize: 12.5)),
       Checkbox(
         visualDensity: VisualDensity.compact,
-        value: m['estat'] == 'Validat',
+        value: validat,
         onChanged: (v) async {
-          await Estat.i.call('alternarPagament', [Estat.i.token, m['id'], v == true]);
+          await Estat.i.call('alternarAnyJugador', [Estat.i.token, jugadorId, any, v == true]);
           Estat.i.buidaCachu();
           Estat.i.mostraOk();
+          _refresca();
         },
       ),
+      if (m != null && m['rebut'] != null)
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          icon: const Icon(Icons.attach_file, size: 18),
+          onPressed: () => obrirUrl('${m['rebut']['url']}'),
+        ),
     ]);
   }
 
@@ -569,6 +576,7 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
   final nom = TextEditingController(), cog = TextEditingController(), dn = TextEditingController();
   final dni = TextEditingController(), adr = TextEditingController();
   Map<String, dynamic>? fotoNova;
+  Map<String, dynamic>? fotoActual;
 
   @override
   void initState() {
@@ -582,6 +590,7 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
           dn.text = '${x['dataNaix'] ?? ''}';
           dni.text = '${x['dni'] ?? ''}';
           adr.text = '${x['adreca'] ?? ''}';
+          fotoActual = (x['foto'] as Map?)?.cast<String, dynamic>();
           if (mounted) setState(() {});
           break;
         }
@@ -601,13 +610,31 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               CampText(controller: nom, hint: t('nomJug')),
               CampText(controller: cog, hint: t('cognoms')),
-              CampText(controller: dn, hint: t('dataNaix')),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: CampData(
+                  valor: dn.text,
+                  etiqueta: t('dataNaix'),
+                  onCanvi: (v) => setState(() => dn.text = v),
+                ),
+              ),
               CampText(controller: dni, hint: t('dni')),
               CampText(controller: adr, hint: t('adreca')),
+              if (fotoActual != null && fotoNova == null)
+                Row(children: [
+                  TextButton.icon(
+                    icon: const Icon(Icons.badge_outlined, size: 18),
+                    label: Text('${t('fotoDni')}: ${fotoActual!['nom'] ?? 'veure'}',
+                        style: const TextStyle(fontSize: 13)),
+                    onPressed: () => obrirUrl('${fotoActual!['url']}'),
+                  ),
+                ]),
               OutlinedButton.icon(
                 icon: Icon(fotoNova == null ? Icons.upload_file : Icons.check_circle,
                     color: fotoNova == null ? null : verd),
-                label: Text(fotoNova == null ? t('fotoDni') : '${fotoNova!['name'] ?? t('fotoDni')}'),
+                label: Text(fotoNova == null
+                    ? (fotoActual != null ? '${t('substituir')} ${t('fotoDni')}' : t('pujaFitxer'))
+                    : '${fotoNova!['name'] ?? t('fotoDni')}'),
                 onPressed: () async {
                   final f = await triaArxiu('.jpg,.jpeg,.png');
                   if (mounted) setState(() => fotoNova = f);
@@ -1002,12 +1029,27 @@ class _TabFitxes extends StatefulWidget {
 
 class _TabFitxesState extends State<_TabFitxes> {
   String q = '';
+  String filtre = '';
+
+  bool _passa(PersonaGestor j) {
+    switch (filtre) {
+      case 'cap':
+        return !j.pagActual.validat;
+      case 'actual':
+        return j.pagActual.validat;
+      case 'dos':
+        return j.pagActual.validat && j.pagVinent.validat;
+      default:
+        return true;
+    }
+  }
 
   Map<String, List<PersonaGestor>> get _grups {
     final g = <String, List<PersonaGestor>>{};
     for (final j in widget.d.fitxes) {
       final k = '${j.nom} ${j.cognoms} ${j.soci}'.toLowerCase();
       if (q.isNotEmpty && !k.contains(q.toLowerCase())) continue;
+      if (!_passa(j)) continue;
       (g[j.idSoci] ??= []).add(j);
     }
     return g;
@@ -1016,6 +1058,7 @@ class _TabFitxesState extends State<_TabFitxes> {
   @override
   Widget build(BuildContext context) {
     final grups = _grups;
+    final anyFed = widget.d.anyFed;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -1030,6 +1073,23 @@ class _TabFitxesState extends State<_TabFitxes> {
             ),
           ),
           const SizedBox(width: 8),
+          DropdownButton<String>(
+            value: filtre,
+            underline: const SizedBox.shrink(),
+            isDense: true,
+            items: [
+              ('', 'Totes'),
+              ('cap', "No pagat $anyFed"),
+              ('actual', "Pagat $anyFed"),
+              ('dos', "Pagats $anyFed i ${int.parse(anyFed) + 1}"),
+            ]
+                .map((o) => DropdownMenuItem(value: o.$1, child: Text(o.$2, style: const TextStyle(fontSize: 13))))
+                .toList(),
+            onChanged: (v) => setState(() => filtre = v ?? ''),
+          ),
+        ]),
+        const SizedBox(height: 4),
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           FilledButton.tonal(
             onPressed: () async {
               await showDialog<bool>(

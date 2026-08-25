@@ -79,7 +79,7 @@ class IniciSociPantalla extends StatelessWidget {
                         border: Border.all(color: taronja),
                       ),
                       child: Text(
-                        'La teva quota està caducada${caducitat.isNotEmpty ? ' des del ${mostraData(caducitat)}' : ''}. Puja el rebut de renovació per tornar a utilitzar el portal.',
+                        '${t('quotaCaducadaMsg')}${caducitat.isNotEmpty ? ' (${mostraData(caducitat)})' : ''}',
                         textAlign: TextAlign.center,
                         style: const TextStyle(fontSize: 13.5, color: titol),
                       ),
@@ -91,8 +91,8 @@ class IniciSociPantalla extends StatelessWidget {
                       child: FilledButton.icon(
                         onPressed: _renova,
                         icon: const Icon(Icons.upload_file, size: 20),
-                        label: const Text('Puja el rebut de la quota',
-                            style: TextStyle(fontSize: 15)),
+                        label: Text(t('pujaRebutQuota'),
+                            style: const TextStyle(fontSize: 15)),
                         style: FilledButton.styleFrom(
                           backgroundColor: pri,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiBoto)),
