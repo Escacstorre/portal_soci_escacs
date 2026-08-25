@@ -282,6 +282,57 @@ class CampDataTrim extends StatelessWidget {
   }
 }
 
+class CampData extends StatelessWidget {
+  const CampData({super.key, required this.valor, required this.etiqueta, required this.onCanvi});
+  final String valor;
+  final String etiqueta;
+  final ValueChanged<String> onCanvi;
+
+  DateTime _inicial() {
+    final p = valor.split('-');
+    if (p.length == 3) {
+      return DateTime(
+        int.tryParse(p[0]) ?? DateTime.now().year,
+        int.tryParse(p[1]) ?? 1,
+        int.tryParse(p[2]) ?? 1,
+      );
+    }
+    return DateTime.now();
+  }
+
+  Future<void> _tria(BuildContext context) async {
+    final d = await showDatePicker(
+      context: context,
+      initialDate: _inicial(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+      locale: Locale(Estat.i.i18n.lang.toLowerCase()),
+    );
+    if (d != null) {
+      onCanvi('${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () => _tria(context),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: etiqueta,
+          isDense: true,
+          suffixIcon: const Icon(Icons.calendar_today, size: 18),
+        ),
+        child: Text(
+          valor.isEmpty ? '—' : mostraData(valor),
+          style: TextStyle(fontSize: 15, color: valor.isEmpty ? textCol : titol),
+        ),
+      ),
+    );
+  }
+}
+
 class CampHora extends StatelessWidget {
   const CampHora({super.key, required this.controller, this.hint});
   final TextEditingController controller;

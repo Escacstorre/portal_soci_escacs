@@ -24,7 +24,7 @@ lib/
    ├─ acces.dart       → IniciSessioPantalla · RegistrePantalla · SelectorPantalla
    ├─ soci.dart        → IniciSociPantalla, ClassesInici/Alta/AlumnesPantalla, TrimestresPantalla, FitxaIniciPantalla, Jugadors/Anys/AltaPantalla
    ├─ profe.dart       → ProfePantalla, ProfeAlumnesPantalla, FilaDataInici
-   ├─ gestor.dart      → AdminIniciPantalla (amb ⚙), PagatPantalla, EdicioSociPantalla, JugadorEdicioPantalla, AlumneEdicioPantalla, AltaRapidaPantalla, EscolaPantalla
+   ├─ gestor.dart      → AdminIniciPantalla (amb ⚙), PagatPantalla (3 pestanyes: Socis · Fitxes · Alumnes + altes ràpides), EdicioSociPantalla, JugadorEdicioPantalla, AlumneEdicioPantalla, AltaRapidaPantalla, EscolaPantalla
    └─ configuracio.dart → ConfiguracioPantalla, EditorBloc, PestanyaUsuaris, PestanyaNeteja, FormulariUsuari
 ```
 

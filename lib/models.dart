@@ -156,7 +156,7 @@ class TotSoci {
 }
 
 class SociGestor {
-  SociGestor({required this.id, required this.nom, required this.dni, required this.telefon, required this.email, required this.rol, required this.estat, required this.rebutQuota});
+  SociGestor({required this.id, required this.nom, required this.dni, required this.telefon, required this.email, required this.rol, required this.estat, required this.caducitat, required this.rebutQuota});
   final String id;
   final String nom;
   final String dni;
@@ -164,6 +164,7 @@ class SociGestor {
   final String email;
   final String rol;
   String estat;
+  final String caducitat;
   final RebutInfo? rebutQuota;
 
   static SociGestor de(dynamic m) {
@@ -176,7 +177,28 @@ class SociGestor {
       email: _s(d['email']),
       rol: _s(d['rol']),
       estat: _s(d['estat']),
+      caducitat: _s(d['caducitat']),
       rebutQuota: RebutInfo.de(d['rebutQuota']),
+    );
+  }
+}
+
+class PersonaGestor {
+  const PersonaGestor({required this.id, required this.nom, this.cognoms = '', required this.idSoci, required this.soci});
+  final String id;
+  final String nom;
+  final String cognoms;
+  final String idSoci;
+  final String soci;
+
+  static PersonaGestor de(dynamic m) {
+    final d = _mp(m);
+    return PersonaGestor(
+      id: _s(d['id']),
+      nom: _s(d['nom']),
+      cognoms: _s(d['cognoms']),
+      idSoci: _s(d['idSoci']),
+      soci: _s(d['soci']),
     );
   }
 }
@@ -205,15 +227,19 @@ class EscolaConfig {
 }
 
 class GestorDades {
-  const GestorDades({required this.socis, required this.escola});
+  const GestorDades({required this.socis, required this.escola, this.fitxes = const [], this.alumnes = const []});
   final List<SociGestor> socis;
   final EscolaConfig escola;
+  final List<PersonaGestor> fitxes;
+  final List<PersonaGestor> alumnes;
 
   static GestorDades de(dynamic m) {
     final d = _mp(m);
     return GestorDades(
       socis: _ll(d['socis']).map(SociGestor.de).toList(),
       escola: EscolaConfig.de(d['escola']),
+      fitxes: _ll(d['fitxes']).map(PersonaGestor.de).toList(),
+      alumnes: _ll(d['alumnes']).map(PersonaGestor.de).toList(),
     );
   }
 }

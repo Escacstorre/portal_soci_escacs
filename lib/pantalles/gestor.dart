@@ -53,9 +53,12 @@ class PagatPantalla extends StatefulWidget {
   State<PagatPantalla> createState() => _PagatPantallaState();
 }
 
-class _PagatPantallaState extends State<PagatPantalla> {
+class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProviderStateMixin {
   late Future<GestorDades> _fut = carregaGestor();
+  late final TabController _tabs = TabController(length: 3, vsync: this, initialIndex: Estat.i.pagatTab);
   Timer? _deb;
+
+  void _tab(int i) => Estat.i.pagatTab = i;
 
   List<SociGestor> _filtra(List<SociGestor> socis) {
     final st = Estat.i;
@@ -74,12 +77,46 @@ class _PagatPantallaState extends State<PagatPantalla> {
 
   @override
   Widget build(BuildContext context) {
-    final t = Estat.i.i18n.t;
     return FutureBuilder<GestorDades>(
       future: _fut,
       builder: (context, snap) {
         if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-        final llista = _filtra(snap.data!.socis);
+        final d = snap.data!;
+        return Column(
+          children: [
+            TabBar(
+              controller: _tabs,
+              labelColor: pri,
+              unselectedLabelColor: textCol,
+              isScrollable: true,
+              onTap: _tab,
+              tabs: const [
+                Tab(text: 'SOCIS'),
+                Tab(text: 'FITXES'),
+                Tab(text: 'ALUMNES'),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(children: [
+                _tabSocis(d),
+                _TabFitxes(d: d, onRefresca: _refrescaTot),
+                _TabAlumnes(d: d, onRefresca: _refrescaTot),
+              ]),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _refrescaTot() {
+    Estat.i.buidaCachu();
+    setState(() => _fut = carregaGestor());
+  }
+
+  Widget _tabSocis(GestorDades d) {
+    final t = Estat.i.i18n.t;
+    final llista = _filtra(d.socis);
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -143,6 +180,12 @@ class _PagatPantallaState extends State<PagatPantalla> {
                   child: Text(s.email,
                       style: const TextStyle(fontSize: 12, color: textCol), overflow: TextOverflow.ellipsis),
                 ),
+                if (s.caducitat.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: Text('fins ${mostraData(s.caducitat)}',
+                        style: TextStyle(fontSize: 11, color: s.estat == 'Actiu' ? verd : textCol)),
+                  ),
                 if (s.rebutQuota != null)
                   IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl(s.rebutQuota!.url)),
                 IconButton(
@@ -159,8 +202,6 @@ class _PagatPantallaState extends State<PagatPantalla> {
             }),
           ],
         );
-      },
-    );
   }
 }
 
@@ -318,6 +359,19 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         CampText(controller: tel, hint: t('telefon')),
         CampText(controller: em, hint: t('email')),
         CampText(controller: banc, hint: t('banc')),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: CampData(
+            valor: '${s['caducitat'] ?? ''}',
+            etiqueta: 'Caducitat de la quota (renovació)',
+            onCanvi: (v) async {
+              await Estat.i.call('desarCaducitat', [Estat.i.token, s['id'], v]);
+              Estat.i.buidaCachu();
+              Estat.i.mostraOk();
+              _refresca();
+            },
+          ),
+        ),
         Wrap(spacing: 8, runSpacing: 8, children: [
           FilledButton.icon(
             icon: const Icon(Icons.edit, size: 16),
@@ -891,6 +945,357 @@ class _TabsClassesState extends State<_TabsClasses> {
           ]),
         ),
       ],
+    );
+  }
+}
+
+class _TabFitxes extends StatefulWidget {
+  const _TabFitxes({required this.d, required this.onRefresca});
+  final GestorDades d;
+  final VoidCallback onRefresca;
+
+  @override
+  State<_TabFitxes> createState() => _TabFitxesState();
+}
+
+class _TabFitxesState extends State<_TabFitxes> {
+  String q = '';
+
+  Map<String, List<PersonaGestor>> get _grups {
+    final g = <String, List<PersonaGestor>>{};
+    for (final j in widget.d.fitxes) {
+      final k = '${j.nom} ${j.cognoms} ${j.soci}'.toLowerCase();
+      if (q.isNotEmpty && !k.contains(q.toLowerCase())) continue;
+      (g[j.idSoci] ??= []).add(j);
+    }
+    return g;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final grups = _grups;
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Row(children: [
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(
+                  hintText: 'Buscar soci o jugador...',
+                  prefixIcon: const Icon(Icons.search, size: 20),
+                  isDense: true),
+              onChanged: (v) => setState(() => q = v),
+            ),
+          ),
+          const SizedBox(width: 8),
+          FilledButton.tonal(
+            onPressed: () async {
+              await showDialog<bool>(
+                context: context,
+                builder: (_) => Dialog(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: _FormulariRapidFitxa(socis: widget.d.socis),
+                  ),
+                ),
+              );
+              widget.onRefresca();
+            },
+            child: const Text('Nova fitxa', style: TextStyle(fontSize: 13)),
+          ),
+        ]),
+        const SizedBox(height: 12),
+        if (grups.isEmpty)
+          const Carda(child: Center(child: Padding(padding: EdgeInsets.all(16), child: Text('—')))),
+        ...grups.entries.map((e) {
+          final sociNom = e.value.first.soci;
+          return Carda(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              InkWell(
+                onTap: () => Estat.i.go('edicioSoci', e.key),
+                child: Row(children: [
+                  Expanded(
+                    child: Text(sociNom.isEmpty ? e.key : sociNom,
+                        style: const TextStyle(fontWeight: FontWeight.bold, color: titol)),
+                  ),
+                  Text('${e.value.length}',
+                      style: const TextStyle(fontSize: 12, color: textCol)),
+                  const Icon(Icons.chevron_right, size: 20, color: textCol),
+                ]),
+              ),
+              const SizedBox(height: 6),
+              ...e.value.map((j) => Padding(
+                    padding: const EdgeInsets.only(left: 8, bottom: 4),
+                    child: Row(children: [
+                      const Icon(Icons.badge, size: 15, color: textCol),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Estat.i.go('edicioSoci', e.key),
+                          child: Text('${j.nom} ${j.cognoms}'.trim(),
+                              style: const TextStyle(fontSize: 13.5)),
+                        ),
+                      ),
+                    ]),
+                  )),
+            ]),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+class _TabAlumnes extends StatefulWidget {
+  const _TabAlumnes({required this.d, required this.onRefresca});
+  final GestorDades d;
+  final VoidCallback onRefresca;
+
+  @override
+  State<_TabAlumnes> createState() => _TabAlumnesState();
+}
+
+class _TabAlumnesState extends State<_TabAlumnes> {
+  String q = '';
+
+  Map<String, List<PersonaGestor>> get _grups {
+    final g = <String, List<PersonaGestor>>{};
+    for (final a in widget.d.alumnes) {
+      final k = '${a.nom} ${a.soci}'.toLowerCase();
+      if (q.isNotEmpty && !k.contains(q.toLowerCase())) continue;
+      (g[a.idSoci] ??= []).add(a);
+    }
+    return g;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final grups = _grups;
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Row(children: [
+          Expanded(
+            child: TextField(
+              decoration: InputDecoration(
+                  hintText: 'Buscar soci o alumne...',
+                  prefixIcon: const Icon(Icons.search, size: 20),
+                  isDense: true),
+              onChanged: (v) => setState(() => q = v),
+            ),
+          ),
+          const SizedBox(width: 8),
+          FilledButton.tonal(
+            onPressed: () async {
+              await showDialog<bool>(
+                context: context,
+                builder: (_) => Dialog(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: _FormulariRapidAlumne(socis: widget.d.socis),
+                  ),
+                ),
+              );
+              widget.onRefresca();
+            },
+            child: const Text('Nou alumne', style: TextStyle(fontSize: 13)),
+          ),
+        ]),
+        const SizedBox(height: 12),
+        if (grups.isEmpty)
+          const Carda(child: Center(child: Padding(padding: EdgeInsets.all(16), child: Text('—')))),
+        ...grups.entries.map((e) {
+          final sociNom = e.value.first.soci;
+          return Carda(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              InkWell(
+                onTap: () => Estat.i.go('edicioSoci', e.key),
+                child: Row(children: [
+                  Expanded(
+                    child: Text(sociNom.isEmpty ? e.key : sociNom,
+                        style: const TextStyle(fontWeight: FontWeight.bold, color: titol)),
+                  ),
+                  Text('${e.value.length}',
+                      style: const TextStyle(fontSize: 12, color: textCol)),
+                  const Icon(Icons.chevron_right, size: 20, color: textCol),
+                ]),
+              ),
+              const SizedBox(height: 6),
+              ...e.value.map((a) => Padding(
+                    padding: const EdgeInsets.only(left: 8, bottom: 4),
+                    child: Row(children: [
+                      const Icon(Icons.school, size: 15, color: textCol),
+                      const SizedBox(width: 6),
+                      Expanded(child: Text(a.nom, style: const TextStyle(fontSize: 13.5))),
+                    ]),
+                  )),
+            ]),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+class SelectorSoci extends StatelessWidget {
+  SelectorSoci({super.key, required this.socis, required this.onSeleccionat});
+  final List<SociGestor> socis;
+  final ValueChanged<SociGestor> onSeleccionat;
+  final ctrl = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      TextField(
+        controller: ctrl,
+        decoration: const InputDecoration(
+          labelText: 'Soci',
+          prefixIcon: Icon(Icons.person_search, size: 20),
+          isDense: true,
+        ),
+        onChanged: (_) => (context as Element).markNeedsBuild(),
+      ),
+      if (ctrl.text.trim().isNotEmpty)
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 180),
+          child: Builder(builder: (context) {
+            final q = ctrl.text.trim().toLowerCase();
+            final opts = socis
+                .where((s) =>
+                    s.estat != 'Rebutjat' &&
+                    ('${s.nom} ${s.email} ${s.dni}'.toLowerCase().contains(q)))
+                .take(8)
+                .toList();
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: opts.length,
+              itemBuilder: (_, i) {
+                final s = opts[i];
+                return ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity.compact,
+                  title: Text(s.nom, style: const TextStyle(fontSize: 13.5)),
+                  subtitle: Text(s.email,
+                      style: const TextStyle(fontSize: 11.5, color: textCol)),
+                  onTap: () {
+                    ctrl.text = '${s.nom} (${s.email})';
+                    onSeleccionat(s);
+                    (context as Element).markNeedsBuild();
+                  },
+                );
+              },
+            );
+          }),
+        ),
+    ]);
+  }
+}
+
+class _FormulariRapidFitxa extends StatefulWidget {
+  const _FormulariRapidFitxa({required this.socis});
+  final List<SociGestor> socis;
+
+  @override
+  State<_FormulariRapidFitxa> createState() => _FormulariRapidFitxaState();
+}
+
+class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
+  SociGestor? soci;
+  final nom = TextEditingController(), cog = TextEditingController(), dni = TextEditingController(), adr = TextEditingController();
+  String dataNaix = '';
+  String? msg;
+  bool err = false;
+
+  Future<void> _desa() async {
+    final st = Estat.i;
+    setState(() { msg = st.i18n.t('enviant'); err = false; });
+    try {
+      await st.call('altaRapidaJugador', [
+        st.token,
+        soci!.id,
+        {'nom': nom.text, 'cognoms': cog.text, 'dataNaix': dataNaix, 'dni': dni.text, 'adreca': adr.text},
+      ]);
+      if (!mounted) return;
+      Navigator.pop(context, true);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() { msg = st.toastMissatge ?? 'Error'; err = true; });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Estat.i.i18n.t;
+    return SingleChildScrollView(
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('Nova fitxa ràpida (federació)',
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titol)),
+        const SizedBox(height: 12),
+        SelectorSoci(socis: widget.socis, onSeleccionat: (s) => setState(() => soci = s)),
+        CampText(controller: nom, hint: t('nomJug')),
+        CampText(controller: cog, hint: t('cognoms')),
+        Padding(padding: const EdgeInsets.only(bottom: 10), child: CampData(valor: dataNaix, etiqueta: t('dataNaix'), onCanvi: (v) => setState(() => dataNaix = v))),
+        CampText(controller: dni, hint: t('dni')),
+        CampText(controller: adr, hint: t('adreca')),
+        if (msg != null)
+          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd))),
+        SizedBox(width: double.infinity, child: FilledButton(onPressed: soci == null ? null : _desa, child: Text(t('desa')))),
+      ]),
+    );
+  }
+}
+
+class _FormulariRapidAlumne extends StatefulWidget {
+  const _FormulariRapidAlumne({required this.socis});
+  final List<SociGestor> socis;
+
+  @override
+  State<_FormulariRapidAlumne> createState() => _FormulariRapidAlumneState();
+}
+
+class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
+  SociGestor? soci;
+  final nom = TextEditingController(), tel = TextEditingController(), em = TextEditingController();
+  String? msg;
+  bool err = false;
+
+  Future<void> _desa() async {
+    final st = Estat.i;
+    setState(() { msg = st.i18n.t('enviant'); err = false; });
+    try {
+      await st.call('altaRapidaAlumne', [
+        st.token,
+        soci!.id,
+        {'nom': nom.text, 'telefon': tel.text, 'email': em.text},
+      ]);
+      if (!mounted) return;
+      Navigator.pop(context, true);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() { msg = st.toastMissatge ?? 'Error'; err = true; });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Estat.i.i18n.t;
+    return SingleChildScrollView(
+      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text("Nou alumne ràpid (classes)",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titol)),
+        const SizedBox(height: 12),
+        SelectorSoci(socis: widget.socis, onSeleccionat: (s) {
+          tel.text = s.telefon;
+          em.text = s.email;
+          setState(() => soci = s);
+        }),
+        CampText(controller: nom, hint: t('nomAlumne')),
+        CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
+        CampText(controller: em, hint: t('email'), teclat: TextInputType.emailAddress),
+        if (msg != null)
+          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd))),
+        SizedBox(width: double.infinity, child: FilledButton(onPressed: soci == null ? null : _desa, child: Text(t('desa')))),
+      ]),
     );
   }
 }

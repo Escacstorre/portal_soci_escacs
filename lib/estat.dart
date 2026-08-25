@@ -37,6 +37,7 @@ class Estat {
   ProfeDades? ptot;
 
   int profeTrim = 0;
+  int pagatTab = 0;
   String escolaTab = 'festius';
   String cfgTab = 'Club';
   String pagatText = '';
