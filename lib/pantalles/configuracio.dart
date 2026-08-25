@@ -219,15 +219,13 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
   late Set<String> rols =
       '${widget.existent?['rol'] ?? ''}'.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toSet();
   String? err;
+  bool intentat = false;
 
   static const totsRols = ['Admin', 'Junta', 'Profe', 'Soci'];
 
   Future<void> _desa() async {
-    final t = Estat.i.i18n.t;
-    if (rols.isEmpty) {
-      setState(() => err = t('triaUnRol'));
-      return;
-    }
+    setState(() => intentat = true);
+    if (nom.text.trim().isEmpty || email.text.trim().isEmpty || rols.isEmpty) return;
     await Estat.i.call('desarUsuari', [
       Estat.i.token,
       {
@@ -249,12 +247,19 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
+    final eCamp = t('campObligatori');
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CampText(controller: nom, hint: t('nom')),
-        CampText(controller: email, hint: t('email'), teclat: TextInputType.emailAddress),
+        CampText(controller: nom, hint: t('nom'), obligatori: true, error: (intentat && nom.text.trim().isEmpty) ? eCamp : null),
+        CampText(
+          controller: email,
+          hint: t('email'),
+          teclat: TextInputType.emailAddress,
+          obligatori: true,
+          error: (intentat && email.text.trim().isEmpty) ? eCamp : null,
+        ),
         for (final r in totsRols)
           CheckboxListTile(
             dense: true,
@@ -264,8 +269,11 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
             contentPadding: EdgeInsets.zero,
             onChanged: (v) => setState(() {
               v == true ? rols.add(r) : rols.remove(r);
+              err = rols.isEmpty ? t('triaUnRol') : null;
             }),
           ),
+        if (intentat && rols.isEmpty)
+          Padding(padding: const EdgeInsets.only(bottom: 6), child: Text(t('triaUnRol'), style: const TextStyle(color: vermell))),
         CampText(controller: pw, hint: t('contrasenyaOpt'), obscure: true),
         if (err != null)
           Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(err!, style: const TextStyle(color: vermell))),

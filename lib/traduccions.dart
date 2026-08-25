@@ -46,6 +46,7 @@
     'soci': 'SOCI', 'rebutAlta': "Rebut de l'alta", 'alumneU': 'Alumne', 'portalSocis': 'Portal de Socis',
     'triaUnRol': 'Tria almenys un rol', 'multiRol': "Pots marcar-ne més d'un (p. ex. Admin + Soci)",
     'enviant': 'Enviant…', 'refrescat': 'Actualitzat ✓',
+    'campObligatori': 'Aquest camp és obligatori',
   };
 
   static const Map<String, String> es = {
@@ -89,6 +90,7 @@
     'soci': 'SOCIO', 'rebutAlta': 'Recibo del alta', 'alumneU': 'Alumno', 'portalSocis': 'Portal de Socios',
     'triaUnRol': 'Elige al menos un rol', 'multiRol': 'Puedes marcar más de uno (p. ej. Admin + Socio)',
     'enviant': 'Enviando…', 'refrescat': 'Actualizado ✓',
+    'campObligatori': 'Este campo es obligatorio',
   };
 
   static const List<String> baseLangs = ['CA', 'ES'];

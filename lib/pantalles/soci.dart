@@ -152,9 +152,12 @@ class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
   late final e = TextEditingController(text: Estat.i.inici?.email ?? '');
   String? msg;
   bool err = false;
+  bool intentat = false;
 
   Future<void> _desa() async {
     final st = Estat.i;
+    setState(() => intentat = true);
+    if (n.text.trim().isEmpty) return;
     setState(() {
       msg = st.i18n.t('enviant');
       err = false;
@@ -189,7 +192,12 @@ class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(t('inscriu'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
               const SizedBox(height: 12),
-              CampText(controller: n, hint: t('nomAlumne')),
+              CampText(
+                controller: n,
+                hint: t('nomAlumne'),
+                obligatori: true,
+                error: (intentat && n.text.trim().isEmpty) ? t('campObligatori') : null,
+              ),
               CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
               CampText(controller: e, hint: t('email'), teclat: TextInputType.emailAddress),
               if (msg != null)
@@ -409,14 +417,22 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
   Map<String, dynamic>? foto;
   String? msg;
   bool err = false;
+  bool intentat = false;
 
   Future<void> _desa() async {
     final st = Estat.i;
+    setState(() => intentat = true);
+    if (nom.text.trim().isEmpty ||
+        cog.text.trim().isEmpty ||
+        dataNaix.isEmpty ||
+        dni.text.trim().isEmpty ||
+        adr.text.trim().isEmpty) {
+      return;
+    }
     setState(() {
       msg = st.i18n.t('enviant');
       err = false;
     });
-    foto ??= await triaArxiu('.jpg,.jpeg,.png');
     try {
       await st.call('altaJugador', [
         st.token,
@@ -458,8 +474,8 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(t('alta'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
               const SizedBox(height: 12),
-              CampText(controller: nom, hint: t('nomJug')),
-              CampText(controller: cog, hint: t('cognoms')),
+              CampText(controller: nom, hint: t('nomJug'), obligatori: true, error: (intentat && nom.text.trim().isEmpty) ? t('campObligatori') : null),
+              CampText(controller: cog, hint: t('cognoms'), obligatori: true, error: (intentat && cog.text.trim().isEmpty) ? t('campObligatori') : null),
               InkWell(
                 onTap: () async {
                   final d = await showDatePicker(
@@ -473,13 +489,17 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
                   }
                 },
                 child: InputDecorator(
-                  decoration: InputDecoration(labelText: t('dataNaix'), isDense: true),
-                  child: Text(dataNaix),
+                  decoration: InputDecoration(
+                    labelText: '${t('dataNaix')} *',
+                    isDense: true,
+                    errorText: (intentat && dataNaix.isEmpty) ? t('campObligatori') : null,
+                  ),
+                  child: Text(dataNaix.isEmpty ? '—' : mostraData(dataNaix)),
                 ),
               ),
               const SizedBox(height: 10),
-              CampText(controller: dni, hint: t('dni')),
-              CampText(controller: adr, hint: t('adreca')),
+              CampText(controller: dni, hint: t('dni'), obligatori: true, error: (intentat && dni.text.trim().isEmpty) ? t('campObligatori') : null),
+              CampText(controller: adr, hint: t('adreca'), obligatori: true, error: (intentat && adr.text.trim().isEmpty) ? t('campObligatori') : null),
               CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
               CampText(controller: em, hint: t('email'), teclat: TextInputType.emailAddress),
               OutlinedButton.icon(

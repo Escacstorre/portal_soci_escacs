@@ -170,6 +170,8 @@ class CampText extends StatelessWidget {
     this.onChanged,
     this.sufix,
     this.linies = 1,
+    this.error,
+    this.obligatori = false,
   });
   final TextEditingController controller;
   final String? hint;
@@ -178,9 +180,12 @@ class CampText extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final String? sufix;
   final int linies;
+  final String? error;
+  final bool obligatori;
 
   @override
   Widget build(BuildContext context) {
+    final etiqueta = obligatori && hint != null ? '$hint *' : hint;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: TextField(
@@ -189,7 +194,12 @@ class CampText extends StatelessWidget {
         keyboardType: teclat,
         maxLines: obscure ? 1 : linies,
         onChanged: onChanged,
-        decoration: InputDecoration(labelText: hint, suffixText: sufix, isDense: true),
+        decoration: InputDecoration(
+          labelText: etiqueta,
+          suffixText: sufix,
+          isDense: true,
+          errorText: error,
+        ),
       ),
     );
   }
@@ -283,10 +293,12 @@ class CampDataTrim extends StatelessWidget {
 }
 
 class CampData extends StatelessWidget {
-  const CampData({super.key, required this.valor, required this.etiqueta, required this.onCanvi});
+  const CampData({super.key, required this.valor, required this.etiqueta, required this.onCanvi, this.error, this.obligatori = false});
   final String valor;
   final String etiqueta;
   final ValueChanged<String> onCanvi;
+  final String? error;
+  final bool obligatori;
 
   DateTime _inicial() {
     final p = valor.split('-');
@@ -320,8 +332,9 @@ class CampData extends StatelessWidget {
       onTap: () => _tria(context),
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: etiqueta,
+          labelText: obligatori ? '$etiqueta *' : etiqueta,
           isDense: true,
+          errorText: error,
           suffixIcon: const Icon(Icons.calendar_today, size: 18),
         ),
         child: Text(

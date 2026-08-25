@@ -150,19 +150,18 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
   Map<String, dynamic>? rebut;
   String? msg;
   bool msgErr = false;
+  bool intentat = false;
+
+  String? errDe(TextEditingController x) =>
+      (intentat && x.text.trim().isEmpty) ? Estat.i.i18n.t('campObligatori') : null;
 
   Future<void> _ferRegistre() async {
     final st = Estat.i;
     final t = st.i18n.t;
-    setState(() { msg = t('enviant'); msgErr = false; });
-    if (c.text != c2.text) {
-      setState(() { msg = t('confirma'); msgErr = true; });
-      return;
-    }
-    rebut ??= await triaArxiu('.jpg,.jpeg,.png,.pdf');
-    if (!mounted) return;
-    if (rebut == null) {
-      setState(() { msg = '${t('rebutQuota')}: ${t('pujaFitxer')}'; msgErr = true; });
+    setState(() => intentat = true);
+    final buit = [n, d, tel, e, b, c].any((x) => x.text.trim().isEmpty);
+    if (buit || c.text != c2.text) {
+      setState(() { msg = null; msgErr = true; });
       return;
     }
     try {
@@ -212,13 +211,19 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      CampText(controller: n, hint: t('nom')),
-                      CampText(controller: d, hint: t('dni')),
-                      CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
-                      CampText(controller: e, hint: t('email'), teclat: TextInputType.emailAddress),
-                      CampText(controller: b, hint: t('banc')),
-                      CampText(controller: c, hint: t('contra'), obscure: true),
-                      CampText(controller: c2, hint: t('confirma'), obscure: true),
+                      CampText(controller: n, hint: t('nom'), obligatori: true, error: errDe(n)),
+                      CampText(controller: d, hint: t('dni'), obligatori: true, error: errDe(d)),
+                      CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone, obligatori: true, error: errDe(tel)),
+                      CampText(controller: e, hint: t('email'), teclat: TextInputType.emailAddress, obligatori: true, error: errDe(e)),
+                      CampText(controller: b, hint: t('banc'), obligatori: true, error: errDe(b)),
+                      CampText(controller: c, hint: t('contra'), obscure: true, obligatori: true, error: errDe(c)),
+                      CampText(
+                        controller: c2,
+                        hint: t('confirma'),
+                        obscure: true,
+                        obligatori: true,
+                        error: (intentat && c.text != c2.text) ? t('confirma') : errDe(c2),
+                      ),
                       Text('${t('compte')} $compte', style: const TextStyle(fontSize: 13, color: textCol)),
                       const SizedBox(height: 8),
                       OutlinedButton.icon(

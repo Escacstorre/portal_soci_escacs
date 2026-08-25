@@ -261,10 +261,16 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
   final a1 = TextEditingController(), a2 = TextEditingController(), a3 = TextEditingController();
   String? msg;
   bool err = false;
+  bool intentat = false;
+
+  String? eDe(TextEditingController c) =>
+      (intentat && c.text.trim().isEmpty) ? Estat.i.i18n.t('campObligatori') : null;
 
   Future<void> _desa() async {
     final st = Estat.i;
     final t = st.i18n.t;
+    setState(() => intentat = true);
+    if ([n, dni, tel, em, banc, pw].any((c) => c.text.trim().isEmpty)) return;
     setState(() {
       msg = t('enviant');
       err = false;
@@ -317,12 +323,12 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(t('formulariRapid'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
               const SizedBox(height: 12),
-              CampText(controller: n, hint: t('nom')),
-              CampText(controller: dni, hint: t('dni')),
-              CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
-              CampText(controller: em, hint: t('email'), teclat: TextInputType.emailAddress),
-              CampText(controller: banc, hint: t('banc')),
-              CampText(controller: pw, hint: t('contra'), obscure: true),
+              CampText(controller: n, hint: t('nom'), obligatori: true, error: eDe(n)),
+              CampText(controller: dni, hint: t('dni'), obligatori: true, error: eDe(dni)),
+              CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone, obligatori: true, error: eDe(tel)),
+              CampText(controller: em, hint: t('email'), teclat: TextInputType.emailAddress, obligatori: true, error: eDe(em)),
+              CampText(controller: banc, hint: t('banc'), obligatori: true, error: eDe(banc)),
+              CampText(controller: pw, hint: t('contra'), obscure: true, obligatori: true, error: eDe(pw)),
               const SizedBox(height: 4),
               Text(t('alumnesOpt'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
               CampText(controller: a1, hint: '${t('alumneU')} 1'),
@@ -446,6 +452,12 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
               label: Text(t('rebutAlta'), style: const TextStyle(fontSize: 13)),
               onPressed: () => obrirUrl('${rebut['url']}'),
             ),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text('${t('rebutAlta')}: ${t('noRebut')}',
+                style: const TextStyle(fontSize: 12.5, color: textCol)),
           ),
       ]),
     );
@@ -496,6 +508,11 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
           visualDensity: VisualDensity.compact,
           icon: const Icon(Icons.attach_file, size: 18),
           onPressed: () => obrirUrl('${m['rebut']['url']}'),
+        )
+      else
+        Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: Text(Estat.i.i18n.t('noRebut'), style: const TextStyle(fontSize: 10.5, color: textCol)),
         ),
     ]);
   }
@@ -536,6 +553,15 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
                         Estat.i.mostraOk();
                       },
                     ),
+                    if (tr['rebut'] == null)
+                      Text(Estat.i.i18n.t('noRebut'),
+                          style: const TextStyle(fontSize: 10.5, color: textCol))
+                    else
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        icon: const Icon(Icons.attach_file, size: 16),
+                        onPressed: () => obrirUrl('${tr['rebut']['url']}'),
+                      ),
                   ]),
               IconButton(
                 tooltip: t('valida3'),
@@ -1240,9 +1266,10 @@ class _TabAlumnesState extends State<_TabAlumnes> {
 }
 
 class SelectorSoci extends StatelessWidget {
-  SelectorSoci({super.key, required this.socis, required this.onSeleccionat});
+  SelectorSoci({super.key, required this.socis, required this.onSeleccionat, this.error});
   final List<SociGestor> socis;
   final ValueChanged<SociGestor> onSeleccionat;
+  final String? error;
   final ctrl = TextEditingController();
 
   @override
@@ -1250,10 +1277,11 @@ class SelectorSoci extends StatelessWidget {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       TextField(
         controller: ctrl,
-        decoration: const InputDecoration(
-          labelText: 'Soci',
-          prefixIcon: Icon(Icons.person_search, size: 20),
+        decoration: InputDecoration(
+          labelText: 'Soci *',
+          prefixIcon: const Icon(Icons.person_search, size: 20),
           isDense: true,
+          errorText: error,
         ),
         onChanged: (_) => (context as Element).markNeedsBuild(),
       ),
@@ -1307,9 +1335,12 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
   String dataNaix = '';
   String? msg;
   bool err = false;
+  bool intentat = false;
 
   Future<void> _desa() async {
     final st = Estat.i;
+    setState(() => intentat = true);
+    if (soci == null || nom.text.trim().isEmpty || cog.text.trim().isEmpty || dataNaix.isEmpty) return;
     setState(() { msg = st.i18n.t('enviant'); err = false; });
     try {
       await st.call('altaRapidaJugador', [
@@ -1328,20 +1359,34 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
+    final eCamp = Estat.i.i18n.t('campObligatori');
     return SingleChildScrollView(
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('Nova fitxa ràpida (federació)',
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titol)),
         const SizedBox(height: 12),
-        SelectorSoci(socis: widget.socis, onSeleccionat: (s) => setState(() => soci = s)),
-        CampText(controller: nom, hint: t('nomJug')),
-        CampText(controller: cog, hint: t('cognoms')),
-        Padding(padding: const EdgeInsets.only(bottom: 10), child: CampData(valor: dataNaix, etiqueta: t('dataNaix'), onCanvi: (v) => setState(() => dataNaix = v))),
+        SelectorSoci(
+          socis: widget.socis,
+          onSeleccionat: (s) => setState(() => soci = s),
+          error: (intentat && soci == null) ? eCamp : null,
+        ),
+        CampText(controller: nom, hint: t('nomJug'), obligatori: true, error: (intentat && nom.text.trim().isEmpty) ? eCamp : null),
+        CampText(controller: cog, hint: t('cognoms'), obligatori: true, error: (intentat && cog.text.trim().isEmpty) ? eCamp : null),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: CampData(
+            valor: dataNaix,
+            etiqueta: t('dataNaix'),
+            obligatori: true,
+            error: (intentat && dataNaix.isEmpty) ? eCamp : null,
+            onCanvi: (v) => setState(() => dataNaix = v),
+          ),
+        ),
         CampText(controller: dni, hint: t('dni')),
         CampText(controller: adr, hint: t('adreca')),
         if (msg != null)
           Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd))),
-        SizedBox(width: double.infinity, child: FilledButton(onPressed: soci == null ? null : _desa, child: Text(t('desa')))),
+        SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('desa')))),
       ]),
     );
   }
@@ -1360,9 +1405,12 @@ class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
   final nom = TextEditingController(), tel = TextEditingController(), em = TextEditingController();
   String? msg;
   bool err = false;
+  bool intentat = false;
 
   Future<void> _desa() async {
     final st = Estat.i;
+    setState(() => intentat = true);
+    if (soci == null || nom.text.trim().isEmpty) return;
     setState(() { msg = st.i18n.t('enviant'); err = false; });
     try {
       await st.call('altaRapidaAlumne', [
@@ -1381,6 +1429,7 @@ class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
+    final eCamp = Estat.i.i18n.t('campObligatori');
     return SingleChildScrollView(
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text("Nou alumne ràpid (classes)",
@@ -1390,13 +1439,13 @@ class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
           tel.text = s.telefon;
           em.text = s.email;
           setState(() => soci = s);
-        }),
-        CampText(controller: nom, hint: t('nomAlumne')),
+        }, error: (intentat && soci == null) ? eCamp : null),
+        CampText(controller: nom, hint: t('nomAlumne'), obligatori: true, error: (intentat && nom.text.trim().isEmpty) ? eCamp : null),
         CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
         CampText(controller: em, hint: t('email'), teclat: TextInputType.emailAddress),
         if (msg != null)
           Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd))),
-        SizedBox(width: double.infinity, child: FilledButton(onPressed: soci == null ? null : _desa, child: Text(t('desa')))),
+        SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('desa')))),
       ]),
     );
   }
