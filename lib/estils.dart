@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 const pri = Color(0xFF051EF5);
 const titol = Color(0xFF060201);
@@ -70,15 +71,21 @@ const InputDecoration decoInput = InputDecoration(
 
 const double midaIconaClub = 48;
 
+const _svgLogo = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 53.89 31.46">'
+    '<path fill="#051EF5" d="m50.39,25v-3.25l-1.25-1.25V0h-2v1.58h-1.75V0h-1.75v1.67l-1.92.08V0h-1.58v1.58l-1.83-.08V0h-1.83v1.67h-1.75V0h-1.67v20.5l-1.58.83v3.67l-3.08.08v6.25h3.26v-2.83h2.83v2.83h3.54v-2.83h2.83v2.83h3.44v-2.83h2.83v2.83h3.67v-2.83h2.83v2.83h.25v-6.33h-3.5Zm-18.92,3.08h-2.83v-2.83h2.83v2.83Zm6.22,0h-2.83v-2.83h2.83v2.83Zm6.25,0h-2.83v-2.83h2.83v2.83Zm6.38,0h-2.83v-2.83h2.83v2.83Z"/>'
+    '</svg>';
+
 class IconaClub extends StatelessWidget {
   const IconaClub({super.key, this.mida = midaIconaClub});
   final double mida;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      '\u265C',
-      style: TextStyle(fontSize: mida, color: pri, fontWeight: FontWeight.bold),
+    return SvgPicture.string(
+      _svgLogo,
+      width: mida,
+      height: mida * 31.46 / 53.89,
+      fit: BoxFit.contain,
     );
   }
 }
