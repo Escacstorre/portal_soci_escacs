@@ -1,5 +1,6 @@
 ﻿import 'dart:async';
 import 'dart:convert';
+// ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
 
 import 'pont.dart';
@@ -233,6 +234,9 @@ class Estat {
   }
 
   Future<bool> arrenca() async {
+    // Carrega traduccions directament del full Google Sheets (en paral·lel).
+    unawaited(i18n.carregaDelFull());
+
     Map<String, dynamic>? cfg;
     try {
       final raw = html.window.localStorage['ps_cfg'];

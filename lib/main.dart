@@ -1,4 +1,5 @@
 ﻿import 'dart:async';
+// ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
@@ -148,7 +149,7 @@ class _ArrelState extends State<Arrel> {
                     decoration: BoxDecoration(
                       color: st.toastCorrecte ? verd : vermell,
                     borderRadius: BorderRadius.circular(10),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(.2), blurRadius: 8)],
+                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: .2), blurRadius: 8)],
                   ),
                   child: Text(st.toastMissatge!,
                       style: const TextStyle(color: Colors.white, fontSize: 14),

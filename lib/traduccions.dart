@@ -1,9 +1,18 @@
-﻿class Traduccions {
+﻿import 'servei_fulls.dart';
+
+class Traduccions {
   Traduccions._();
   static final Traduccions instance = Traduccions._();
 
   String lang = 'CA';
   Map<String, dynamic> lx = {};
+
+  /// Traduccions carregades directament del full Google Sheets.
+  /// Estructura: { 'CA': { 'clau': 'valor' }, 'ES': { ... } }
+  final Map<String, Map<String, String>> _delFull = {};
+
+  /// Indica si les traduccions del full ja s'han carregat.
+  bool get pleCarregat => _delFull.isNotEmpty;
 
   static const Map<String, String> ca = {
     'inicia': 'Inicia la sessió', 'usuari': 'Usuari (email)', 'contra': 'Contrasenya',
@@ -98,10 +107,27 @@
     for (final k in lx.keys) {
       if (!lls.contains(k)) lls.add(k);
     }
+    for (final k in _delFull.keys) {
+      if (!lls.contains(k)) lls.add(k);
+    }
     return lls;
   }
 
+  /// Tradueix una clau. Prioritat: full Google Sheets > traduccions del servidor (lx) > fallback local.
   String t(String k) {
+    // 1. Busca al full Google Sheets
+    final delFull = _delFull[lang]?[k];
+    if (delFull != null) return delFull;
+    final fallbackFull = _delFull['CA']?[k];
+    if (fallbackFull != null) return fallbackFull;
+
+    // 2. Busca les traduccions del servidor (Apps Script)
+    final dLx = lx[lang];
+    if (dLx is Map && dLx[k] != null) return '${dLx[k]}';
+    final caLx = lx['CA'];
+    if (caLx is Map && caLx[k] != null) return '${caLx[k]}';
+
+    // 3. Fallback local (codi compilat)
     final d = lang == 'ES' ? es : ca;
     return d[k] ?? ca[k] ?? k;
   }
@@ -120,5 +146,17 @@
 
   void setLx(Map<String, dynamic>? m) {
     lx = m ?? {};
+  }
+
+  /// Carrega les traduccions directament del full Google Sheets.
+  Future<void> carregaDelFull() async {
+    try {
+      final dades = await ServeiFulls().llegeixTraduccions();
+      _delFull
+        ..clear()
+        ..addAll(dades);
+    } catch (_) {
+      // Si falla, es queden les traduccions locals (fallback).
+    }
   }
 }

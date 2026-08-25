@@ -1,4 +1,5 @@
 ﻿import 'dart:async';
+// ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
@@ -116,7 +117,7 @@ class XipEstat extends StatelessWidget {
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(color: color.withOpacity(.12), borderRadius: BorderRadius.circular(999)),
+      decoration: BoxDecoration(color: color.withValues(alpha: .12), borderRadius: BorderRadius.circular(999)),
       child: Text(txt, style: TextStyle(color: color, fontSize: 12.5)),
     );
   }
@@ -139,7 +140,7 @@ class XipQuota extends StatelessWidget {
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: color.withOpacity(.12), borderRadius: BorderRadius.circular(999)),
+      decoration: BoxDecoration(color: color.withValues(alpha: .12), borderRadius: BorderRadius.circular(999)),
       child: Text(txt, style: TextStyle(color: color, fontSize: 13)),
     );
   }
@@ -158,7 +159,7 @@ class Carda extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(.06), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: .06), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: child,
     );
