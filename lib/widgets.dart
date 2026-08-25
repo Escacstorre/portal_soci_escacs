@@ -10,6 +10,44 @@ const pri = Color(0xFF1A5FB4);
 const titol = Color(0xFF1B2733);
 const textCol = Color(0xFF3D4A57);
 const suau = Color(0xFFF4F6F8);
+const verd = Color(0xFF2E7D32);
+const taronja = Color(0xFFB36B00);
+const vermell = Color(0xFFC62828);
+
+const _nomsIdioma = {'CA': 'Català', 'ES': 'Español'};
+
+String nomIdioma(String codi) => _nomsIdioma[codi] ?? codi;
+
+class IdiomaMenu extends StatelessWidget {
+  const IdiomaMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = I18n.instance;
+    return DropdownButton<String>(
+      value: i18n.lang,
+      underline: const SizedBox.shrink(),
+      isDense: true,
+      icon: const Icon(Icons.language, size: 18),
+      items: [
+        for (final l in i18n.langs)
+          DropdownMenuItem(value: l, child: Text(nomIdioma(l), style: const TextStyle(fontSize: 14, color: textCol))),
+      ],
+      onChanged: (l) {
+        if (l == null || l == i18n.lang) return;
+        setStateIdioma(l);
+      },
+    );
+  }
+}
+
+void setStateIdioma(String codi) {
+  final i18n = I18n.instance;
+  if (!i18n.langs.contains(codi)) return;
+  i18n.lang = codi;
+  html.window.localStorage['ps_lang'] = codi;
+  Estat.i.refres();
+}
 
 class Hdr extends StatelessWidget implements PreferredSizeWidget {
   const Hdr({super.key, this.torna = false});
@@ -37,15 +75,9 @@ class Hdr extends StatelessWidget implements PreferredSizeWidget {
           tooltip: st.i18n.t('refrescat'),
           onPressed: () => st.refrescaUI(),
         ),
-        InkWell(
-          onTap: togglaLang,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: Text('🌐 ${st.i18n.lang}',
-                  style: const TextStyle(fontSize: 15, color: textCol)),
-            ),
-          ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: IdiomaMenu(),
         ),
         if (rols.length > 1)
           TextButton(
@@ -64,14 +96,6 @@ class Hdr extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-void togglaLang() {
-  final i18n = I18n.instance;
-  final lls = i18n.langs;
-  i18n.lang = lls[(lls.indexOf(i18n.lang) + 1) % lls.length];
-  html.window.localStorage['ps_lang'] = i18n.lang;
-  Estat.i.refres();
-}
-
 class EstatChip extends StatelessWidget {
   const EstatChip({super.key, required this.estat});
   final String estat;
@@ -81,10 +105,10 @@ class EstatChip extends StatelessWidget {
     final t = Estat.i.i18n.t;
     Color color; String txt;
     if (estat == 'Validat') {
-      color = const Color(0xFF2E7D32);
+      color = verd;
       txt = t('pagat').replaceAll('Pagat', 'Validat');
     } else if (estat == 'En revisió') {
-      color = const Color(0xFFB36B00);
+      color = taronja;
       txt = t('enRev');
     } else {
       color = Colors.grey.shade600;
@@ -107,11 +131,11 @@ class QuotaChip extends StatelessWidget {
     final t = Estat.i.i18n.t;
     late Color color; late String txt;
     if (quota == 'pagat') {
-      color = const Color(0xFF2E7D32); txt = t('pagat');
+      color = verd; txt = t('pagat');
     } else if (quota == 'rebutjat') {
-      color = const Color(0xFFC62828); txt = t('rebujat');
+      color = vermell; txt = t('rebujat');
     } else {
-      color = const Color(0xFFB36B00); txt = t('enRev');
+      color = taronja; txt = t('enRev');
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -156,10 +180,13 @@ class ItemLlista extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey.shade200),
       ),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Row(children: [...children]),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: onTap,
+          child: Row(children: [...children]),
+        ),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'dart:html' as html;
 
 import 'bridge.dart';
 import 'i18n.dart';
+import 'models.dart';
 
 const appsScriptUrl =
     'https://script.google.com/macros/s/AKfycbyCxdv7MNxrlqhvLBruDEumwxuWN4piXILygFS_YCptt0YDmRQu2HBKxEMlQtP9-FIoTA/exec';
@@ -17,7 +18,7 @@ const reads = [
 class Vista {
   final String nom;
   final dynamic dades;
-  Vista(this.nom, [this.dades]);
+  const Vista(this.nom, [this.dades]);
 }
 
 class Estat {
@@ -29,10 +30,10 @@ class Estat {
   String? token;
   String club = '';
   Map<String, dynamic>? user;
-  Map<String, dynamic>? inici;
-  Map<String, dynamic>? tot;
-  Map<String, dynamic>? gest;
-  Map<String, dynamic>? ptot;
+  IniciSoci? inici;
+  TotSoci? tot;
+  GestorDades? gest;
+  ProfeDades? ptot;
 
   int profeTrim = 0;
   String escolaTab = 'festius';
@@ -40,7 +41,7 @@ class Estat {
   String pagatText = '';
   String pagatEstat = '';
 
-  final List<Vista> stack = [Vista('login')];
+  final List<Vista> stack = [const Vista('login')];
 
   final _canvis = StreamController<void>.broadcast();
   Stream<void> get onCanvi => _canvis.stream;
@@ -76,7 +77,9 @@ class Estat {
       }
       return v;
     } catch (e) {
-      ferr(i18n.tradueixError(e is PortalException ? e.message : e.toString()));
+      final raw = e is PortalException ? e.message : e.toString();
+      ferr(i18n.tradueixError(raw));
+      if (raw.contains('SESSIO_CADUCADA')) sessioCaducada();
       rethrow;
     } finally {
       if (!esLectura) {
@@ -84,6 +87,14 @@ class Estat {
         _notificaOcupat();
       }
     }
+  }
+
+  void sessioCaducada() {
+    setTok(null);
+    user = null;
+    inici = null;
+    buidaCache();
+    reset('login');
   }
 
   void buidaCache() {
@@ -106,16 +117,32 @@ class Estat {
 
   void fok([String? msg]) => ferr(msg ?? i18n.t('refrescat'), ok: true);
 
-  // ---------- navegació ----------
+  // ---------- navegació (sincronitzada amb l'historial del navegador) ----------
   Vista get vistaActual => stack.last;
 
   void go(String v, [dynamic d]) {
     stack.add(Vista(v, d));
+    html.window.history.pushState(stack.length, '', '#$v');
     refres();
   }
 
   void back() {
-    if (stack.length > 1) stack.removeLast();
+    if (stack.length > 1) html.window.history.back();
+  }
+
+  /// Rep el control quan l'usuari fa enrere/avançant al navegador.
+  void onPopState() {
+    final prof = html.window.history.state;
+    final idx = (prof is num) ? prof.toInt() : null;
+    if (idx == null || idx < 1 || idx > stack.length - 1) {
+      while (stack.length > 1) {
+        stack.removeLast();
+      }
+    } else {
+      while (stack.length > idx) {
+        stack.removeLast();
+      }
+    }
     refres();
   }
 
@@ -123,6 +150,7 @@ class Estat {
     stack
       ..clear()
       ..add(Vista(v, d));
+    html.window.history.replaceState(1, '', '#$v');
     refres();
   }
 
@@ -155,22 +183,22 @@ class Estat {
     } else if (r == 'Junta' || r == 'Admin') {
       reset('adminHome');
     } else {
-      carregaInici();
+      unawaited(carregaInici());
     }
   }
 
-  Future<void> carregaInici() async {
+  Future<void> _carregaTot() async {
     final d = await call('getTotSoci', [token]);
-    tot = (d as Map).cast<String, dynamic>();
-    inici = tot!['inici'] as Map<String, dynamic>?;
+    tot = TotSoci.de(d);
+    inici = tot!.inici;
+  }
+
+  Future<void> carregaInici() async {
+    await _carregaTot();
     reset('homeSoci', inici);
   }
 
-  Future<void> refreshTot() async {
-    final d = await call('getTotSoci', [token]);
-    tot = (d as Map).cast<String, dynamic>();
-    inici = tot!['inici'] as Map<String, dynamic>?;
-  }
+  Future<void> refreshTot() => _carregaTot();
 
   Future<void> refrescaUI() async {
     buidaCache();
@@ -183,9 +211,9 @@ class Estat {
       if (socil.contains(v)) {
         await refreshTot();
       } else if (gestl.contains(v)) {
-        gest = ((await call('getTotGestor', [token])) as Map).cast<String, dynamic>();
+        gest = GestorDades.de(await call('getTotGestor', [token]));
       } else if (v == 'profe' || v == 'profeAlumnes') {
-        ptot = ((await call('getTotProfe', [token, profeTrim])) as Map).cast<String, dynamic>();
+        ptot = ProfeDades.de(await call('getTotProfe', [token, profeTrim]));
       }
     } catch (_) {}
     ocupats--;
@@ -208,10 +236,11 @@ class Estat {
     Map<String, dynamic>? cfg;
     try {
       final raw = html.window.localStorage['ps_cfg'];
-      if (raw != null) {
-        cfg = (await Future.value(_parseCfg(raw)));
-        final t0 = cfg?['t'];
-        if (cfg == null || DateTime.now().millisecondsSinceEpoch - (t0 as num) > 600000) cfg = null;
+      if (raw != null) cfg = _parseCfg(raw);
+      final t0 = cfg?['t'];
+      if (cfg == null ||
+          DateTime.now().millisecondsSinceEpoch - (t0 as num? ?? 0) > 600000) {
+        cfg = null;
       }
     } catch (_) {
       cfg = null;
@@ -229,11 +258,11 @@ class Estat {
     if (cfg != null) {
       club = '${cfg['club'] ?? ''}';
       final idioma = '${cfg['idioma'] ?? 'CA'}'.toUpperCase();
-      if (I18n.baseLangs.contains(idioma)) I18n.instance.lang = idioma;
-      I18n.instance.setLx((cfg['traduccions'] as Map?)?.cast<String, dynamic>());
+      if (I18n.baseLangs.contains(idioma)) i18n.lang = idioma;
+      i18n.setLx((cfg['traduccions'] as Map?)?.cast<String, dynamic>());
     }
     final saved = html.window.localStorage['ps_lang'];
-    if (saved != null && saved.isNotEmpty) I18n.instance.lang = saved.toUpperCase();
+    if (saved != null && saved.isNotEmpty) i18n.lang = saved.toUpperCase();
 
     final tk = getTok();
     if (tk == null) {
@@ -242,13 +271,11 @@ class Estat {
     }
     token = tk;
     try {
-      final d = await Bridge.instance.call('getTotSoci', [tk]);
-      tot = (d as Map).cast<String, dynamic>();
-      inici = tot!['inici'] as Map<String, dynamic>;
+      await _carregaTot();
       user = {
-        'nom': inici!['nom'],
-        'rols': inici!['rols'],
-        'rolActiu': inici!['rolActiu'],
+        'nom': inici!.nom,
+        'rols': inici!.rols,
+        'rolActiu': inici!.rolActiu,
       };
       entra();
       return true;

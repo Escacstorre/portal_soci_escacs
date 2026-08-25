@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 
@@ -50,16 +51,19 @@ class Arrel extends StatefulWidget {
 
 class _ArrelState extends State<Arrel> {
   late StreamSubscription<void> _sub;
+  late StreamSubscription<html.PopStateEvent> _popSub;
 
   @override
   void initState() {
     super.initState();
     _sub = Estat.i.onCanvi.listen((_) => mounted ? setState(() {}) : null);
+    _popSub = html.window.onPopState.listen((_) => Estat.i.onPopState());
   }
 
   @override
   void dispose() {
     _sub.cancel();
+    _popSub.cancel();
     super.dispose();
   }
 
@@ -141,8 +145,8 @@ class _ArrelState extends State<Arrel> {
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 560),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: st.toastOk ? const Color(0xFF2E7D32) : const Color(0xFFC62828),
+                    decoration: BoxDecoration(
+                      color: st.toastOk ? verd : vermell,
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [BoxShadow(color: Colors.black.withOpacity(.2), blurRadius: 8)],
                   ),

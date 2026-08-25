@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../models.dart';
 import '../../state.dart';
 import '../../widgets.dart';
 
@@ -12,25 +13,24 @@ class HomeSociScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final st = Estat.i;
     final t = st.i18n.t;
-    final d = st.inici ?? const {};
-    final rebut = d['quotaRebut'] as Map?;
+    final d = st.inici;
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text('${t('benvingut')} ${d['nom'] ?? ''}',
+            Text('${t('benvingut')} ${d?.nom ?? ''}',
                 style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: titol)),
             const SizedBox(height: 8),
             Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 6,
               children: [
-                Text('${t('quotaAny')} ${d['any']}: '),
-                QuotaChip(quota: '${d['quota'] ?? ''}'),
-                if (rebut != null)
+                Text('${t('quotaAny')} ${d?.any ?? ''}: '),
+                QuotaChip(quota: d?.quota ?? ''),
+                if (d?.quotaRebut != null)
                   TextButton(
-                    onPressed: () => obrirUrl('${rebut['url']}'),
+                    onPressed: () => obrirUrl(d!.quotaRebut!.url),
                     child: Text('(${t('veureRebut')})', style: const TextStyle(fontSize: 13)),
                   ),
               ],
@@ -98,16 +98,6 @@ class ClassesHomeScreen extends StatelessWidget {
   }
 }
 
-List<Map<String, dynamic>> _alumnesTot() {
-  final llista = (Estat.i.tot?['alumnes'] as List?) ?? const [];
-  return llista.map((e) => (e as Map).cast<String, dynamic>()).toList();
-}
-
-List<Map<String, dynamic>> _jugadorsTot() {
-  final llista = (Estat.i.tot?['jugadors'] as List?) ?? const [];
-  return llista.map((e) => (e as Map).cast<String, dynamic>()).toList();
-}
-
 class ClassesAltaScreen extends StatefulWidget {
   const ClassesAltaScreen({super.key});
 
@@ -117,10 +107,8 @@ class ClassesAltaScreen extends StatefulWidget {
 
 class _ClassesAltaScreenState extends State<ClassesAltaScreen> {
   late final n = TextEditingController();
-  late final tel =
-      TextEditingController(text: "${Estat.i.inici?['telefon'] ?? ''}");
-  late final e =
-      TextEditingController(text: "${Estat.i.inici?['email'] ?? ''}");
+  late final tel = TextEditingController(text: Estat.i.inici?.telefon ?? '');
+  late final e = TextEditingController(text: Estat.i.inici?.email ?? '');
   String? msg;
   bool err = false;
 
@@ -166,8 +154,7 @@ class _ClassesAltaScreenState extends State<ClassesAltaScreen> {
               if (msg != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(msg!,
-                      style: TextStyle(fontSize: 13.5, color: err ? const Color(0xFFC62828) : const Color(0xFF2E7D32))),
+                  child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
                 ),
               Row(children: [
                 FilledButton(onPressed: _desa, child: Text(t('guardar'))),
@@ -188,7 +175,7 @@ class ClassesAlumnesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    final alums = _alumnesTot();
+    final alums = Estat.i.tot?.alumnes ?? const <AlumneSoci>[];
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -196,20 +183,17 @@ class ClassesAlumnesScreen extends StatelessWidget {
         const SizedBox(height: 10),
         if (alums.isEmpty)
           Center(child: Padding(padding: const EdgeInsets.all(20), child: Text('${t('llistatAlumnes')} — 0'))),
-        ...alums.map((a) {
-          final trims = ((a['trims'] as List?) ?? const []).cast<Map>();
-          return ItemLlista(
-            onTap: () => Estat.i.go('trimestres', a['id']),
-            children: [
-              Expanded(child: Text('${a['nom'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold))),
-              for (var i = 0; i < 3; i++)
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: EstatChip(estat: i < trims.length ? '${trims[i]['estat']}' : ''),
-                ),
-            ],
-          );
-        }),
+        ...alums.map((a) => ItemLlista(
+              onTap: () => Estat.i.go('trimestres', a.id),
+              children: [
+                Expanded(child: Text(a.nom, style: const TextStyle(fontWeight: FontWeight.bold))),
+                for (var i = 0; i < 3; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: EstatChip(estat: i < a.trims.length ? a.trims[i].estat : ''),
+                  ),
+              ],
+            )),
       ],
     );
   }
@@ -219,9 +203,10 @@ class TrimestresScreen extends StatelessWidget {
   TrimestresScreen({super.key, required this.alumneId});
   final String alumneId;
 
-  Map<String, dynamic>? get _alumne {
-    for (final a in _alumnesTot()) {
-      if ('${a['id']}' == alumneId) return a;
+  AlumneSoci? get _alumne {
+    final llista = Estat.i.tot?.alumnes ?? const <AlumneSoci>[];
+    for (final a in llista) {
+      if (a.id == alumneId) return a;
     }
     return null;
   }
@@ -242,46 +227,40 @@ class TrimestresScreen extends StatelessWidget {
     final t = st.i18n.t;
     final a = _alumne;
     if (a == null) return const Center(child: Text('?'));
-    final trims = ((a['trims'] as List?) ?? const []).cast<Map>().map((e) => e.cast<String, dynamic>()).toList();
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Center(
-            child: Text('${a['nom'] ?? ''}',
-                style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol))),
+        Center(child: Text(a.nom, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol))),
         const SizedBox(height: 4),
-        Center(child: Text('${t('compte')} ${st.inici?['compte'] ?? ''}', style: const TextStyle(fontSize: 13))),
+        Center(child: Text('${t('compte')} ${st.inici?.compte ?? ''}', style: const TextStyle(fontSize: 13))),
         const SizedBox(height: 10),
-        ...trims.map((tr) {
-          final estat = '${tr['estat']}';
-          final rebut = tr['rebut'] as Map?;
-          final periode = '${tr['t'] ?? tr['id'] ?? ''}';
+        ...a.trims.map((tr) {
           return Carda(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
                 Expanded(
-                    child: Text('${t('trimestre')} ${tr['t']} — ${tr['preu']} €',
+                    child: Text('${t('trimestre')} ${tr.t} — ${tr.preu} €',
                         style: const TextStyle(fontWeight: FontWeight.bold))),
-                EstatChip(estat: estat),
+                EstatChip(estat: tr.estat),
               ]),
               const SizedBox(height: 8),
-              if (estat == 'Validat')
-                if (rebut == null)
+              if (tr.estat == 'Validat')
+                if (tr.rebut == null)
                   const SizedBox.shrink()
                 else
                   TextButton.icon(
                     icon: const Icon(Icons.attach_file, size: 18),
-                    label: Text('${rebut['nom'] ?? ''}', overflow: TextOverflow.ellipsis),
-                    onPressed: () => obrirUrl('${rebut['url']}'),
+                    label: Text(tr.rebut!.nom, overflow: TextOverflow.ellipsis),
+                    onPressed: () => obrirUrl(tr.rebut!.url),
                   )
               else
                 Wrap(spacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                  if (estat == 'En revisió' && rebut != null)
-                    IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl('${rebut['url']}')),
+                  if (tr.estat == 'En revisió' && tr.rebut != null)
+                    IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl(tr.rebut!.url)),
                   OutlinedButton.icon(
                     icon: const Icon(Icons.upload_file, size: 18),
-                    label: Text(estat == 'En revisió' ? t('substituir') : '${t('rebut')} 📎'),
-                    onPressed: () => unawaited(_puja(periode)),
+                    label: Text(tr.estat == 'En revisió' ? t('substituir') : '${t('rebut')} 📎'),
+                    onPressed: () => unawaited(_puja('${tr.t}')),
                   ),
                 ]),
             ]),
@@ -318,7 +297,7 @@ class JugadorsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    final jugs = _jugadorsTot();
+    final jugs = Estat.i.tot?.jugadors ?? const <JugadorSoci>[];
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -326,9 +305,9 @@ class JugadorsScreen extends StatelessWidget {
         const SizedBox(height: 10),
         if (jugs.isEmpty) const Center(child: Padding(padding: EdgeInsets.all(20), child: Text('—'))),
         ...jugs.map((j) => ItemLlista(
-              onTap: () => Estat.i.go('jugadorAnys', j['id']),
+              onTap: () => Estat.i.go('jugadorAnys', j.id),
               children: [
-                Expanded(child: Text('${j['nom'] ?? ''} ${j['cognoms'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(child: Text('${j.nom} ${j.cognoms}', style: const TextStyle(fontWeight: FontWeight.bold))),
               ],
             )),
       ],
@@ -340,9 +319,10 @@ class JugadorAnysScreen extends StatelessWidget {
   JugadorAnysScreen({super.key, required this.jugadorId});
   final String jugadorId;
 
-  Map<String, dynamic>? get _jug {
-    for (final j in _jugadorsTot()) {
-      if ('${j['id']}' == jugadorId) return j;
+  JugadorSoci? get _jug {
+    final llista = Estat.i.tot?.jugadors ?? const <JugadorSoci>[];
+    for (final j in llista) {
+      if (j.id == jugadorId) return j;
     }
     return null;
   }
@@ -362,37 +342,29 @@ class JugadorAnysScreen extends StatelessWidget {
     final t = Estat.i.i18n.t;
     final j = _jug;
     if (j == null) return const Center(child: Text('?'));
-    final anys = ((j['anys'] as List?) ?? const []).cast<Map>().map((e) => e.cast<String, dynamic>()).toList();
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Center(
-            child: Text(t('fedEscacs'),
-                style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol))),
+        Center(child: Text(t('fedEscacs'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol))),
         const SizedBox(height: 4),
-        Center(child: Text('${j['nom'] ?? ''} ${j['cognoms'] ?? ''}', style: const TextStyle(fontSize: 15))),
+        Center(child: Text('${j.nom} ${j.cognoms}', style: const TextStyle(fontSize: 15))),
         const SizedBox(height: 10),
-        ...anys.map((a) {
-          final rebut = a['rebut'] as Map?;
-          final estat = '${a['estat']}';
-          final anyFed = '${a['any']}';
-          return ItemLlista(children: [
-            Text(anyFed, style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text(' — ${a['preu']} €'),
-            const SizedBox(width: 8),
-            EstatChip(estat: estat),
-            const Spacer(),
-            if (estat == 'Validat' && rebut != null)
-              IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl('${rebut['url']}'))
-            else
-              OutlinedButton.icon(
-                icon: const Icon(Icons.upload_file, size: 18),
-                label: Text(estat == 'En revisió' ? t('substituir') : '${t('rebut')} 📎',
-                    style: const TextStyle(fontSize: 13)),
-                onPressed: () => unawaited(_puja(anyFed)),
-              ),
-          ]);
-        }),
+        ...j.anys.map((a) => ItemLlista(children: [
+              Text(a.any, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(' — ${a.preu} €'),
+              const SizedBox(width: 8),
+              EstatChip(estat: a.estat),
+              const Spacer(),
+              if (a.estat == 'Validat' && a.rebut != null)
+                IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl(a.rebut!.url))
+              else
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.upload_file, size: 18),
+                  label: Text(a.estat == 'En revisió' ? t('substituir') : '${t('rebut')} 📎',
+                      style: const TextStyle(fontSize: 13)),
+                  onPressed: () => unawaited(_puja(a.any)),
+                ),
+            ])),
       ],
     );
   }
@@ -411,10 +383,8 @@ class _JugadorAltaScreenState extends State<JugadorAltaScreen> {
   String dataNaix = '';
   late final dni = TextEditingController();
   late final adr = TextEditingController();
-  late final tel =
-      TextEditingController(text: "${Estat.i.inici?['telefon'] ?? ''}");
-  late final em =
-      TextEditingController(text: "${Estat.i.inici?['email'] ?? ''}");
+  late final tel = TextEditingController(text: Estat.i.inici?.telefon ?? '');
+  late final em = TextEditingController(text: Estat.i.inici?.email ?? '');
   Map<String, dynamic>? foto;
   String? msg;
   bool err = false;
@@ -476,7 +446,7 @@ class _JugadorAltaScreenState extends State<JugadorAltaScreen> {
                       initialDate: DateTime(2015),
                       firstDate: DateTime(1930),
                       lastDate: DateTime.now());
-                  if (d != null) {
+                  if (d != null && mounted) {
                     setState(() =>
                         dataNaix = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}');
                   }
@@ -503,8 +473,7 @@ class _JugadorAltaScreenState extends State<JugadorAltaScreen> {
               if (msg != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(msg!,
-                      style: TextStyle(fontSize: 13.5, color: err ? const Color(0xFFC62828) : const Color(0xFF2E7D32))),
+                  child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
                 ),
               SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('guardar')))),
             ]),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../models.dart';
 import '../../state.dart';
 import '../../widgets.dart';
 class AdminHomeScreen extends StatelessWidget {
@@ -53,16 +54,12 @@ class _Gran2 extends StatelessWidget {
   }
 }
 
-Future<Map<String, dynamic>> carregaGestor() async {
+Future<GestorDades> carregaGestor() async {
   final st = Estat.i;
   if (st.gest != null) return st.gest!;
-  final d = await st.call('getTotGestor', [st.token]);
-  st.gest = (d as Map).cast<String, dynamic>();
+  st.gest = GestorDades.de(await st.call('getTotGestor', [st.token]));
   return st.gest!;
 }
-
-List<Map<String, dynamic>> _socisGest(Map<String, dynamic> gest) =>
-    ((gest['socis'] as List?) ?? const []).cast<Map>().map((e) => e.cast<String, dynamic>()).toList();
 
 class PagatScreen extends StatefulWidget {
   const PagatScreen({super.key});
@@ -72,19 +69,18 @@ class PagatScreen extends StatefulWidget {
 }
 
 class _PagatScreenState extends State<PagatScreen> {
-  late Future<Map<String, dynamic>> _fut = carregaGestor();
+  late Future<GestorDades> _fut = carregaGestor();
   Timer? _deb;
 
-  List<Map<String, dynamic>> _filtra(List<Map<String, dynamic>> socis) {
+  List<SociGestor> _filtra(List<SociGestor> socis) {
     final st = Estat.i;
     final q = st.pagatText.trim().toLowerCase();
     final estatF = st.pagatEstat;
     return socis.where((s) {
-      final estat = '${s['estat'] ?? ''}';
-      if (estatF.isEmpty && estat == 'Rebutjat') return false;
-      if (estatF.isNotEmpty && estatF != 'Tots' && estat != estatF) return false;
+      if (estatF.isEmpty && s.estat == 'Rebutjat') return false;
+      if (estatF.isNotEmpty && estatF != 'Tots' && s.estat != estatF) return false;
       if (q.isNotEmpty) {
-        final camp = '${s['nom'] ?? ''} ${s['email'] ?? ''} ${s['dni'] ?? ''}'.toLowerCase();
+        final camp = '${s.nom} ${s.email} ${s.dni}'.toLowerCase();
         if (!camp.contains(q)) return false;
       }
       return true;
@@ -94,11 +90,11 @@ class _PagatScreenState extends State<PagatScreen> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    return FutureBuilder<Map<String, dynamic>>(
+    return FutureBuilder<GestorDades>(
       future: _fut,
       builder: (context, snap) {
         if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-        final llista = _filtra(_socisGest(snap.data!));
+        final llista = _filtra(snap.data!.socis);
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -138,40 +134,39 @@ class _PagatScreenState extends State<PagatScreen> {
             ]),
             const SizedBox(height: 12),
             ...llista.map((s) {
-              final rebut = s['rebutQuota'] as Map?;
               return ItemLlista(children: [
                 Checkbox(
-                  value: s['estat'] == 'Actiu',
+                  value: s.estat == 'Actiu',
                   onChanged: (chk) async {
                     if (chk != true) {
                       Estat.i.ferr(Estat.i.i18n.t('actPend'));
                       return;
                     }
-                    await Estat.i.call('decidirAltaSoci', [Estat.i.token, s['id'], true]);
-                    s['estat'] = 'Actiu';
+                    await Estat.i.call('decidirAltaSoci', [Estat.i.token, s.id, true]);
+                    s.estat = 'Actiu';
                     Estat.i.fok('Actiu ✓');
                     setState(() {});
                   },
                 ),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => Estat.i.go('edicioSoci', s['id']),
-                    child: Text('${s['nom'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    onTap: () => Estat.i.go('edicioSoci', s.id),
+                    child: Text(s.nom, style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
                 Flexible(
-                  child: Text('${s['email'] ?? ''}',
+                  child: Text(s.email,
                       style: const TextStyle(fontSize: 12, color: textCol), overflow: TextOverflow.ellipsis),
                 ),
-                if (rebut != null)
-                  IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl('${rebut['url']}')),
+                if (s.rebutQuota != null)
+                  IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl(s.rebutQuota!.url)),
                 IconButton(
                   icon: const Icon(Icons.delete_outline, color: Colors.grey),
                   onPressed: () async {
                     final ok = await showDialog<bool>(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        content: Text('${s['nom']} — 🗑?'),
+                        content: Text('${s.nom} — 🗑?'),
                         actions: [
                           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
                           TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('🗑')),
@@ -179,7 +174,7 @@ class _PagatScreenState extends State<PagatScreen> {
                       ),
                     );
                     if (ok != true) return;
-                    await Estat.i.call('eliminarSoci', [Estat.i.token, s['id']]);
+                    await Estat.i.call('eliminarSoci', [Estat.i.token, s.id]);
                     Estat.i.buidaCache();
                     setState(() => _fut = carregaGestor());
                   },
@@ -277,7 +272,7 @@ class _AltaRapidaScreenState extends State<AltaRapidaScreen> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(msg!,
-                      style: TextStyle(fontSize: 13.5, color: err ? const Color(0xFFC62828) : const Color(0xFF2E7D32))),
+                      style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
                 ),
               SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('desa')))),
             ]),
@@ -466,7 +461,7 @@ class _EdicioSociScreenState extends State<EdicioSociScreen> {
                   ]),
               IconButton(
                 tooltip: t('valida3'),
-                icon: const Icon(Icons.done_all, size: 20, color: Color(0xFF2E7D32)),
+                icon: const Icon(Icons.done_all, size: 20, color: verd),
                 onPressed: () async {
                   await Estat.i.call('validarCursComplet', [Estat.i.token, a['id'], curs.toInt()]);
                   Estat.i.buidaCache();
@@ -641,7 +636,7 @@ class EscolaScreen extends StatefulWidget {
 }
 
 class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderStateMixin {
-  late Future<Map<String, dynamic>> _fut = carregaGestor();
+  late Future<GestorDades> _fut = carregaGestor();
   late final TabController _tabs = TabController(length: 4, vsync: this, initialIndex: _idx0());
 
   int _idx0() {
@@ -657,7 +652,7 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
     }
   }
 
-  Map<String, dynamic>? _escola;
+  EscolaConfig? _escola;
 
   void _tab(int i) {
     Estat.i.escolaTab = ['festius', 'preus', 'trimestres', 'classes'][i];
@@ -666,11 +661,11 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    return FutureBuilder<Map<String, dynamic>>(
+    return FutureBuilder<GestorDades>(
       future: _fut,
       builder: (context, snap) {
         if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-        _escola = ((snap.data!['escola'] as Map?) ?? const {}).cast<String, dynamic>();
+        _escola = snap.data!.escola;
         return Column(
           children: [
             TabBar(
@@ -701,7 +696,7 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
   Widget _festius() {
     final t = Estat.i.i18n.t;
     final ctrl = TextEditingController();
-    final festius = ((_escola?['festius'] as List?) ?? const []).map((e) => '$e').toList()..sort();
+    final festius = _escola?.festius ?? const <String>[];
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -751,7 +746,8 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
 
   Widget _preus() {
     final t = Estat.i.i18n.t;
-    final preuDive = TextEditingController(text: '${_escola?['preuDivendres'] ?? ''}');
+    final preuDive =
+        TextEditingController(text: _escola == null ? '' : '${_escola!.preuDivendres}');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -775,9 +771,9 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
   }
 
   Widget _trims() {
-    final trims = ((_escola?['trimestres'] as Map?) ?? const {}).cast<String, dynamic>();
+    final trims = _escola?.trimestres ?? const <String, String>{};
     final claus = ['Trim1Inici', 'Trim1Fi', 'Trim2Inici', 'Trim2Fi', 'Trim3Inici', 'Trim3Fi'];
-    final ctrls = {for (final k in claus) k: TextEditingController(text: '${trims[k] ?? ''}')};
+    final ctrls = {for (final k in claus) k: TextEditingController(text: trims[k] ?? '')};
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -809,8 +805,8 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
 
   Widget _classes() {
     final t = Estat.i.i18n.t;
-    final hora = TextEditingController(text: '${_escola?['hora'] ?? ''}');
-    final lloc = TextEditingController(text: '${_escola?['lloc'] ?? ''}');
+    final hora = TextEditingController(text: _escola?.hora ?? '');
+    final lloc = TextEditingController(text: _escola?.lloc ?? '');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [

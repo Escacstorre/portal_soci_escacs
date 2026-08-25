@@ -253,7 +253,7 @@ class _UsuariFormState extends State<UsuariForm> {
           ),
         CampText(controller: pw, hint: t('contrasenyaOpt'), obscure: true),
         if (err != null)
-          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(err!, style: const TextStyle(color: Color(0xFFC62828)))),
+          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(err!, style: const TextStyle(color: vermell))),
         SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('guardar')))),
       ],
     );

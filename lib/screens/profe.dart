@@ -2,20 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../models.dart';
 import '../../state.dart';
 import '../../widgets.dart';
-
-Map<String, dynamic>? get _ptot => Estat.i.ptot;
 
 Future<void> carregaProfe() async {
   final st = Estat.i;
   if (st.profeTrim <= 0) {
     final d0 = await st.call('getTotProfe', [st.token, null]);
-    st.ptot = (d0 as Map).cast<String, dynamic>();
-    st.profeTrim = (((st.ptot!['profe'] as Map)['trimestre']) as num).toInt();
+    st.ptot = ProfeDades.de(d0);
+    st.profeTrim = st.ptot!.trimestre;
   }
   final d = await st.call('getTotProfe', [st.token, st.profeTrim]);
-  st.ptot = (d as Map).cast<String, dynamic>();
+  st.ptot = ProfeDades.de(d);
 }
 
 class ProfeScreen extends StatefulWidget {
@@ -30,7 +29,7 @@ class _ProfeScreenState extends State<ProfeScreen> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      if (_ptot == null) await carregaProfe();
+      if (Estat.i.ptot == null) await carregaProfe();
       Estat.i.refres();
     });
   }
@@ -39,15 +38,11 @@ class _ProfeScreenState extends State<ProfeScreen> {
   Widget build(BuildContext context) {
     final st = Estat.i;
     final t = st.i18n.t;
-    final p = _ptot;
+    final p = st.ptot;
     if (p == null) return const Center(child: CircularProgressIndicator());
-    final profe = (p['profe'] as Map).cast<String, dynamic>();
-    final llista =
-        ((profe['llista'] as List?) ?? const []).cast<Map>().map((e) => e.cast<String, dynamic>()).toList();
-    final sessions = ((p['sessions'] as List?) ?? const []).cast<Map>().map((e) => e.cast<String, dynamic>()).toList();
-    final bases = ((profe['bases'] as List?) ?? const []).toList();
+    final llista = p.llista;
+    final bases = p.bases;
     String base(int i) => i < bases.length ? '${bases[i]}' : '';
-    final formulari = (profe['formulari'] as Map?)?.cast<String, dynamic>() ?? const {};
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -91,11 +86,11 @@ class _ProfeScreenState extends State<ProfeScreen> {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(t('calendari'), style: const TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 6),
-                  ...sessions.take(12).map((s) => Row(children: [
-                        const Text('✔ ', style: TextStyle(color: Color(0xFF2E7D32))),
-                        Expanded(child: Text('${s['data'] ?? ''}', style: const TextStyle(fontSize: 13.5))),
+                  ...p.sessions.take(12).map((data) => Row(children: [
+                        const Text('✔ ', style: TextStyle(color: verd)),
+                        Expanded(child: Text(data, style: const TextStyle(fontSize: 13.5))),
                       ])),
-                  Text('… ${sessions.length} ${t('sessioClasse')}',
+                  Text('… ${p.sessions.length} ${t('sessioClasse')}',
                       style: const TextStyle(fontSize: 12, color: textCol)),
                   const SizedBox(height: 6),
                   OutlinedButton.icon(
@@ -122,14 +117,14 @@ class _ProfeScreenState extends State<ProfeScreen> {
                         Text('${base(i)} €', style: const TextStyle(fontWeight: FontWeight.bold)),
                       ]),
                     ),
-                  _preuFila(t('trimJunts'), '${profe['junts'] ?? ''} €'),
-                  _preuFila(t('serSoci'), '${profe['serSoci'] ?? ''} €'),
+                  _preuFila(t('trimJunts'), '${p.junts} €'),
+                  _preuFila(t('serSoci'), '${p.serSoci} €'),
                   const SizedBox(height: 6),
                   Wrap(spacing: 8, runSpacing: 8, children: [
                     OutlinedButton.icon(
                       icon: const Icon(Icons.print, size: 18),
                       label: Text(t('imprimir'), style: const TextStyle(fontSize: 13)),
-                      onPressed: () => imprimirFormulari(formulari),
+                      onPressed: () => imprimirFormulari(p.formulari),
                     ),
                     OutlinedButton.icon(
                       icon: const Icon(Icons.list, size: 18),
@@ -163,31 +158,27 @@ class ProfeAlumnesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    final alumnes =
-        ((_ptot?['alumnes'] as List?) ?? const []).cast<Map>().map((e) => e.cast<String, dynamic>()).toList();
+    final alumnes = Estat.i.ptot?.alumnes ?? const <AlumneProfe>[];
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text(t('alumnes'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
         const SizedBox(height: 10),
         if (alumnes.isEmpty) const Center(child: Padding(padding: EdgeInsets.all(20), child: Text('—'))),
-        ...alumnes.map((a) {
-          final inici = ((a['inici'] as List?) ?? const [null, null, null]).toList();
-          return Carda(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              RichText(
-                  text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
-                TextSpan(text: '${a['nom'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                TextSpan(text: ' (${a['soci'] ?? ''})', style: const TextStyle(color: textCol, fontSize: 13)),
-              ])),
-              for (var tr = 1; tr <= 3; tr++)
-                Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: DataIniciRow(alumneId: '${a['id']}', trim: tr, inicial: '${inici.length >= tr ? inici[tr - 1] ?? '' : ''}'),
-                ),
-            ]),
-          );
-        }),
+        ...alumnes.map((a) => Carda(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                RichText(
+                    text: TextSpan(style: DefaultTextStyle.of(context).style, children: [
+                  TextSpan(text: a.nom, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(text: ' (${a.soci})', style: const TextStyle(color: textCol, fontSize: 13)),
+                ])),
+                for (var tr = 1; tr <= 3; tr++)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: DataIniciRow(alumneId: a.id, trim: tr, inicial: a.inici[tr - 1]),
+                  ),
+              ]),
+            )),
       ],
     );
   }
@@ -222,10 +213,11 @@ class _DataIniciRowState extends State<DataIniciRow> {
     final parts = valor.split('-');
     DateTime ini = DateTime.now();
     if (parts.length == 3) {
-      final y = int.tryParse(parts[0]) ?? DateTime.now().year;
-      final m = int.tryParse(parts[1]) ?? 1;
-      final dd = int.tryParse(parts[2]) ?? 1;
-      ini = DateTime(y, m, dd);
+      ini = DateTime(
+        int.tryParse(parts[0]) ?? DateTime.now().year,
+        int.tryParse(parts[1]) ?? 1,
+        int.tryParse(parts[2]) ?? 1,
+      );
     }
     final d = await showDatePicker(context: context, initialDate: ini, firstDate: DateTime(2020), lastDate: DateTime(2100));
     if (d == null || !mounted) return;

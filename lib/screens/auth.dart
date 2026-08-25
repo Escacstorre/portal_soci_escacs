@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../i18n.dart';
 import '../../state.dart';
 import '../../widgets.dart';
 
@@ -40,11 +39,11 @@ class _LoginScreenState extends State<LoginScreen> {
           constraints: const BoxConstraints(maxWidth: 400),
           child: Column(
             children: [
-              Align(
+              const Align(
                 alignment: Alignment.topRight,
-                child: InkWell(
-                  onTap: togglaLang,
-                  child: Text('🌐 ${I18n.instance.lang}', style: const TextStyle(fontSize: 15)),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: IdiomaMenu(),
                 ),
               ),
               const SizedBox(height: 8),
@@ -60,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (err != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
-                        child: Text(err!, style: const TextStyle(color: Color(0xFFC62828), fontSize: 13)),
+                        child: Text(err!, style: const TextStyle(color: vermell, fontSize: 13)),
                       ),
                     SizedBox(
                       width: double.infinity,
@@ -138,7 +137,7 @@ class _RegistreScreenState extends State<RegistreScreen> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    final compte = Estat.i.inici?['compte'] ?? Estat.i.club;
+    final compte = Estat.i.inici?.compte ?? (Estat.i.club.isNotEmpty ? Estat.i.club : '');
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -172,7 +171,7 @@ class _RegistreScreenState extends State<RegistreScreen> {
                 if (msg != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(msg!, style: TextStyle(fontSize: 13.5, color: msgErr ? const Color(0xFFC62828) : const Color(0xFF2E7D32))),
+                    child: Text(msg!, style: TextStyle(fontSize: 13.5, color: msgErr ? vermell : verd)),
                   ),
                 const SizedBox(height: 4),
                 SizedBox(width: double.infinity, child: FilledButton(onPressed: _ferRegistre, child: Text(t('registrar')))),
@@ -206,10 +205,7 @@ class SelectorScreen extends StatelessWidget {
                   alignment: Alignment.topRight,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     IconButton(icon: const Icon(Icons.refresh), onPressed: () => st.refrescaUI()),
-                    InkWell(
-                      onTap: togglaLang,
-                      child: Padding(padding: const EdgeInsets.all(8), child: Text('🌐 ${st.i18n.lang}')),
-                    ),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: IdiomaMenu()),
                     TextButton(onPressed: () => st.logoutUI(), child: Text(t('tanca'))),
                   ]),
                 ),
