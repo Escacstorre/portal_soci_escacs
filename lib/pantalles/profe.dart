@@ -10,11 +10,11 @@ import '../../ginys.dart';
 Future<void> carregaProfe() async {
   final st = Estat.i;
   if (st.profeTrim <= 0) {
-    final d0 = await st.call('getTotProfe', [st.token, null]);
+    final d0 = await st.call('obtenirTotProfe', [st.token, null]);
     st.ptot = ProfeDades.de(d0);
     st.profeTrim = st.ptot!.trimestre;
   }
-  final d = await st.call('getTotProfe', [st.token, st.profeTrim]);
+  final d = await st.call('obtenirTotProfe', [st.token, st.profeTrim]);
   st.ptot = ProfeDades.de(d);
 }
 
@@ -224,7 +224,7 @@ class _FilaDataIniciState extends State<FilaDataInici> {
     if (d == null || !mounted) return;
     final nova = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     setState(() => valor = nova);
-    await Estat.i.call('setDataInici', [Estat.i.token, widget.alumneId, widget.trim, nova]);
+    await Estat.i.call('definirDataInici', [Estat.i.token, widget.alumneId, widget.trim, nova]);
     await carregaProfe();
     Estat.i.mostraOk();
     Estat.i.refres();

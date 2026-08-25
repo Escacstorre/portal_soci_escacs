@@ -31,7 +31,7 @@ class AdminIniciPantalla extends StatelessWidget {
 Future<GestorDades> carregaGestor() async {
   final st = Estat.i;
   if (st.gest != null) return st.gest!;
-  st.gest = GestorDades.de(await st.call('getTotGestor', [st.token]));
+  st.gest = GestorDades.de(await st.call('obtenirTotGestor', [st.token]));
   return st.gest!;
 }
 
@@ -263,7 +263,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
   bool _init = false;
 
   Future<Map<String, dynamic>> _carrega() async {
-    final d = ((await Estat.i.call('getEdicioSoci', [Estat.i.token, widget.sociId])) as Map).cast<String, dynamic>();
+    final d = ((await Estat.i.call('obtenirEdicioSoci', [Estat.i.token, widget.sociId])) as Map).cast<String, dynamic>();
     if (!_init) {
       final s = (d['soci'] as Map).cast<String, dynamic>();
       n.text = '${s['nom'] ?? ''}';
@@ -312,7 +312,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
             icon: const Icon(Icons.edit, size: 16),
             label: Text(t('editaDades'), style: const TextStyle(fontSize: 13)),
             onPressed: () async {
-              await Estat.i.call('guardarDadesSoci', [
+              await Estat.i.call('desarDadesSoci', [
                 Estat.i.token,
                 s['id'],
                 {'nom': n.text, 'dni': dni.text, 'telefon': tel.text, 'email': em.text, 'numBanc': banc.text},
@@ -379,7 +379,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         visualDensity: VisualDensity.compact,
         value: m['estat'] == 'Validat',
         onChanged: (v) async {
-          await Estat.i.call('togglePagament', [Estat.i.token, m['id'], v == true]);
+          await Estat.i.call('alternarPagament', [Estat.i.token, m['id'], v == true]);
           Estat.i.buidaCachu();
           Estat.i.mostraOk();
         },
@@ -418,7 +418,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
                       visualDensity: VisualDensity.compact,
                       value: tr['estat'] == 'Validat',
                       onChanged: (v) async {
-                        await Estat.i.call('togglePagament', [Estat.i.token, tr['id'], v == true]);
+                        await Estat.i.call('alternarPagament', [Estat.i.token, tr['id'], v == true]);
                         Estat.i.buidaCachu();
                         Estat.i.mostraOk();
                       },
@@ -468,7 +468,7 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      final d = ((await Estat.i.call('getEdicioSoci', [Estat.i.token, widget.sociId])) as Map).cast<String, dynamic>();
+      final d = ((await Estat.i.call('obtenirEdicioSoci', [Estat.i.token, widget.sociId])) as Map).cast<String, dynamic>();
       for (final x in ((d['jugadors'] as List?) ?? const []).cast<Map>()) {
         if ('${x['id']}' == widget.jugadorId) {
           nom.text = '${x['nom'] ?? ''}';
@@ -549,7 +549,7 @@ class _AlumneEdicioPantallaState extends State<AlumneEdicioPantalla> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      final d = ((await Estat.i.call('getEdicioSoci', [Estat.i.token, widget.sociId])) as Map).cast<String, dynamic>();
+      final d = ((await Estat.i.call('obtenirEdicioSoci', [Estat.i.token, widget.sociId])) as Map).cast<String, dynamic>();
       for (final x in ((d['alumnes'] as List?) ?? const []).cast<Map>()) {
         if ('${x['id']}' == widget.alumneId) {
           nom.text = '${x['nom'] ?? ''}';
@@ -687,7 +687,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
                   );
                   if (d != null) {
                     final data = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
-                    await Estat.i.call('setFestiu', [Estat.i.token, data]);
+                    await Estat.i.call('definirFestiu', [Estat.i.token, data]);
                     Estat.i.buidaCachu();
                     Estat.i.mostraOk();
                     setState(() => _fut = carregaGestor());
@@ -750,7 +750,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
             Row(children: [Expanded(child: CampText(controller: preuDive, hint: t('preuDive')))]),
             FilledButton(
               onPressed: () async {
-                await Estat.i.call('setPreuDivendres', [Estat.i.token, preuDive.text]);
+                await Estat.i.call('definirPreuDivendres', [Estat.i.token, preuDive.text]);
                 Estat.i.buidaCachu();
                 Estat.i.mostraOk();
               },
@@ -782,7 +782,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
             ],
             FilledButton(
               onPressed: () async {
-                await Estat.i.call('setTrimestres', [
+                await Estat.i.call('definirTrimestres', [
                   Estat.i.token,
                   {for (final k in claus) k: ctrls[k]!.text},
                 ]);
@@ -810,7 +810,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
             CampText(controller: lloc, hint: t('lloc')),
             FilledButton(
               onPressed: () async {
-                await Estat.i.call('setClasseConfig', [Estat.i.token, {'hora': hora.text, 'lloc': lloc.text}]);
+                await Estat.i.call('definirConfigClasse', [Estat.i.token, {'hora': hora.text, 'lloc': lloc.text}]);
                 Estat.i.buidaCachu();
                 Estat.i.mostraOk();
               },

@@ -11,9 +11,9 @@ const urlAppsScript =
     'https://script.google.com/macros/s/AKfycbyCxdv7MNxrlqhvLBruDEumwxuWN4piXILygFS_YCptt0YDmRQu2HBKxEMlQtP9-FIoTA/exec';
 
 const lectures = [
-  'getConfigPublic', 'getTraduccions', 'getIniciSoci', 'getTotSoci', 'getTotGestor',
-  'getTotProfe', 'getEdicioSoci', 'getEscolaConfig', 'getConfigBloc', 'getUsuaris',
-  'getDadesFormulari', 'descarregarICS',
+  'obtenirConfigPublic', 'obtenirTraduccions', 'obtenirIniciSoci', 'obtenirTotSoci', 'obtenirTotGestor',
+  'obtenirTotProfe', 'obtenirEdicioSoci', 'obtenirConfigEscola', 'obtenirConfigBloc', 'obtenirUsuaris',
+  'obtenirDadesFormulari', 'descarregarICS',
 ];
 
 class Vista {
@@ -191,7 +191,7 @@ class Estat {
   }
 
   Future<void> _carregaTot() async {
-    final d = await call('getTotSoci', [token]);
+    final d = await call('obtenirTotSoci', [token]);
     tot = TotSoci.de(d);
     inici = tot!.inici;
   }
@@ -214,9 +214,9 @@ class Estat {
       if (socil.contains(v)) {
         await recarregaTot();
       } else if (gestl.contains(v)) {
-        gest = GestorDades.de(await call('getTotGestor', [token]));
+        gest = GestorDades.de(await call('obtenirTotGestor', [token]));
       } else if (v == 'profe' || v == 'profeAlumnes') {
-        ptot = ProfeDades.de(await call('getTotProfe', [token, profeTrim]));
+        ptot = ProfeDades.de(await call('obtenirTotProfe', [token, profeTrim]));
       }
     } catch (_) {}
     ocupats--;
@@ -231,7 +231,7 @@ class Estat {
     inici = null;
     buidaCachu();
     html.window.localStorage.remove('ps_cfg');
-    if (tk != null) Pont.instance.call('logout', [tk]);
+    if (tk != null) Pont.instance.call('tancarSessio', [tk]);
     reset('login');
   }
 
@@ -250,7 +250,7 @@ class Estat {
     }
     if (cfg == null) {
       try {
-        final d = await Pont.instance.call('getConfigPublic');
+        final d = await Pont.instance.call('obtenirConfigPublic');
         cfg = (d as Map).cast<String, dynamic>();
         cfg['t'] = DateTime.now().millisecondsSinceEpoch;
         html.window.localStorage['ps_cfg'] = jsonEncode(cfg);

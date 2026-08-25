@@ -20,7 +20,7 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
     final st = Estat.i;
     setState(() => err = st.i18n.t('enviant'));
     try {
-      final d = (await st.call('login', [u.text.trim().toLowerCase(), p.text]) as Map).cast<String, dynamic>();
+      final d = (await st.call('iniciarSessio', [u.text.trim().toLowerCase(), p.text]) as Map).cast<String, dynamic>();
       st.posaToken(d['token'] as String);
       st.user = {'nom': d['nom'], 'rols': d['rols'], 'rolActiu': d['rolActiu']};
       if (!mounted) return;

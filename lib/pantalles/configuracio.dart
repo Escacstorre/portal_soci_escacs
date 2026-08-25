@@ -72,7 +72,7 @@ class _EditorBlocState extends State<EditorBloc> {
   Map<String, TextEditingController> ctrls = {};
 
   Future<Map<String, dynamic>> _carrega() async {
-    final d = await Estat.i.call('getConfigBloc', [Estat.i.token, widget.bloc]);
+    final d = await Estat.i.call('obtenirConfigBloc', [Estat.i.token, widget.bloc]);
     return (d as Map).cast<String, dynamic>();
   }
 
@@ -103,7 +103,7 @@ class _EditorBlocState extends State<EditorBloc> {
                   ),
                 FilledButton(
                   onPressed: () async {
-                    await Estat.i.call('setConfigBloc', [Estat.i.token, widget.bloc, valors]);
+                    await Estat.i.call('definirConfigBloc', [Estat.i.token, widget.bloc, valors]);
                     Estat.i.mostraOk();
                     setState(() {
                       for (final c in ctrls.values) {
@@ -137,7 +137,7 @@ class _PestanyaUsuarisState extends State<PestanyaUsuaris> {
   bool nouVisible = false;
 
   Future<void> _carrega() async {
-    final d = ((await Estat.i.call('getUsuaris', [Estat.i.token])) as Map)['usuaris'] as List;
+    final d = ((await Estat.i.call('obtenirUsuaris', [Estat.i.token])) as Map)['usuaris'] as List;
     setState(() => usuaris = d.cast<Map>().map((e) => e.cast<String, dynamic>()).toList());
   }
 
@@ -215,7 +215,7 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
       setState(() => err = t('triaUnRol'));
       return;
     }
-    await Estat.i.call('guardarUsuari', [
+    await Estat.i.call('desarUsuari', [
       Estat.i.token,
       {
         if (widget.existent != null) 'idOriginal': widget.existent!['id'],
