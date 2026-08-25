@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 
+import '../../estils.dart';
 import '../../estat.dart';
 import '../../ginys.dart';
 
@@ -33,18 +34,12 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [suau, Colors.white],
-        ),
-      ),
+      decoration: const BoxDecoration(gradient: gradientFons),
       child: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
+            constraints: const BoxConstraints(maxWidth: ampleMaxLogin),
             child: Column(
               children: [
                 Align(
@@ -57,36 +52,25 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                 const SizedBox(height: 24),
                 Container(
                   padding: const EdgeInsets.all(28),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: pri.withValues(alpha: .12),
-                        blurRadius: 20,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
+                  decoration: decoCardGran(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
                         child: Column(
                           children: [
-                            Icon(Icons.castle, size: 56, color: pri),
+                            const IconaClub(mida: 56),
                             const SizedBox(height: 12),
                             Text(
                               Estat.i.club.isNotEmpty ? Estat.i.club : 'Portal Socis',
-                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: titol),
+                              style: estilTitol,
                               textAlign: TextAlign.center,
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(height: 28),
-                      Text(t('inicia'),
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: textCol)),
+                      Text(t('inicia'), style: estilSubTitol),
                       const SizedBox(height: 14),
                       TextField(
                         controller: u,
@@ -95,7 +79,7 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                           labelText: t('usuari'),
                           prefixIcon: const Icon(Icons.email_outlined, size: 20),
                           isDense: true,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(radiBoto)),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -106,14 +90,14 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                           labelText: t('contra'),
                           prefixIcon: const Icon(Icons.lock_outline, size: 20),
                           isDense: true,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(radiBoto)),
                         ),
                       ),
                       const SizedBox(height: 6),
                       if (err != null)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
-                          child: Text(err!, style: const TextStyle(color: vermell, fontSize: 13)),
+                          child: Text(err!, style: estilError),
                         ),
                       const SizedBox(height: 4),
                       SizedBox(
@@ -123,9 +107,9 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                           onPressed: _ferLogin,
                           style: FilledButton.styleFrom(
                             backgroundColor: pri,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiBoto)),
                           ),
-                          child: Text(t('inicia'), style: const TextStyle(fontSize: 15)),
+                          child: Text(t('inicia'), style: estilBotoText),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -200,43 +184,87 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
     final compte = Estat.i.inici?.compte ?? (Estat.i.club.isNotEmpty ? Estat.i.club : '');
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 460),
-          child: Carda(
+    return Container(
+      decoration: const BoxDecoration(gradient: gradientFons),
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: ampleMaxLogin),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(t('altSoci'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
-                const SizedBox(height: 12),
-                CampText(controller: n, hint: t('nom')),
-                CampText(controller: d, hint: t('dni')),
-                CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
-                CampText(controller: e, hint: t('email'), teclat: TextInputType.emailAddress),
-                CampText(controller: b, hint: t('banc')),
-                CampText(controller: c, hint: t('contra'), obscure: true),
-                CampText(controller: c2, hint: t('confirma'), obscure: true),
-                Text('${t('compte')} $compte', style: const TextStyle(fontSize: 13)),
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  icon: Icon(rebut == null ? Icons.upload_file : Icons.check_circle, color: rebut == null ? null : Colors.green),
-                  label: Text(rebut == null ? '${t('rebutQuota')} · ${t('rebut')}' : '${rebut!['name'] ?? t('rebut')}'),
-                  onPressed: () async {
-                    final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
-                    if (mounted) setState(() => rebut = f);
-                  },
-                ),
-                const SizedBox(height: 4),
-                Text(t('pujaFitxer'), style: const TextStyle(fontSize: 12, color: textCol)),
-                if (msg != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(msg!, style: TextStyle(fontSize: 13.5, color: msgErr ? vermell : verd)),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: IdiomaMenu(),
                   ),
-                const SizedBox(height: 4),
-                SizedBox(width: double.infinity, child: FilledButton(onPressed: _ferRegistre, child: Text(t('registrar')))),
+                ),
+                const SizedBox(height: 24),
+                Container(
+                  padding: const EdgeInsets.all(28),
+                  decoration: decoCardGran(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            const IconaClub(mida: 52),
+                            const SizedBox(height: 12),
+                            Text(t('altSoci'), style: estilTitol, textAlign: TextAlign.center),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      CampText(controller: n, hint: t('nom')),
+                      CampText(controller: d, hint: t('dni')),
+                      CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
+                      CampText(controller: e, hint: t('email'), teclat: TextInputType.emailAddress),
+                      CampText(controller: b, hint: t('banc')),
+                      CampText(controller: c, hint: t('contra'), obscure: true),
+                      CampText(controller: c2, hint: t('confirma'), obscure: true),
+                      Text('${t('compte')} $compte', style: const TextStyle(fontSize: 13, color: textCol)),
+                      const SizedBox(height: 8),
+                      OutlinedButton.icon(
+                        icon: Icon(rebut == null ? Icons.upload_file : Icons.check_circle,
+                            color: rebut == null ? null : verd),
+                        label: Text(rebut == null ? '${t('rebutQuota')} · ${t('rebut')}' : '${rebut!['name'] ?? t('rebut')}'),
+                        onPressed: () async {
+                          final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
+                          if (mounted) setState(() => rebut = f);
+                        },
+                      ),
+                      const SizedBox(height: 4),
+                      Text(t('pujaFitxer'), style: const TextStyle(fontSize: 12, color: textCol)),
+                      if (msg != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Text(msg!, style: msgErr ? estilError : estilOk),
+                        ),
+                      const SizedBox(height: 4),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 44,
+                        child: FilledButton(
+                          onPressed: _ferRegistre,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: pri,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiBoto)),
+                          ),
+                          child: Text(t('registrar'), style: estilBotoText),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Center(
+                        child: TextButton(
+                          onPressed: () => Estat.i.reset('login'),
+                          child: Text(t('inicia'), style: TextStyle(color: pri, fontSize: 14)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -272,7 +300,7 @@ class SelectorPantalla extends StatelessWidget {
                   ]),
                 ),
                 Text('${t('hola')}, ${st.user?['nom'] ?? ''}',
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: titol)),
+                    style: estilTitol),
                 const SizedBox(height: 6),
                 Text(t('ambFuncio'), textAlign: TextAlign.center),
                 const SizedBox(height: 18),

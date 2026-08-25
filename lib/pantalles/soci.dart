@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // ignore_for_file: prefer_const_constructors_in_immutables
 
 import '../../models.dart';
+import '../../estils.dart';
 import '../../estat.dart';
 import '../../ginys.dart';
 
@@ -22,14 +23,10 @@ class IniciSociPantalla extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [BoxShadow(color: pri.withValues(alpha: .08), blurRadius: 16, offset: const Offset(0, 4))],
-              ),
+              decoration: decoCardGran(),
               child: Column(
                 children: [
-                  Icon(Icons.castle, size: 48, color: pri),
+                  const IconaClub(),
                   const SizedBox(height: 12),
                   Text('${t('benvingut')} ${d?.nom ?? ''}',
                       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: titol)),

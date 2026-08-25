@@ -58,6 +58,8 @@ class Estat {
 
   void _notificaOcupat() => refres();
 
+  bool _silenciToast = false;
+
   Future<dynamic> call(String fn, [List<Object?> args = const []]) async {
     final esLectura = lectures.contains(fn);
     if (esLectura) {
@@ -79,7 +81,7 @@ class Estat {
       return v;
     } catch (e) {
       final raw = e is ExcepcioPortal ? e.message : e.toString();
-      mostraError(i18n.tradueixError(raw));
+      if (!_silenciToast) mostraError(i18n.tradueixError(raw));
       if (raw.contains('SESSIO_CADUCADA')) sessioCaducada();
       rethrow;
     } finally {
@@ -271,8 +273,10 @@ class Estat {
       return false;
     }
     token = tk;
+    _silenciToast = true;
     try {
       await _carregaTot();
+      _silenciToast = false;
       user = {
         'nom': inici!.nom,
         'rols': inici!.rols,
@@ -281,6 +285,7 @@ class Estat {
       entra();
       return true;
     } catch (_) {
+      _silenciToast = false;
       posaToken(null);
       reset('login');
       return false;

@@ -11,6 +11,7 @@ import 'pantalles/gestor.dart';
 import 'pantalles/profe.dart';
 import 'pantalles/soci.dart';
 import 'estat.dart';
+import 'estils.dart';
 import 'ginys.dart';
 import 'pont.dart';
 

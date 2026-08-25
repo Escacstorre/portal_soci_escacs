@@ -4,16 +4,9 @@ import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 
+import 'estils.dart';
 import 'traduccions.dart';
 import 'estat.dart';
-
-const pri = Color(0xFF051EF5);
-const titol = Color(0xFF060201);
-const textCol = Color(0xFF666666);
-const suau = Color(0xFFF3F3F3);
-const verd = Color(0xFF2E7D32);
-const taronja = Color(0xFFF9A825);
-const vermell = Color(0xFFC62828);
 
 const _nomsIdioma = {'CA': 'Català', 'ES': 'Español'};
 
@@ -117,7 +110,7 @@ class XipEstat extends StatelessWidget {
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(color: color.withValues(alpha: .12), borderRadius: BorderRadius.circular(999)),
+      decoration: decoXip(color),
       child: Text(txt, style: TextStyle(color: color, fontSize: 12.5)),
     );
   }
@@ -140,28 +133,8 @@ class XipQuota extends StatelessWidget {
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: color.withValues(alpha: .12), borderRadius: BorderRadius.circular(999)),
+      decoration: decoXip(color),
       child: Text(txt, style: TextStyle(color: color, fontSize: 13)),
-    );
-  }
-}
-
-class Carda extends StatelessWidget {
-  const Carda({super.key, required this.child});
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: .06), blurRadius: 8, offset: const Offset(0, 2))],
-      ),
-      child: child,
     );
   }
 }
@@ -176,11 +149,7 @@ class ItemLlista extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
+      decoration: decoCard(radi: 10),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
