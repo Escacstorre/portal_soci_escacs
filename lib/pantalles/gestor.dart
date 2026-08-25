@@ -728,7 +728,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
                 const Icon(Icons.event_busy, size: 20, color: vermell),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(f, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                  child: Text(mostraData(f), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey),
@@ -758,7 +758,9 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
       children: [
         Carda(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [Expanded(child: CampText(controller: preuDive, hint: t('preuDive')))]),
+            Row(children: [
+              Expanded(child: CampText(controller: preuDive, hint: t('preuDive'), sufix: ' €', teclat: TextInputType.number))
+            ]),
             FilledButton(
               onPressed: () async {
                 await Estat.i.call('definirPreuDivendres', [Estat.i.token, preuDive.text]);
@@ -775,10 +777,39 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
     );
   }
 
-  Widget _trims() {
-    final trims = _escola?.trimestres ?? const <String, String>{};
-    final claus = ['Trim1Inici', 'Trim1Fi', 'Trim2Inici', 'Trim2Fi', 'Trim3Inici', 'Trim3Fi'];
-    final ctrls = {for (final k in claus) k: TextEditingController(text: trims[k] ?? '')};
+  Widget _trims() => _TabsTrims(
+        trims: _escola?.trimestres ?? const <String, String>{},
+        onRefresca: () {
+          Estat.i.buidaCachu();
+          setState(() => _fut = carregaGestor());
+        },
+      );
+
+  Widget _classes() => _TabsClasses(
+        hora: _escola?.hora ?? '17:00',
+        lloc: _escola?.lloc ?? '',
+        onRefresca: () {
+          Estat.i.buidaCachu();
+          Estat.i.mostraOk();
+          setState(() => _fut = carregaGestor());
+        },
+      );
+}
+
+class _TabsTrims extends StatefulWidget {
+  const _TabsTrims({required this.trims, required this.onRefresca});
+  final Map<String, String> trims;
+  final VoidCallback onRefresca;
+
+  @override
+  State<_TabsTrims> createState() => _TabsTrimsState();
+}
+
+class _TabsTrimsState extends State<_TabsTrims> {
+  late Map<String, String> valors = {for (final e in widget.trims.entries) e.key: e.value};
+
+  @override
+  Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -786,46 +817,76 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             for (var i = 1; i <= 3; i++) ...[
               Text('${Estat.i.i18n.t('trimestre')} $i', style: const TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 6),
               Row(children: [
-                Expanded(child: CampText(controller: ctrls['Trim${i}Inici']!, hint: 'Inici MM-DD')),
-                Expanded(child: CampText(controller: ctrls['Trim${i}Fi']!, hint: 'Fi MM-DD')),
+                Expanded(
+                  child: CampDataTrim(
+                    valor: valors['Trim${i}Inici'] ?? '',
+                    etiqueta: 'Inici',
+                    onCanvi: (v) => setState(() => valors['Trim${i}Inici'] = v),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: CampDataTrim(
+                    valor: valors['Trim${i}Fi'] ?? '',
+                    etiqueta: 'Fi',
+                    onCanvi: (v) => setState(() => valors['Trim${i}Fi'] = v),
+                  ),
+                ),
               ]),
+              const SizedBox(height: 10),
             ],
-            FilledButton(
-              onPressed: () async {
-                await Estat.i.call('definirTrimestres', [
-                  Estat.i.token,
-                  {for (final k in claus) k: ctrls[k]!.text},
-                ]);
-                Estat.i.buidaCachu();
-                Estat.i.mostraOk();
-              },
-              child: Text(Estat.i.i18n.t('guardar')),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () async {
+                  await Estat.i.call('definirTrimestres', [Estat.i.token, valors]);
+                  widget.onRefresca();
+                },
+                child: Text(Estat.i.i18n.t('guardar')),
+              ),
             ),
           ]),
         ),
       ],
     );
   }
+}
 
-  Widget _classes() {
+class _TabsClasses extends StatefulWidget {
+  const _TabsClasses({required this.hora, required this.lloc, required this.onRefresca});
+  final String hora;
+  final String lloc;
+  final VoidCallback onRefresca;
+
+  @override
+  State<_TabsClasses> createState() => _TabsClassesState();
+}
+
+class _TabsClassesState extends State<_TabsClasses> {
+  late final hora = TextEditingController(text: widget.hora);
+  late final lloc = TextEditingController(text: widget.lloc);
+
+  @override
+  Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    final hora = TextEditingController(text: _escola?.hora ?? '');
-    final lloc = TextEditingController(text: _escola?.lloc ?? '');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Carda(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            CampText(controller: hora, hint: t('horaInici')),
-            CampText(controller: lloc, hint: t('lloc')),
-            FilledButton(
-              onPressed: () async {
-                await Estat.i.call('definirConfigClasse', [Estat.i.token, {'hora': hora.text, 'lloc': lloc.text}]);
-                Estat.i.buidaCachu();
-                Estat.i.mostraOk();
-              },
-              child: Text(t('guardar')),
+            CampHora(controller: hora, hint: t('horaInici')),
+            CampText(controller: lloc, hint: t('lloc'), linies: 3),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () async {
+                  await Estat.i.call('definirConfigClasse', [Estat.i.token, {'hora': normalitzaHora(hora.text), 'lloc': lloc.text}]);
+                  widget.onRefresca();
+                },
+                child: Text(t('guardar')),
+              ),
             ),
           ]),
         ),

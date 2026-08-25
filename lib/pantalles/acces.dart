@@ -51,11 +51,12 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
+                      SizedBox(
+                        width: double.infinity,
                         child: Column(
                           children: [
-                            const IconaClub(mida: 56),
-                            const SizedBox(height: 12),
+                            const IconaClub(mida: 96),
+                            const SizedBox(height: 14),
                             Text(
                               Estat.i.club.isNotEmpty ? Estat.i.club : 'Portal Socis',
                               style: estilTitol,
@@ -70,6 +71,8 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                       TextField(
                         controller: u,
                         keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        onSubmitted: (_) => FocusScope.of(context).nextFocus(),
                         decoration: InputDecoration(
                           labelText: t('usuari'),
                           prefixIcon: const Icon(Icons.email_outlined, size: 20),
@@ -81,6 +84,8 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                       TextField(
                         controller: p,
                         obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _ferLogin(),
                         decoration: InputDecoration(
                           labelText: t('contra'),
                           prefixIcon: const Icon(Icons.lock_outline, size: 20),
@@ -196,10 +201,11 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
+                      SizedBox(
+                        width: double.infinity,
                         child: Column(
                           children: [
-                            const IconaClub(mida: 52),
+                            const IconaClub(mida: 84),
                             const SizedBox(height: 12),
                             Text(t('altSoci'), style: estilTitol, textAlign: TextAlign.center),
                           ],

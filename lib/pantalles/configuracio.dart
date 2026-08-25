@@ -58,6 +58,17 @@ class _ConfiguracioPantallaState extends State<ConfiguracioPantalla> with Single
   }
 }
 
+const _etiquetesConfig = <String, (String, String)>{
+  'NomClub': ('Nom del club', ''),
+  'CompteClub': ('Compte bancari del club', ''),
+  'QuotaSoci': ("Preu alta soci (quota anual)", ' €'),
+  'PreuFederacio': ('Preu federació anual', ' €'),
+  'CorreuClub': ('Correu del club (avisos)', ''),
+  'DuradaSessioMinuts': ('Durada de la sessió (minuts)', ''),
+  'IdiomaPerDefecte': ('Idioma per defecte (CA/ES)', ''),
+  'FolderDrive': ('ID carpeta Drive (buit = per defecte)', ''),
+};
+
 class EditorBloc extends StatefulWidget {
   const EditorBloc({super.key, required this.bloc});
   final String bloc;
@@ -98,7 +109,9 @@ class _EditorBlocState extends State<EditorBloc> {
                 for (final k in claus)
                   CampText(
                     controller: ctrls[k]!,
-                    hint: k,
+                    hint: _etiquetesConfig[k]?.$1 ?? k,
+                    sufix: _etiquetesConfig[k]?.$2.isEmpty == true ? null : _etiquetesConfig[k]?.$2,
+                    linies: k.startsWith('Correu') ? 4 : 1,
                     onChanged: (v) => valors[k] = v,
                   ),
                 FilledButton(

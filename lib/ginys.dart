@@ -3,6 +3,7 @@
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'estils.dart';
 import 'traduccions.dart';
@@ -160,12 +161,23 @@ class ItemLlista extends StatelessWidget {
 }
 
 class CampText extends StatelessWidget {
-  const CampText({super.key, required this.controller, this.hint, this.teclat, this.obscure = false, this.onChanged});
+  const CampText({
+    super.key,
+    required this.controller,
+    this.hint,
+    this.teclat,
+    this.obscure = false,
+    this.onChanged,
+    this.sufix,
+    this.linies = 1,
+  });
   final TextEditingController controller;
   final String? hint;
   final TextInputType? teclat;
   final bool obscure;
   final ValueChanged<String>? onChanged;
+  final String? sufix;
+  final int linies;
 
   @override
   Widget build(BuildContext context) {
@@ -175,8 +187,138 @@ class CampText extends StatelessWidget {
         controller: controller,
         obscureText: obscure,
         keyboardType: teclat,
+        maxLines: obscure ? 1 : linies,
         onChanged: onChanged,
-        decoration: InputDecoration(hintText: hint, isDense: true),
+        decoration: InputDecoration(labelText: hint, suffixText: sufix, isDense: true),
+      ),
+    );
+  }
+}
+
+class FiltreHora extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue vell, TextEditingValue nou) {
+    final d = nou.text.replaceAll(RegExp(r'\D'), '');
+    final t = d.length > 4 ? d.substring(0, 4) : d;
+    final b = StringBuffer();
+    for (var i = 0; i < t.length; i++) {
+      b.write(t[i]);
+      if (i == 1 && t.length > 2) b.write(':');
+    }
+    final s = b.toString();
+    return TextEditingValue(text: s, selection: TextSelection.collapsed(offset: s.length));
+  }
+}
+
+String normalitzaHora(String s) {
+  final d = s.replaceAll(RegExp(r'\D'), '');
+  if (d.length != 4) return s;
+  final h = int.parse(d.substring(0, 2));
+  final m = int.parse(d.substring(2));
+  if (h > 23 || m > 59) return s;
+  return '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}';
+}
+
+String mostraMesDia(String md) {
+  final p = md.split('-');
+  if (p.length == 2 && p[0].length == 2 && p[1].length == 2) return '${p[1]}/${p[0]}';
+  return md;
+}
+
+String mostraData(String ymd) {
+  final p = ymd.split('-');
+  if (p.length == 3) return '${p[2]}/${p[1]}/${p[0]}';
+  return ymd;
+}
+
+class CampDataTrim extends StatelessWidget {
+  const CampDataTrim({super.key, required this.valor, required this.etiqueta, required this.onCanvi});
+  final String valor;
+  final String etiqueta;
+  final ValueChanged<String> onCanvi;
+
+  DateTime _inicial() {
+    final p = valor.split('-');
+    if (p.length == 2) {
+      final m = int.tryParse(p[0]) ?? 1;
+      final d = int.tryParse(p[1]) ?? 1;
+      final avui = DateTime.now();
+      final anyCurs = avui.month >= 9 ? avui.year : avui.year - 1;
+      return DateTime(anyCurs, m.clamp(1, 12), d.clamp(1, 28));
+    }
+    return DateTime.now();
+  }
+
+  Future<void> _tria(BuildContext context) async {
+    final d = await showDatePicker(
+      context: context,
+      initialDate: _inicial(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+      locale: Locale(Estat.i.i18n.lang.toLowerCase()),
+    );
+    if (d != null) {
+      onCanvi('${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () => _tria(context),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: etiqueta,
+          isDense: true,
+          suffixIcon: const Icon(Icons.calendar_today, size: 18),
+        ),
+        child: Text(
+          valor.isEmpty ? '—' : mostraMesDia(valor),
+          style: TextStyle(fontSize: 15, color: valor.isEmpty ? textCol : titol),
+        ),
+      ),
+    );
+  }
+}
+
+class CampHora extends StatelessWidget {
+  const CampHora({super.key, required this.controller, this.hint});
+  final TextEditingController controller;
+  final String? hint;
+
+  Future<void> _rellotge(BuildContext context) async {
+    final parts = controller.text.split(':');
+    final t = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(
+        hour: int.tryParse(parts.isNotEmpty ? parts[0] : '') ?? 17,
+        minute: parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0,
+      ),
+    );
+    if (t != null) {
+      controller.text = '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        inputFormatters: [FiltreHora()],
+        maxLength: 5,
+        decoration: InputDecoration(
+          labelText: hint ?? 'Hora',
+          counterText: '',
+          isDense: true,
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.access_time, size: 20),
+            onPressed: () => _rellotge(context),
+          ),
+        ),
       ),
     );
   }
