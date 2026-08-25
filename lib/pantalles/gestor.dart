@@ -16,41 +16,14 @@ class AdminIniciPantalla extends StatelessWidget {
     return Center(
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Text('${t('benvingut')} ${st.user?['nom'] ?? ''}',
-            style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: titol)),
+            style: estilTitol),
         const SizedBox(height: 18),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          _Gran2(titol: t('escola'), icon: Icons.school, onTap: () => st.go('escola')),
+          BotoGran(titol: t('escola'), icon: Icons.school, onTap: () => st.go('escola')),
           const SizedBox(width: 12),
-          _Gran2(titol: t('pagatTab'), icon: Icons.payments, onTap: () => st.go('pagat')),
+          BotoGran(titol: t('pagatTab'), icon: Icons.payments, onTap: () => st.go('pagat')),
         ]),
       ]),
-    );
-  }
-}
-
-class _Gran2 extends StatelessWidget {
-  const _Gran2({required this.titol, required this.icon, required this.onTap});
-  final String titol;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 160,
-      height: 110,
-      child: FilledButton.tonal(
-        style: FilledButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: pri,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
-        onPressed: onTap,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(icon, size: 32),
-          const SizedBox(height: 6),
-          Text(titol, style: const TextStyle(fontWeight: FontWeight.w700)),
-        ]),
-      ),
     );
   }
 }
@@ -164,16 +137,7 @@ class _PagatPantallaState extends State<PagatPantalla> {
                 IconButton(
                   icon: const Icon(Icons.delete_outline, color: Colors.grey),
                   onPressed: () async {
-                    final ok = await showDialog<bool>(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        content: Text('${s.nom} — 🗑?'),
-                        actions: [
-                          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-                          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('🗑')),
-                        ],
-                      ),
-                    );
+                    final ok = await confirmaEliminacio(context, '${s.nom} — eliminar?');
                     if (ok != true) return;
                     await Estat.i.call('eliminarSoci', [Estat.i.token, s.id]);
                     Estat.i.buidaCachu();
@@ -536,7 +500,7 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
               CampText(controller: adr, hint: t('adreca')),
               OutlinedButton.icon(
                 icon: Icon(fotoNova == null ? Icons.upload_file : Icons.check_circle,
-                    color: fotoNova == null ? null : Colors.green),
+                    color: fotoNova == null ? null : verd),
                 label: Text(fotoNova == null ? t('fotoDni') : '${fotoNova!['name'] ?? t('fotoDni')}'),
                 onPressed: () async {
                   final f = await triaArxiu('.jpg,.jpeg,.png');
@@ -758,17 +722,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
                 IconButton(
                   icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey),
                   onPressed: () async {
-                    final ok = await showDialog<bool>(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: Text(t('elimina')),
-                        content: Text('Eliminar el festiu $f?'),
-                        actions: [
-                          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t('torna'))),
-                          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('🗑')),
-                        ],
-                      ),
-                    );
+                    final ok = await confirmaEliminacio(context, 'Eliminar el festiu $f?');
                     if (ok != true) return;
                     await Estat.i.call('esborrarFestiu', [Estat.i.token, f]);
                     Estat.i.buidaCachu();

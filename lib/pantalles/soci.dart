@@ -8,6 +8,16 @@ import '../../estils.dart';
 import '../../estat.dart';
 import '../../ginys.dart';
 
+Future<void> pujaFitxer(String token, String col, String id, String periode, {VoidCallback? onFet}) async {
+  final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
+  if (f == null) return;
+  await Estat.i.call('pujarRebut', [token, col, id, periode, f]);
+  await Estat.i.recarregaTot();
+  Estat.i.mostraOk();
+  Estat.i.refres();
+  onFet?.call();
+}
+
 class IniciSociPantalla extends StatelessWidget {
   const IniciSociPantalla({super.key});
 
@@ -51,42 +61,13 @@ class IniciSociPantalla extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _Gran(titol: t('fitxa'), icon: Icons.badge, onTap: () => st.go('fitxaHome')),
+                BotoGran(titol: t('fitxa'), icon: Icons.badge, onTap: () => st.go('fitxaHome')),
                 const SizedBox(width: 16),
-                _Gran(titol: t('classes'), icon: Icons.school, onTap: () => st.go('classesHome')),
+                BotoGran(titol: t('classes'), icon: Icons.school, onTap: () => st.go('classesHome')),
               ],
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _Gran extends StatelessWidget {
-  const _Gran({required this.titol, required this.icon, required this.onTap});
-  final String titol;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 160,
-      height: 120,
-      child: FilledButton.tonal(
-        style: FilledButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: pri,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            elevation: 0,
-            shadowColor: pri.withValues(alpha: .08)),
-        onPressed: onTap,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(icon, size: 40),
-          const SizedBox(height: 8),
-          Text(titol, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
-        ]),
       ),
     );
   }
@@ -103,9 +84,9 @@ class ClassesIniciPantalla extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _Gran(titol: t('alta'), icon: Icons.person_add, onTap: () => st.go('classesAlta')),
+          BotoGran(titol: t('alta'), icon: Icons.person_add, onTap: () => st.go('classesAlta')),
           const SizedBox(width: 12),
-          _Gran(titol: t('alumnes'), icon: Icons.list, onTap: () => st.go('classesAlumnes')),
+          BotoGran(titol: t('alumnes'), icon: Icons.list, onTap: () => st.go('classesAlumnes')),
         ],
       ),
     );
@@ -225,16 +206,6 @@ class TrimestresPantalla extends StatelessWidget {
     return null;
   }
 
-  Future<void> _puja(String periode) async {
-    final st = Estat.i;
-    final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
-    if (f == null) return;
-    await st.call('pujarRebut', [st.token, 'Classes', alumneId, periode, f]);
-    await st.recarregaTot();
-    st.mostraOk();
-    st.refres();
-  }
-
   @override
   Widget build(BuildContext context) {
     final st = Estat.i;
@@ -274,7 +245,7 @@ class TrimestresPantalla extends StatelessWidget {
                   OutlinedButton.icon(
                     icon: const Icon(Icons.upload_file, size: 18),
                     label: Text(tr.estat == 'En revisió' ? t('substituir') : '${t('rebut')} 📎'),
-                    onPressed: () => unawaited(_puja('${tr.t}')),
+                    onPressed: () => unawaited(pujaFitxer(st.token!, 'Classes', alumneId, '${tr.t}')),
                   ),
                 ]),
             ]),
@@ -296,9 +267,9 @@ class FitxaIniciPantalla extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _Gran(titol: t('jugadors'), icon: Icons.groups, onTap: () => st.go('jugadors')),
+          BotoGran(titol: t('jugadors'), icon: Icons.groups, onTap: () => st.go('jugadors')),
           const SizedBox(width: 12),
-          _Gran(titol: t('alta'), icon: Icons.person_add_alt_1, onTap: () => st.go('jugadorAlta')),
+          BotoGran(titol: t('alta'), icon: Icons.person_add_alt_1, onTap: () => st.go('jugadorAlta')),
         ],
       ),
     );
@@ -341,16 +312,6 @@ class JugadorAnysPantalla extends StatelessWidget {
     return null;
   }
 
-  Future<void> _puja(String anyFed) async {
-    final st = Estat.i;
-    final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
-    if (f == null) return;
-    await st.call('pujarRebut', [st.token, 'Federacio', jugadorId, anyFed, f]);
-    await st.recarregaTot();
-    st.mostraOk();
-    st.refres();
-  }
-
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
@@ -376,7 +337,7 @@ class JugadorAnysPantalla extends StatelessWidget {
                   icon: const Icon(Icons.upload_file, size: 18),
                   label: Text(a.estat == 'En revisió' ? t('substituir') : '${t('rebut')} 📎',
                       style: const TextStyle(fontSize: 13)),
-                  onPressed: () => unawaited(_puja(a.any)),
+                  onPressed: () => unawaited(pujaFitxer(Estat.i.token!, 'Federacio', jugadorId, a.any)),
                 ),
             ])),
       ],
@@ -477,7 +438,7 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
               CampText(controller: em, hint: t('email'), teclat: TextInputType.emailAddress),
               OutlinedButton.icon(
                 icon: Icon(foto == null ? Icons.upload_file : Icons.check_circle,
-                    color: foto == null ? null : Colors.green),
+                    color: foto == null ? null : verd),
                 label: Text(foto == null ? t('fotoDni') : '${foto!['name'] ?? t('fotoDni')}'),
                 onPressed: () async {
                   final f = await triaArxiu('.jpg,.jpeg,.png');

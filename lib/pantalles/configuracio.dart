@@ -265,41 +265,30 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
 class PestanyaNeteja extends StatelessWidget {
   const PestanyaNeteja({super.key});
 
+  static const _accions = [
+    ('juliol', Icons.cleaning_services),
+    ('capdany', Icons.event_repeat),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
     return ListView(
       padding: const EdgeInsets.all(16),
-      children: [
-        Carda(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(t('juliol'), style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            FilledButton.icon(
-              icon: const Icon(Icons.cleaning_services, size: 18),
-              label: Text(t('executa')),
-              onPressed: () async {
-                await Estat.i.call('executarNeteja', [Estat.i.token, 'juliol']);
-                Estat.i.mostraOk();
-              },
-            ),
-          ]),
-        ),
-        Carda(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(t('capdany'), style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            FilledButton.icon(
-              icon: const Icon(Icons.event_repeat, size: 18),
-              label: Text(t('executa')),
-              onPressed: () async {
-                await Estat.i.call('executarNeteja', [Estat.i.token, 'capdany']);
-                Estat.i.mostraOk();
-              },
-            ),
-          ]),
-        ),
-      ],
+      children: _accions.map((a) => Carda(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(t(a.$1), style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          FilledButton.icon(
+            icon: Icon(a.$2, size: 18),
+            label: Text(t('executa')),
+            onPressed: () async {
+              await Estat.i.call('executarNeteja', [Estat.i.token, a.$1]);
+              Estat.i.mostraOk();
+            },
+          ),
+        ]),
+      )).toList(),
     );
   }
 }

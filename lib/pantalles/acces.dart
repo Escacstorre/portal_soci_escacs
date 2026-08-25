@@ -294,7 +294,6 @@ class SelectorPantalla extends StatelessWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    IconButton(icon: const Icon(Icons.refresh), onPressed: () => st.refrescaUI()),
                     const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: IdiomaMenu()),
                     TextButton(onPressed: () => st.tancaSessio(), child: Text(t('tanca'))),
                   ]),

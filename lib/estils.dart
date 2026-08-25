@@ -101,3 +101,91 @@ class Carda extends StatelessWidget {
     );
   }
 }
+
+class BotoGran extends StatelessWidget {
+  const BotoGran({super.key, required this.titol, required this.icon, required this.onTap, this.midaIcona = 36});
+  final String titol;
+  final IconData icon;
+  final VoidCallback onTap;
+  final double midaIcona;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 160,
+      height: 120,
+      child: FilledButton.tonal(
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: pri,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiGran)),
+          elevation: 0,
+        ),
+        onPressed: onTap,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(icon, size: midaIcona),
+          const SizedBox(height: 8),
+          Text(titol, style: estilBotoGran),
+        ]),
+      ),
+    );
+  }
+}
+
+class BotoPujaFitxer extends StatelessWidget {
+  const BotoPujaFitxer({super.key, required this.fitxer, this.etiqueta, required this.onTria});
+  final Map<String, dynamic>? fitxer;
+  final String? etiqueta;
+  final VoidCallback onTria;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      icon: Icon(fitxer == null ? Icons.upload_file : Icons.check_circle, color: fitxer == null ? null : verd),
+      label: Text(fitxer == null ? (etiqueta ?? '') : '${fitxer!['name'] ?? ''}'),
+      onPressed: onTria,
+    );
+  }
+}
+
+class MissatgeEstat extends StatelessWidget {
+  const MissatgeEstat({super.key, required this.text, required this.esError});
+  final String text;
+  final bool esError;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Text(text, style: esError ? estilError : estilOk),
+    );
+  }
+}
+
+Widget botoPleAmple({required VoidCallback onPressed, required String text}) {
+  return SizedBox(
+    width: double.infinity,
+    height: 44,
+    child: FilledButton(
+      onPressed: onPressed,
+      style: FilledButton.styleFrom(
+        backgroundColor: pri,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiBoto)),
+      ),
+      child: Text(text, style: estilBotoText),
+    ),
+  );
+}
+
+Future<bool?> confirmaEliminacio(BuildContext context, String missatge) {
+  return showDialog<bool>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      content: Text(missatge),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+        TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('OK')),
+      ],
+    ),
+  );
+}
