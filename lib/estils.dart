@@ -113,7 +113,7 @@ class BotoGran extends StatelessWidget {
   const BotoGran({super.key, required this.titol, required this.icon, required this.onTap, this.midaIcona = 36});
   final String titol;
   final IconData icon;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final double midaIcona;
 
   @override

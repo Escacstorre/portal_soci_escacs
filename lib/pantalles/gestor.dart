@@ -117,6 +117,62 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
     setState(() => _fut = carregaGestor());
   }
 
+  Widget _validacioQuota(SociGestor s) {
+    if (s.estat == 'Actiu') {
+      return InkWell(
+        borderRadius: BorderRadius.circular(999),
+        onTap: () => _dialogAnys(s),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(color: verd.withValues(alpha: .12), borderRadius: BorderRadius.circular(999)),
+          child: Text(
+            s.caducitat.isNotEmpty ? 'Vigent · ${mostraData(s.caducitat)}' : 'Vigent',
+            style: const TextStyle(fontSize: 11.5, color: verd, fontWeight: FontWeight.w600),
+          ),
+        ),
+      );
+    }
+    return FilledButton.tonal(
+      style: FilledButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        textStyle: const TextStyle(fontSize: 12),
+      ),
+      onPressed: () => _dialogAnys(s),
+      child: const Text('Validar'),
+    );
+  }
+
+  Future<void> _dialogAnys(SociGestor s) async {
+    var anys = 1;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setD) => AlertDialog(
+          title: Text('${s.nom} — anys de quota pagats', style: const TextStyle(fontSize: 17)),
+          content: Wrap(
+            spacing: 6,
+            children: [
+              for (var i = 1; i <= 5; i++)
+                ChoiceChip(
+                  label: Text(i == 1 ? '1 any' : '$i anys'),
+                  selected: anys == i,
+                  onSelected: (_) => setD(() => anys = i),
+                ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Desar')),
+          ],
+        ),
+      ),
+    );
+    if (ok != true) return;
+    await Estat.i.call('decidirAltaSoci', [Estat.i.token, s.id, true, anys]);
+    Estat.i.mostraOk();
+    _refrescaTot();
+  }
+
   Widget _tabSocis(GestorDades d) {
     final t = Estat.i.i18n.t;
     final llista = _filtra(d.socis);
@@ -160,19 +216,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
             const SizedBox(height: 12),
             ...llista.map((s) {
               return ItemLlista(children: [
-                Checkbox(
-                  value: s.estat == 'Actiu',
-                  onChanged: (chk) async {
-                    if (chk != true) {
-                      Estat.i.mostraError(Estat.i.i18n.t('actPend'));
-                      return;
-                    }
-                    await Estat.i.call('decidirAltaSoci', [Estat.i.token, s.id, true]);
-                    s.estat = 'Actiu';
-                    Estat.i.mostraOk('Actiu ✓');
-                    setState(() {});
-                  },
-                ),
+                if (s.estat != 'Rebutjat') _validacioQuota(s),
                 Expanded(
                   child: GestureDetector(
                     onTap: () => Estat.i.go('edicioSoci', s.id),
@@ -183,12 +227,6 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
                   child: Text(s.email,
                       style: const TextStyle(fontSize: 12, color: textCol), overflow: TextOverflow.ellipsis),
                 ),
-                if (s.caducitat.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 6),
-                    child: Text('fins ${mostraData(s.caducitat)}',
-                        style: TextStyle(fontSize: 11, color: s.estat == 'Actiu' ? verd : textCol)),
-                  ),
                 if (s.rebutQuota != null)
                   IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl(s.rebutQuota!.url)),
                 IconButton(

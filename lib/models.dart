@@ -108,6 +108,7 @@ class IniciSoci {
     required this.compte,
     this.telefon = '',
     this.email = '',
+    this.caducitat = '',
   });
   final String nom;
   final String club;
@@ -120,6 +121,15 @@ class IniciSoci {
   final String compte;
   final String telefon;
   final String email;
+  final String caducitat;
+
+  bool get quotaVigent =>
+      estat == 'Actiu' && (caducitat.isEmpty || caducitat.compareTo(_avuiYmd()) >= 0);
+
+  static String _avuiYmd() {
+    final n = DateTime.now();
+    return '${n.year}-${n.month.toString().padLeft(2, '0')}-${n.day.toString().padLeft(2, '0')}';
+  }
 
   static IniciSoci de(dynamic m) {
     final d = _mp(m);
@@ -135,6 +145,7 @@ class IniciSoci {
       compte: _s(d['compte']),
       telefon: _s(d['telefon']),
       email: _s(d['email']),
+      caducitat: _s(d['caducitat']),
     );
   }
 }

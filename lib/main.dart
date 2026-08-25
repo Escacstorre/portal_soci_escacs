@@ -3,6 +3,7 @@
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'traduccions.dart';
 import 'pantalles/acces.dart';
@@ -30,6 +31,12 @@ class PortalApp extends StatelessWidget {
     return MaterialApp(
       title: 'Portal Socis',
       debugShowCheckedModeBanner: false,
+      supportedLocales: const [Locale('ca'), Locale('es')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: pri),
         scaffoldBackgroundColor: suau,
