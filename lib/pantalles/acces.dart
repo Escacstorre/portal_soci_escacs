@@ -23,10 +23,12 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
       final d = (await st.call('login', [u.text.trim().toLowerCase(), p.text]) as Map).cast<String, dynamic>();
       st.posaToken(d['token'] as String);
       st.user = {'nom': d['nom'], 'rols': d['rols'], 'rolActiu': d['rolActiu']};
+      if (!mounted) return;
       setState(() => err = null);
       st.entra();
     } catch (_) {
-      setState(() => err = Estat.i.toastMissatge);
+      if (!mounted) return;
+      setState(() => err = Estat.i.toastMissatge ?? Estat.i.i18n.t('error'));
     }
   }
 
@@ -42,13 +44,6 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
             constraints: const BoxConstraints(maxWidth: ampleMaxLogin),
             child: Column(
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: IdiomaMenu(),
-                  ),
-                ),
                 const SizedBox(height: 24),
                 Container(
                   padding: const EdgeInsets.all(28),
@@ -115,7 +110,7 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                       const SizedBox(height: 12),
                       Center(
                         child: TextButton(
-                          onPressed: () => Estat.i.reset('registre'),
+                          onPressed: () => Estat.i.go('registre'),
                           child: Text(t('registrar'), style: TextStyle(color: pri, fontSize: 14)),
                         ),
                       ),
@@ -176,7 +171,8 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
       setState(() { msg = t('enRev'); msgErr = false; });
       Future.delayed(const Duration(seconds: 3), () => st.reset('login'));
     } catch (_) {
-      setState(() { msg = st.toastMissatge; msgErr = true; });
+      if (!mounted) return;
+      setState(() { msg = st.toastMissatge ?? st.i18n.t('error'); msgErr = true; });
     }
   }
 
@@ -193,13 +189,6 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
             constraints: const BoxConstraints(maxWidth: ampleMaxLogin),
             child: Column(
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: IdiomaMenu(),
-                  ),
-                ),
                 const SizedBox(height: 24),
                 Container(
                   padding: const EdgeInsets.all(28),
