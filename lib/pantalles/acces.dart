@@ -252,7 +252,7 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
                             backgroundColor: pri,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radiBoto)),
                           ),
-                          child: Text(t('registrar'), style: estilBotoText),
+                          child: Text(t('altSoci'), style: estilBotoText),
                         ),
                       ),
                       const SizedBox(height: 12),

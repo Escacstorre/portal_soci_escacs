@@ -44,8 +44,9 @@ void setStateIdioma(String codi) {
 }
 
 class Capcalera extends StatelessWidget implements PreferredSizeWidget {
-  const Capcalera({super.key, this.torna = false});
+  const Capcalera({super.key, this.torna = false, this.tancaSessio = true});
   final bool torna;
+  final bool tancaSessio;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -64,11 +65,6 @@ class Capcalera extends StatelessWidget implements PreferredSizeWidget {
           : null,
       automaticallyImplyLeading: false,
       actions: [
-        IconButton(
-          icon: const Icon(Icons.refresh),
-          tooltip: st.i18n.t('refrescat'),
-          onPressed: () => st.refrescaUI(),
-        ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 8),
           child: IdiomaMenu(),
@@ -78,13 +74,14 @@ class Capcalera extends StatelessWidget implements PreferredSizeWidget {
             onPressed: () => st.go('selector'),
             child: Text(st.i18n.t('canviaRol'), style: const TextStyle(fontSize: 13)),
           ),
-        Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: TextButton(
-            onPressed: () => st.tancaSessio(),
-            child: Text(st.i18n.t('tanca'), style: const TextStyle(fontSize: 13)),
+        if (tancaSessio)
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: TextButton(
+              onPressed: () => st.tancaSessio(),
+              child: Text(st.i18n.t('tanca'), style: const TextStyle(fontSize: 13)),
+            ),
           ),
-        ),
       ],
     );
   }

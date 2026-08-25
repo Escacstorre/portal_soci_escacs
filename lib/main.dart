@@ -165,6 +165,7 @@ class _ArrelState extends State<Arrel> {
 
   PreferredSizeWidget? _appBar(String v) {
     if (v == 'login' || v == 'selector') return null;
+    if (v == 'registre') return Capcalera(torna: true, tancaSessio: false);
     return Capcalera(torna: !const ['homeSoci', 'classesHome', 'fitxaHome', 'adminHome', 'profe'].contains(v));
   }
 }
