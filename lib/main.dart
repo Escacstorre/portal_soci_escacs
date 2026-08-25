@@ -17,7 +17,7 @@ import 'pont.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Pont.instance.init('$urlAppsScript?page=bridge');
+  Pont.instance.init(urlAppsScript);
   unawaited(Estat.i.arrenca());
   runApp(const PortalApp());
 }

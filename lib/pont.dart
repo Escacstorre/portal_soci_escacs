@@ -1,7 +1,7 @@
 ﻿import 'dart:async';
 import 'dart:convert';
-// ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
-import 'dart:html' as html;
+
+import 'package:http/http.dart' as http;
 
 class ExcepcioPortal implements Exception {
   final String message;
@@ -14,53 +14,33 @@ class Pont {
   Pont._();
   static final Pont instance = Pont._();
 
-  html.IFrameElement? _frame;
-  final Map<String, Completer<dynamic>> _pendents = {};
-  int _seq = 0;
+  late String _url;
 
-  void init(String url) {
-    _frame = html.IFrameElement()
-      ..src = url
-      ..style.position = 'absolute'
-      ..style.width = '1px'
-      ..style.height = '1px'
-      ..style.border = 'none'
-      ..style.opacity = '0';
-    html.document.body?.append(_frame!);
-    html.window.onMessage.listen(_onMessage);
-  }
+  void init(String url) => _url = url;
 
-  void _onMessage(html.MessageEvent ev) {
-    final d = ev.data;
-    if (d is! String) return;
+  Future<dynamic> call(String fn, [List<Object?> args = const []]) async {
+    http.Response resp;
+    try {
+      resp = await http
+          .post(
+            Uri.parse(_url),
+            headers: {'Content-Type': 'text/plain;charset=utf-8'},
+            body: jsonEncode({'fn': fn, 'args': args}),
+          )
+          .timeout(const Duration(seconds: 90));
+    } on TimeoutException {
+      throw ExcepcioPortal('#SESSIO_CADUCADA#');
+    }
+    if (resp.statusCode != 200) {
+      throw ExcepcioPortal('HTTP ${resp.statusCode}');
+    }
     Map<String, dynamic> m;
     try {
-      m = jsonDecode(d) as Map<String, dynamic>;
+      m = (jsonDecode(resp.body) as Map).cast<String, dynamic>();
     } catch (_) {
-      return;
+      throw ExcepcioPortal('#SESSIO_CADUCADA#');
     }
-    if (m['tipo'] != 'ps-resp') return;
-    final c = _pendents.remove(m['id']);
-    if (c == null || c.isCompleted) return;
-    if (m['ok'] == true) {
-      c.complete(m['data']);
-    } else {
-      c.completeError(ExcepcioPortal('${m['data'] ?? 'Error'}'));
-    }
-  }
-
-  Future<dynamic> call(String fn, [List<Object?> args = const []]) {
-    final id = 'c${_seq++}';
-    final c = Completer<dynamic>();
-    _pendents[id] = c;
-    final msg = jsonEncode({'tipo': 'ps-call', 'id': id, 'fn': fn, 'args': args});
-    _frame?.contentWindow?.postMessage(msg, '*');
-    return c.future.timeout(
-      const Duration(seconds: 90),
-      onTimeout: () {
-        _pendents.remove(id);
-        throw ExcepcioPortal('#SESSIO_CADUCADA#');
-      },
-    );
+    if (m['ok'] == true) return m['data'];
+    throw ExcepcioPortal('${m['data'] ?? 'Error'}');
   }
 }
