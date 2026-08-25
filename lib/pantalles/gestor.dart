@@ -97,11 +97,14 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
               ],
             ),
             Expanded(
-              child: TabBarView(children: [
-                _tabSocis(d),
-                _TabFitxes(d: d, onRefresca: _refrescaTot),
-                _TabAlumnes(d: d, onRefresca: _refrescaTot),
-              ]),
+              child: TabBarView(
+                controller: _tabs,
+                children: [
+                  _tabSocis(d),
+                  _TabFitxes(d: d, onRefresca: _refrescaTot),
+                  _TabAlumnes(d: d, onRefresca: _refrescaTot),
+                ],
+              ),
             ),
           ],
         );
@@ -667,25 +670,21 @@ class EscolaPantalla extends StatefulWidget {
 
 class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProviderStateMixin {
   late Future<GestorDades> _fut = carregaGestor();
-  late final TabController _tabs = TabController(length: 4, vsync: this, initialIndex: _idx0());
+  bool get _admin => Estat.i.isAdmin();
+  List<String> get _nomsTabs => _admin
+      ? const ['festius', 'preus', 'trimestres', 'classes']
+      : const ['festius', 'trimestres', 'classes'];
+  late final TabController _tabs = TabController(length: _nomsTabs.length, vsync: this, initialIndex: _idx0());
 
   int _idx0() {
-    switch (Estat.i.escolaTab) {
-      case 'preus':
-        return 1;
-      case 'trimestres':
-        return 2;
-      case 'classes':
-        return 3;
-      default:
-        return 0;
-    }
+    final i = _nomsTabs.indexOf(Estat.i.escolaTab);
+    return i > -1 ? i : 0;
   }
 
   EscolaConfig? _escola;
 
   void _tab(int i) {
-    Estat.i.escolaTab = ['festius', 'preus', 'trimestres', 'classes'][i];
+    Estat.i.escolaTab = _nomsTabs[i];
   }
 
   @override
@@ -706,7 +705,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
               onTap: _tab,
               tabs: [
                 Tab(text: t('festius')),
-                Tab(text: t('preusTab')),
+                if (_admin) Tab(text: t('preusTab')),
                 Tab(text: t('trimTab')),
                 Tab(text: t('classesTab')),
               ],
@@ -714,7 +713,12 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
             Expanded(
               child: TabBarView(
                 controller: _tabs,
-                children: [_festius(), _preus(), _trims(), _classes()],
+                children: [
+                  _festius(),
+                  if (_admin) _preus(),
+                  _trims(),
+                  _classes(),
+                ],
               ),
             ),
           ],
