@@ -1,15 +1,15 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:convert';
 import 'dart:html' as html;
 
-import 'bridge.dart';
-import 'i18n.dart';
+import 'pont.dart';
+import 'traduccions.dart';
 import 'models.dart';
 
-const appsScriptUrl =
+const urlAppsScript =
     'https://script.google.com/macros/s/AKfycbyCxdv7MNxrlqhvLBruDEumwxuWN4piXILygFS_YCptt0YDmRQu2HBKxEMlQtP9-FIoTA/exec';
 
-const reads = [
+const lectures = [
   'getConfigPublic', 'getTraduccions', 'getIniciSoci', 'getTotSoci', 'getTotGestor',
   'getTotProfe', 'getEdicioSoci', 'getEscolaConfig', 'getConfigBloc', 'getUsuaris',
   'getDadesFormulari', 'descarregarICS',
@@ -25,7 +25,7 @@ class Estat {
   Estat._();
   static final Estat i = Estat._();
 
-  final i18n = I18n.instance;
+  final i18n = Traduccions.instance;
 
   String? token;
   String club = '';
@@ -48,27 +48,27 @@ class Estat {
   void refres() => _canvis.add(null);
 
   int ocupats = 0;
-  String? toastMsg;
-  bool toastOk = false;
+  String? toastMissatge;
+  bool toastCorrecte = false;
   Timer? _toastTimer;
 
   final Map<String, ({dynamic v, DateTime t})> _cache = {};
-  static const cacheTtl = Duration(seconds: 90);
+  static const duracioCachu = Duration(seconds: 90);
 
   void _notificaOcupat() => refres();
 
   Future<dynamic> call(String fn, [List<Object?> args = const []]) async {
-    final esLectura = reads.contains(fn);
+    final esLectura = lectures.contains(fn);
     if (esLectura) {
       final k = '$fn|${args.map((a) => a.toString()).join('|')}';
       final c = _cache[k];
-      if (c != null && DateTime.now().difference(c.t) < cacheTtl) return c.v;
+      if (c != null && DateTime.now().difference(c.t) < duracioCachu) return c.v;
     } else {
       ocupats++;
       _notificaOcupat();
     }
     try {
-      final v = await Bridge.instance.call(fn, args);
+      final v = await Pont.instance.call(fn, args);
       if (esLectura) {
         final k = '$fn|${args.map((a) => a.toString()).join('|')}';
         _cache[k] = (v: v, t: DateTime.now());
@@ -77,8 +77,8 @@ class Estat {
       }
       return v;
     } catch (e) {
-      final raw = e is PortalException ? e.message : e.toString();
-      ferr(i18n.tradueixError(raw));
+      final raw = e is ExcepcioPortal ? e.message : e.toString();
+      mostraError(i18n.tradueixError(raw));
       if (raw.contains('SESSIO_CADUCADA')) sessioCaducada();
       rethrow;
     } finally {
@@ -90,32 +90,32 @@ class Estat {
   }
 
   void sessioCaducada() {
-    setTok(null);
+    posaToken(null);
     user = null;
     inici = null;
-    buidaCache();
+    buidaCachu();
     reset('login');
   }
 
-  void buidaCache() {
+  void buidaCachu() {
     _cache.clear();
     tot = null;
     gest = null;
     ptot = null;
   }
 
-  void ferr(String msg, {bool ok = false}) {
-    toastMsg = msg.isEmpty ? 'Error' : msg;
-    toastOk = ok;
+  void mostraError(String msg, {bool ok = false}) {
+    toastMissatge = msg.isEmpty ? 'Error' : msg;
+    toastCorrecte = ok;
     refres();
     _toastTimer?.cancel();
     _toastTimer = Timer(const Duration(seconds: 5), () {
-      toastMsg = null;
+      toastMissatge = null;
       refres();
     });
   }
 
-  void fok([String? msg]) => ferr(msg ?? i18n.t('refrescat'), ok: true);
+  void mostraOk([String? msg]) => mostraError(msg ?? i18n.t('refrescat'), ok: true);
 
   // ---------- navegació (sincronitzada amb l'historial del navegador) ----------
   Vista get vistaActual => stack.last;
@@ -155,8 +155,8 @@ class Estat {
   }
 
   // ---------- sessió ----------
-  String? getTok() => html.window.localStorage['ps_token'];
-  void setTok(String? tk) {
+  String? obteToken() => html.window.localStorage['ps_token'];
+  void posaToken(String? tk) {
     token = tk;
     if (tk == null) {
       html.window.localStorage.remove('ps_token');
@@ -198,10 +198,10 @@ class Estat {
     reset('homeSoci', inici);
   }
 
-  Future<void> refreshTot() => _carregaTot();
+  Future<void> recarregaTot() => _carregaTot();
 
   Future<void> refrescaUI() async {
-    buidaCache();
+    buidaCachu();
     final v = vistaActual.nom;
     const socil = ['homeSoci', 'classesHome', 'classesAlta', 'classesAlumnes', 'trimestres', 'fitxaHome', 'jugadorAlta', 'jugadors', 'jugadorAnys'];
     const gestl = ['adminHome', 'escola', 'pagat', 'altaRapida'];
@@ -209,7 +209,7 @@ class Estat {
     _notificaOcupat();
     try {
       if (socil.contains(v)) {
-        await refreshTot();
+        await recarregaTot();
       } else if (gestl.contains(v)) {
         gest = GestorDades.de(await call('getTotGestor', [token]));
       } else if (v == 'profe' || v == 'profeAlumnes') {
@@ -217,18 +217,18 @@ class Estat {
       }
     } catch (_) {}
     ocupats--;
-    fok();
+    mostraOk();
     refres();
   }
 
-  void logoutUI() {
+  void tancaSessio() {
     final tk = token;
-    setTok(null);
+    posaToken(null);
     user = null;
     inici = null;
-    buidaCache();
+    buidaCachu();
     html.window.localStorage.remove('ps_cfg');
-    if (tk != null) Bridge.instance.call('logout', [tk]);
+    if (tk != null) Pont.instance.call('logout', [tk]);
     reset('login');
   }
 
@@ -247,7 +247,7 @@ class Estat {
     }
     if (cfg == null) {
       try {
-        final d = await Bridge.instance.call('getConfigPublic');
+        final d = await Pont.instance.call('getConfigPublic');
         cfg = (d as Map).cast<String, dynamic>();
         cfg['t'] = DateTime.now().millisecondsSinceEpoch;
         html.window.localStorage['ps_cfg'] = jsonEncode(cfg);
@@ -258,13 +258,13 @@ class Estat {
     if (cfg != null) {
       club = '${cfg['club'] ?? ''}';
       final idioma = '${cfg['idioma'] ?? 'CA'}'.toUpperCase();
-      if (I18n.baseLangs.contains(idioma)) i18n.lang = idioma;
+      if (Traduccions.baseLangs.contains(idioma)) i18n.lang = idioma;
       i18n.setLx((cfg['traduccions'] as Map?)?.cast<String, dynamic>());
     }
     final saved = html.window.localStorage['ps_lang'];
     if (saved != null && saved.isNotEmpty) i18n.lang = saved.toUpperCase();
 
-    final tk = getTok();
+    final tk = obteToken();
     if (tk == null) {
       reset('login');
       return false;
@@ -280,7 +280,7 @@ class Estat {
       entra();
       return true;
     } catch (_) {
-      setTok(null);
+      posaToken(null);
       reset('login');
       return false;
     }

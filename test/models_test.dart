@@ -1,20 +1,20 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:portal_soci_escacs/i18n.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:portal_soci_escacs/traduccions.dart';
 import 'package:portal_soci_escacs/models.dart';
 
 void main() {
   test('ca i es tenen exactament les mateixes claus', () {
-    expect(I18n.es.keys.toSet(), I18n.ca.keys.toSet());
+    expect(Traduccions.es.keys.toSet(), Traduccions.ca.keys.toSet());
   });
 
   test('cap clau buida', () {
-    for (final e in I18n.ca.entries) {
+    for (final e in Traduccions.ca.entries) {
       expect(e.value.isNotEmpty, isTrue, reason: 'clau buida: ${e.key}');
     }
   });
 
   test('t() retorna la traduccio segons idioma i cau a CA si falta', () {
-    final i = I18n.instance;
+    final i = Traduccions.instance;
     i.lang = 'CA';
     expect(i.t('guardar'), 'Guardar');
     i.lang = 'ES';
@@ -23,7 +23,7 @@ void main() {
   });
 
   test('tradueixError parseja #CLAU|p0# amb parametres', () {
-    final i = I18n.instance;
+    final i = Traduccions.instance;
     i.lang = 'CA';
     i.setLx({'CA': {'SOCI_JA_EXISTEIX': 'El soci {0} ja existeix'}});
     expect(i.tradueixError('#SOCI_JA_EXISTEIX|Pere#'), 'El soci Pere ja existeix');

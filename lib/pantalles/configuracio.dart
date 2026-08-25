@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
-import '../../state.dart';
-import '../../widgets.dart';
+import '../../estat.dart';
+import '../../ginys.dart';
 
-class ConfigScreen extends StatefulWidget {
-  const ConfigScreen({super.key});
+class ConfiguracioPantalla extends StatefulWidget {
+  const ConfiguracioPantalla({super.key});
 
   @override
-  State<ConfigScreen> createState() => _ConfigScreenState();
+  State<ConfiguracioPantalla> createState() => _ConfiguracioPantallaState();
 }
 
-class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderStateMixin {
+class _ConfiguracioPantallaState extends State<ConfiguracioPantalla> with SingleTickerProviderStateMixin {
   late final TabController _tabs = TabController(length: _isAdmin() ? 5 : 3, vsync: this);
 
   bool _isAdmin() => Estat.i.isAdmin();
@@ -43,11 +43,11 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
           child: TabBarView(
             controller: _tabs,
             children: [
-              const BlocEditor(bloc: 'Club'),
-              const BlocEditor(bloc: 'Correus'),
-              if (admin) const UsuarisTab(),
-              if (admin) const BlocEditor(bloc: 'Sistema'),
-              if (admin) const NetejaTab(),
+              const EditorBloc(bloc: 'Club'),
+              const EditorBloc(bloc: 'Correus'),
+              if (admin) const PestanyaUsuaris(),
+              if (admin) const EditorBloc(bloc: 'Sistema'),
+              if (admin) const PestanyaNeteja(),
             ],
           ),
         ),
@@ -56,15 +56,15 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
   }
 }
 
-class BlocEditor extends StatefulWidget {
-  const BlocEditor({super.key, required this.bloc});
+class EditorBloc extends StatefulWidget {
+  const EditorBloc({super.key, required this.bloc});
   final String bloc;
 
   @override
-  State<BlocEditor> createState() => _BlocEditorState();
+  State<EditorBloc> createState() => _EditorBlocState();
 }
 
-class _BlocEditorState extends State<BlocEditor> {
+class _EditorBlocState extends State<EditorBloc> {
   late Future<Map<String, dynamic>> _fut = _carrega();
   Map<String, dynamic> valors = {};
   Map<String, TextEditingController> ctrls = {};
@@ -102,7 +102,7 @@ class _BlocEditorState extends State<BlocEditor> {
                 FilledButton(
                   onPressed: () async {
                     await Estat.i.call('setConfigBloc', [Estat.i.token, widget.bloc, valors]);
-                    Estat.i.fok();
+                    Estat.i.mostraOk();
                     setState(() {
                       for (final c in ctrls.values) {
                         c.dispose();
@@ -123,14 +123,14 @@ class _BlocEditorState extends State<BlocEditor> {
   }
 }
 
-class UsuarisTab extends StatefulWidget {
-  const UsuarisTab({super.key});
+class PestanyaUsuaris extends StatefulWidget {
+  const PestanyaUsuaris({super.key});
 
   @override
-  State<UsuarisTab> createState() => _UsuarisTabState();
+  State<PestanyaUsuaris> createState() => _PestanyaUsuarisState();
 }
 
-class _UsuarisTabState extends State<UsuarisTab> {
+class _PestanyaUsuarisState extends State<PestanyaUsuaris> {
   List<Map<String, dynamic>>? usuaris;
   bool nouVisible = false;
 
@@ -160,7 +160,7 @@ class _UsuarisTabState extends State<UsuarisTab> {
         Text(t('multiRol'), style: const TextStyle(fontSize: 12.5, color: textCol)),
         const SizedBox(height: 10),
         if (nouVisible)
-          UsuariForm(onFet: () {
+          FormulariUsuari(onFet: () {
             setState(() => nouVisible = false);
             _carrega();
           }),
@@ -173,13 +173,13 @@ class _UsuarisTabState extends State<UsuarisTab> {
               IconButton(icon: const Icon(Icons.edit, size: 20), onPressed: () async {
                 final fet = await showDialog<bool>(
                   context: context,
-                  builder: (_) => Dialog(child: Padding(padding: const EdgeInsets.all(16), child: UsuariForm(existent: usr))),
+                  builder: (_) => Dialog(child: Padding(padding: const EdgeInsets.all(16), child: FormulariUsuari(existent: usr))),
                 );
                 if (fet == true) _carrega();
               }),
               IconButton(icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey), onPressed: () async {
                 await Estat.i.call('eliminarUsuari', [Estat.i.token, usr['email']]);
-                Estat.i.fok();
+                Estat.i.mostraOk();
                 _carrega();
               }),
             ])),
@@ -188,16 +188,16 @@ class _UsuarisTabState extends State<UsuarisTab> {
   }
 }
 
-class UsuariForm extends StatefulWidget {
-  const UsuariForm({super.key, this.existent, this.onFet});
+class FormulariUsuari extends StatefulWidget {
+  const FormulariUsuari({super.key, this.existent, this.onFet});
   final Map<String, dynamic>? existent;
   final VoidCallback? onFet;
 
   @override
-  State<UsuariForm> createState() => _UsuariFormState();
+  State<FormulariUsuari> createState() => _FormulariUsuariState();
 }
 
-class _UsuariFormState extends State<UsuariForm> {
+class _FormulariUsuariState extends State<FormulariUsuari> {
   late final nom = TextEditingController(text: '${widget.existent?['nom'] ?? ''}');
   late final email = TextEditingController(text: '${widget.existent?['email'] ?? ''}');
   late final pw = TextEditingController();
@@ -223,7 +223,7 @@ class _UsuariFormState extends State<UsuariForm> {
         if (pw.text.isNotEmpty) 'contrasenya': pw.text,
       },
     ]);
-    Estat.i.fok();
+    Estat.i.mostraOk();
     if (widget.onFet != null) {
       widget.onFet!();
     } else if (context.mounted) {
@@ -260,8 +260,8 @@ class _UsuariFormState extends State<UsuariForm> {
   }
 }
 
-class NetejaTab extends StatelessWidget {
-  const NetejaTab({super.key});
+class PestanyaNeteja extends StatelessWidget {
+  const PestanyaNeteja({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -278,7 +278,7 @@ class NetejaTab extends StatelessWidget {
               label: Text(t('executa')),
               onPressed: () async {
                 await Estat.i.call('executarNeteja', [Estat.i.token, 'juliol']);
-                Estat.i.fok();
+                Estat.i.mostraOk();
               },
             ),
           ]),
@@ -292,7 +292,7 @@ class NetejaTab extends StatelessWidget {
               label: Text(t('executa')),
               onPressed: () async {
                 await Estat.i.call('executarNeteja', [Estat.i.token, 'capdany']);
-                Estat.i.fok();
+                Estat.i.mostraOk();
               },
             ),
           ]),

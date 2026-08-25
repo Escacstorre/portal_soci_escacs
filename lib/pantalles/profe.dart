@@ -1,10 +1,10 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import '../../models.dart';
-import '../../state.dart';
-import '../../widgets.dart';
+import '../../estat.dart';
+import '../../ginys.dart';
 
 Future<void> carregaProfe() async {
   final st = Estat.i;
@@ -17,14 +17,14 @@ Future<void> carregaProfe() async {
   st.ptot = ProfeDades.de(d);
 }
 
-class ProfeScreen extends StatefulWidget {
-  const ProfeScreen({super.key});
+class ProfePantalla extends StatefulWidget {
+  const ProfePantalla({super.key});
 
   @override
-  State<ProfeScreen> createState() => _ProfeScreenState();
+  State<ProfePantalla> createState() => _ProfePantallaState();
 }
 
-class _ProfeScreenState extends State<ProfeScreen> {
+class _ProfePantallaState extends State<ProfePantalla> {
   @override
   void initState() {
     super.initState();
@@ -152,8 +152,8 @@ class _ProfeScreenState extends State<ProfeScreen> {
   }
 }
 
-class ProfeAlumnesScreen extends StatelessWidget {
-  const ProfeAlumnesScreen({super.key});
+class ProfeAlumnesPantalla extends StatelessWidget {
+  const ProfeAlumnesPantalla({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +175,7 @@ class ProfeAlumnesScreen extends StatelessWidget {
                 for (var tr = 1; tr <= 3; tr++)
                   Padding(
                     padding: const EdgeInsets.only(top: 6),
-                    child: DataIniciRow(alumneId: a.id, trim: tr, inicial: a.inici[tr - 1]),
+                    child: FilaDataInici(alumneId: a.id, trim: tr, inicial: a.inici[tr - 1]),
                   ),
               ]),
             )),
@@ -184,17 +184,17 @@ class ProfeAlumnesScreen extends StatelessWidget {
   }
 }
 
-class DataIniciRow extends StatefulWidget {
-  const DataIniciRow({super.key, required this.alumneId, required this.trim, required this.inicial});
+class FilaDataInici extends StatefulWidget {
+  const FilaDataInici({super.key, required this.alumneId, required this.trim, required this.inicial});
   final String alumneId;
   final int trim;
   final String inicial;
 
   @override
-  State<DataIniciRow> createState() => _DataIniciRowState();
+  State<FilaDataInici> createState() => _FilaDataIniciState();
 }
 
-class _DataIniciRowState extends State<DataIniciRow> {
+class _FilaDataIniciState extends State<FilaDataInici> {
   late String valor = widget.inicial;
 
   @override
@@ -225,7 +225,7 @@ class _DataIniciRowState extends State<DataIniciRow> {
     setState(() => valor = nova);
     await Estat.i.call('setDataInici', [Estat.i.token, widget.alumneId, widget.trim, nova]);
     await carregaProfe();
-    Estat.i.fok();
+    Estat.i.mostraOk();
     Estat.i.refres();
   }
 }

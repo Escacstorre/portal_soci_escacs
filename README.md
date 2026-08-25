@@ -11,27 +11,27 @@ El backend és el mateix de sempre (**Google Sheets + Apps Script**); aquesta ap
 
 ```text
 lib/
-├─ main.dart        → arrencada, tema, router de vistes + overlays globals (progrés/toast)
-├─ state.dart       → Estat singleton: sessió, caché de lectures, navegació, crides
-├─ bridge.dart      → transport cap a Apps Script (iframe pont + postMessage)
-├─ models.dart      → models tipats (TotSoci, GestorDades, ProfeDades…)
-├─ i18n.dart        → diccionaris CA/ES + traduccions dinàmiques (fulla Traduccions)
-├─ widgets.dart     → colors, Hdr, xips, CampText, selector d'arxius, idioma…
-└─ screens/
-   ├─ auth.dart     → Login · Registre · Selector multirol
-   ├─ soci.dart     → inici, classes (alta/alumnes/trimestres), fitxa (jugadors/anys)
-   ├─ profe.dart    → llista per trimestre, calendari+ICS, preus, dates d'inici
-   ├─ gestor.dart   → Pagat, Edició soci, JugEdit, AlumneEdit, Alta ràpida, Escola
-   └─ config.dart   → ⚙ Club · Correus · Usuaris (multirol) · Sistema · Neteja
+├─ main.dart         → arrencada, tema, router de vistes + overlays globals (progrés/toast)
+├─ estat.dart        → Estat singleton: sessió, caché de lectures, navegació, crides
+├─ pont.dart         → transport cap a Apps Script (iframe pont + postMessage)
+├─ models.dart       → models tipats (DadesSoci, GestorDades, ProfeDades…)
+├─ traduccions.dart  → diccionaris CA/ES + traduccions dinàmiques (fulla Traduccions)
+├─ ginys.dart        → colors, Capcalera, xips, CampText, selector d'arxius, idioma…
+└─ pantalles/
+   ├─ acces.dart       → IniciSessioPantalla · RegistrePantalla · SelectorPantalla
+   ├─ soci.dart        → IniciSociPantalla, ClassesInici/Alta/AlumnesPantalla, TrimestresPantalla, FitxaIniciPantalla, Jugadors/Anys/AltaPantalla
+   ├─ profe.dart       → ProfePantalla, ProfeAlumnesPantalla, FilaDataInici
+   ├─ gestor.dart      → AdminIniciPantalla, PagatPantalla, EdicioSociPantalla, JugadorEdicioPantalla, AlumneEdicioPantalla, AltaRapidaPantalla, EscolaPantalla
+   └─ configuracio.dart → ConfiguracioPantalla, EditorBloc, PestanyaUsuaris, PestanyaNeteja, FormulariUsuari
 ```
 
 ### Flux de dades
 
-1. `Estat.i.call(fn, args)` és l'única porta al backend.
+1. `Estat.i.crida(fn, args)` és l'única porta al backend.
 2. Si `fn` és una lectura va amb **caché de 90 s**; si és escriptura neteja la caché i mostra la barra de progrés.
-3. El transport (`bridge.dart`) envia `{tipo:'ps-call',id,fn,args}` com a string JSON via `postMessage`
+3. El transport (`pont.dart`) envia `{tipo:'ps-call',id,fn,args}` com a string JSON via `postMessage`
    a un iframe ocult d'1px carregat de `.../exec?page=bridge`; `Bridge.html` fa `google.script.run` i respon
-   `{tipo:'ps-resp',id,ok,data}`. Timeout 90 s → `PortalException`.
+   `{tipo:'ps-resp',id,ok,data}`. Timeout 90 s → `ExcepcioPortal`.
 4. Si el backend respon `SESSIO_CADUCADA`, l'app fa **logout automàtic** i torna al login.
 
 ### Navegació
@@ -49,7 +49,7 @@ Stack propi de `Vista(nom, dades)` **sincronitzat amb l'historial del navegador*
 
 ## Colors / disseny
 
-Tota la paleta viu a `widgets.dart`:
+Tota la paleta viu a `ginys.dart`:
 
 ```dart
 const pri = Color(0xFF1A5FB4);      // color principal

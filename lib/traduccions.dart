@@ -1,6 +1,6 @@
-class I18n {
-  I18n._();
-  static final I18n instance = I18n._();
+﻿class Traduccions {
+  Traduccions._();
+  static final Traduccions instance = Traduccions._();
 
   String lang = 'CA';
   Map<String, dynamic> lx = {};

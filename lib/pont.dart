@@ -1,17 +1,17 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:convert';
 import 'dart:html' as html;
 
-class PortalException implements Exception {
+class ExcepcioPortal implements Exception {
   final String message;
-  PortalException(this.message);
+  ExcepcioPortal(this.message);
   @override
   String toString() => message;
 }
 
-class Bridge {
-  Bridge._();
-  static final Bridge instance = Bridge._();
+class Pont {
+  Pont._();
+  static final Pont instance = Pont._();
 
   html.IFrameElement? _frame;
   final Map<String, Completer<dynamic>> _pendents = {};
@@ -44,7 +44,7 @@ class Bridge {
     if (m['ok'] == true) {
       c.complete(m['data']);
     } else {
-      c.completeError(PortalException('${m['data'] ?? 'Error'}'));
+      c.completeError(ExcepcioPortal('${m['data'] ?? 'Error'}'));
     }
   }
 
@@ -58,7 +58,7 @@ class Bridge {
       const Duration(seconds: 90),
       onTimeout: () {
         _pendents.remove(id);
-        throw PortalException('#SESSIO_CADUCADA#');
+        throw ExcepcioPortal('#SESSIO_CADUCADA#');
       },
     );
   }

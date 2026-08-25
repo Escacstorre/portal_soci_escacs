@@ -1,13 +1,13 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import '../../models.dart';
-import '../../state.dart';
-import '../../widgets.dart';
+import '../../estat.dart';
+import '../../ginys.dart';
 
-class HomeSociScreen extends StatelessWidget {
-  const HomeSociScreen({super.key});
+class IniciSociPantalla extends StatelessWidget {
+  const IniciSociPantalla({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class HomeSociScreen extends StatelessWidget {
               spacing: 6,
               children: [
                 Text('${t('quotaAny')} ${d?.any ?? ''}: '),
-                QuotaChip(quota: d?.quota ?? ''),
+                XipQuota(quota: d?.quota ?? ''),
                 if (d?.quotaRebut != null)
                   TextButton(
                     onPressed: () => obrirUrl(d!.quotaRebut!.url),
@@ -78,8 +78,8 @@ class _Gran extends StatelessWidget {
   }
 }
 
-class ClassesHomeScreen extends StatelessWidget {
-  const ClassesHomeScreen({super.key});
+class ClassesIniciPantalla extends StatelessWidget {
+  const ClassesIniciPantalla({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -98,14 +98,14 @@ class ClassesHomeScreen extends StatelessWidget {
   }
 }
 
-class ClassesAltaScreen extends StatefulWidget {
-  const ClassesAltaScreen({super.key});
+class ClassesAltaPantalla extends StatefulWidget {
+  const ClassesAltaPantalla({super.key});
 
   @override
-  State<ClassesAltaScreen> createState() => _ClassesAltaScreenState();
+  State<ClassesAltaPantalla> createState() => _ClassesAltaPantallaState();
 }
 
-class _ClassesAltaScreenState extends State<ClassesAltaScreen> {
+class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
   late final n = TextEditingController();
   late final tel = TextEditingController(text: Estat.i.inici?.telefon ?? '');
   late final e = TextEditingController(text: Estat.i.inici?.email ?? '');
@@ -120,7 +120,7 @@ class _ClassesAltaScreenState extends State<ClassesAltaScreen> {
     });
     try {
       await st.call('altaAlumne', [st.token, {'nom': n.text, 'telefon': tel.text, 'email': e.text}]);
-      unawaited(st.refreshTot());
+      unawaited(st.recarregaTot());
       if (!mounted) return;
       setState(() {
         msg = 'OK';
@@ -130,7 +130,7 @@ class _ClassesAltaScreenState extends State<ClassesAltaScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        msg = st.toastMsg ?? 'Error';
+        msg = st.toastMissatge ?? 'Error';
         err = true;
       });
     }
@@ -169,8 +169,8 @@ class _ClassesAltaScreenState extends State<ClassesAltaScreen> {
   }
 }
 
-class ClassesAlumnesScreen extends StatelessWidget {
-  const ClassesAlumnesScreen({super.key});
+class ClassesAlumnesPantalla extends StatelessWidget {
+  const ClassesAlumnesPantalla({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +190,7 @@ class ClassesAlumnesScreen extends StatelessWidget {
                 for (var i = 0; i < 3; i++)
                   Padding(
                     padding: const EdgeInsets.only(left: 4),
-                    child: EstatChip(estat: i < a.trims.length ? a.trims[i].estat : ''),
+                    child: XipEstat(estat: i < a.trims.length ? a.trims[i].estat : ''),
                   ),
               ],
             )),
@@ -199,8 +199,8 @@ class ClassesAlumnesScreen extends StatelessWidget {
   }
 }
 
-class TrimestresScreen extends StatelessWidget {
-  TrimestresScreen({super.key, required this.alumneId});
+class TrimestresPantalla extends StatelessWidget {
+  TrimestresPantalla({super.key, required this.alumneId});
   final String alumneId;
 
   AlumneSoci? get _alumne {
@@ -216,8 +216,8 @@ class TrimestresScreen extends StatelessWidget {
     final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
     if (f == null) return;
     await st.call('pujarRebut', [st.token, 'Classes', alumneId, periode, f]);
-    await st.refreshTot();
-    st.fok();
+    await st.recarregaTot();
+    st.mostraOk();
     st.refres();
   }
 
@@ -241,7 +241,7 @@ class TrimestresScreen extends StatelessWidget {
                 Expanded(
                     child: Text('${t('trimestre')} ${tr.t} — ${tr.preu} €',
                         style: const TextStyle(fontWeight: FontWeight.bold))),
-                EstatChip(estat: tr.estat),
+                XipEstat(estat: tr.estat),
               ]),
               const SizedBox(height: 8),
               if (tr.estat == 'Validat')
@@ -271,8 +271,8 @@ class TrimestresScreen extends StatelessWidget {
   }
 }
 
-class FitxaHomeScreen extends StatelessWidget {
-  const FitxaHomeScreen({super.key});
+class FitxaIniciPantalla extends StatelessWidget {
+  const FitxaIniciPantalla({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -291,8 +291,8 @@ class FitxaHomeScreen extends StatelessWidget {
   }
 }
 
-class JugadorsScreen extends StatelessWidget {
-  const JugadorsScreen({super.key});
+class JugadorsPantalla extends StatelessWidget {
+  const JugadorsPantalla({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -315,8 +315,8 @@ class JugadorsScreen extends StatelessWidget {
   }
 }
 
-class JugadorAnysScreen extends StatelessWidget {
-  JugadorAnysScreen({super.key, required this.jugadorId});
+class JugadorAnysPantalla extends StatelessWidget {
+  JugadorAnysPantalla({super.key, required this.jugadorId});
   final String jugadorId;
 
   JugadorSoci? get _jug {
@@ -332,8 +332,8 @@ class JugadorAnysScreen extends StatelessWidget {
     final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
     if (f == null) return;
     await st.call('pujarRebut', [st.token, 'Federacio', jugadorId, anyFed, f]);
-    await st.refreshTot();
-    st.fok();
+    await st.recarregaTot();
+    st.mostraOk();
     st.refres();
   }
 
@@ -353,7 +353,7 @@ class JugadorAnysScreen extends StatelessWidget {
               Text(a.any, style: const TextStyle(fontWeight: FontWeight.bold)),
               Text(' — ${a.preu} €'),
               const SizedBox(width: 8),
-              EstatChip(estat: a.estat),
+              XipEstat(estat: a.estat),
               const Spacer(),
               if (a.estat == 'Validat' && a.rebut != null)
                 IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl(a.rebut!.url))
@@ -370,14 +370,14 @@ class JugadorAnysScreen extends StatelessWidget {
   }
 }
 
-class JugadorAltaScreen extends StatefulWidget {
-  const JugadorAltaScreen({super.key});
+class JugadorAltaPantalla extends StatefulWidget {
+  const JugadorAltaPantalla({super.key});
 
   @override
-  State<JugadorAltaScreen> createState() => _JugadorAltaScreenState();
+  State<JugadorAltaPantalla> createState() => _JugadorAltaPantallaState();
 }
 
-class _JugadorAltaScreenState extends State<JugadorAltaScreen> {
+class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
   late final nom = TextEditingController();
   late final cog = TextEditingController();
   String dataNaix = '';
@@ -410,7 +410,7 @@ class _JugadorAltaScreenState extends State<JugadorAltaScreen> {
           if (foto != null) 'foto': foto,
         },
       ]);
-      unawaited(st.refreshTot());
+      unawaited(st.recarregaTot());
       if (!mounted) return;
       setState(() {
         msg = 'OK';
@@ -419,7 +419,7 @@ class _JugadorAltaScreenState extends State<JugadorAltaScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        msg = st.toastMsg ?? 'Error';
+        msg = st.toastMissatge ?? 'Error';
         err = true;
       });
     }

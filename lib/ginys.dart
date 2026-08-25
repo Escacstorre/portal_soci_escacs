@@ -1,10 +1,10 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 
-import 'i18n.dart';
-import 'state.dart';
+import 'traduccions.dart';
+import 'estat.dart';
 
 const pri = Color(0xFF1A5FB4);
 const titol = Color(0xFF1B2733);
@@ -23,7 +23,7 @@ class IdiomaMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final i18n = I18n.instance;
+    final i18n = Traduccions.instance;
     return DropdownButton<String>(
       value: i18n.lang,
       underline: const SizedBox.shrink(),
@@ -42,15 +42,15 @@ class IdiomaMenu extends StatelessWidget {
 }
 
 void setStateIdioma(String codi) {
-  final i18n = I18n.instance;
+  final i18n = Traduccions.instance;
   if (!i18n.langs.contains(codi)) return;
   i18n.lang = codi;
   html.window.localStorage['ps_lang'] = codi;
   Estat.i.refres();
 }
 
-class Hdr extends StatelessWidget implements PreferredSizeWidget {
-  const Hdr({super.key, this.torna = false});
+class Capcalera extends StatelessWidget implements PreferredSizeWidget {
+  const Capcalera({super.key, this.torna = false});
   final bool torna;
 
   @override
@@ -87,7 +87,7 @@ class Hdr extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.only(right: 8),
           child: TextButton(
-            onPressed: () => st.logoutUI(),
+            onPressed: () => st.tancaSessio(),
             child: Text(st.i18n.t('tanca'), style: const TextStyle(fontSize: 13)),
           ),
         ),
@@ -96,8 +96,8 @@ class Hdr extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class EstatChip extends StatelessWidget {
-  const EstatChip({super.key, required this.estat});
+class XipEstat extends StatelessWidget {
+  const XipEstat({super.key, required this.estat});
   final String estat;
 
   @override
@@ -122,8 +122,8 @@ class EstatChip extends StatelessWidget {
   }
 }
 
-class QuotaChip extends StatelessWidget {
-  const QuotaChip({super.key, required this.quota});
+class XipQuota extends StatelessWidget {
+  const XipQuota({super.key, required this.quota});
   final String quota;
 
   @override
@@ -229,7 +229,7 @@ Future<Map<String, dynamic>?> triaArxiu(String accept) async {
         return;
       }
       if (f.size > 5 * 1024 * 1024) {
-        Estat.i.ferr('Màxim 5 MB');
+        Estat.i.mostraError('Màxim 5 MB');
         completer.complete(null);
         return;
       }

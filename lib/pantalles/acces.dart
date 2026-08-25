@@ -1,16 +1,16 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
-import '../../state.dart';
-import '../../widgets.dart';
+import '../../estat.dart';
+import '../../ginys.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class IniciSessioPantalla extends StatefulWidget {
+  const IniciSessioPantalla({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<IniciSessioPantalla> createState() => _IniciSessioPantallaState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
   final u = TextEditingController();
   final p = TextEditingController();
   String? err;
@@ -20,12 +20,12 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => err = st.i18n.t('enviant'));
     try {
       final d = (await st.call('login', [u.text.trim().toLowerCase(), p.text]) as Map).cast<String, dynamic>();
-      st.setTok(d['token'] as String);
+      st.posaToken(d['token'] as String);
       st.user = {'nom': d['nom'], 'rols': d['rols'], 'rolActiu': d['rolActiu']};
       setState(() => err = null);
       st.entra();
     } catch (_) {
-      setState(() => err = Estat.i.toastMsg);
+      setState(() => err = Estat.i.toastMissatge);
     }
   }
 
@@ -91,14 +91,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-class RegistreScreen extends StatefulWidget {
-  const RegistreScreen({super.key});
+class RegistrePantalla extends StatefulWidget {
+  const RegistrePantalla({super.key});
 
   @override
-  State<RegistreScreen> createState() => _RegistreScreenState();
+  State<RegistrePantalla> createState() => _RegistrePantallaState();
 }
 
-class _RegistreScreenState extends State<RegistreScreen> {
+class _RegistrePantallaState extends State<RegistrePantalla> {
   final n = TextEditingController(), d = TextEditingController(), tel = TextEditingController();
   final e = TextEditingController(), b = TextEditingController(), c = TextEditingController(), c2 = TextEditingController();
   Map<String, dynamic>? rebut;
@@ -130,7 +130,7 @@ class _RegistreScreenState extends State<RegistreScreen> {
       setState(() { msg = t('enRev'); msgErr = false; });
       Future.delayed(const Duration(seconds: 3), () => st.reset('login'));
     } catch (_) {
-      setState(() { msg = st.toastMsg; msgErr = true; });
+      setState(() { msg = st.toastMissatge; msgErr = true; });
     }
   }
 
@@ -184,8 +184,8 @@ class _RegistreScreenState extends State<RegistreScreen> {
   }
 }
 
-class SelectorScreen extends StatelessWidget {
-  const SelectorScreen({super.key});
+class SelectorPantalla extends StatelessWidget {
+  const SelectorPantalla({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +206,7 @@ class SelectorScreen extends StatelessWidget {
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     IconButton(icon: const Icon(Icons.refresh), onPressed: () => st.refrescaUI()),
                     const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: IdiomaMenu()),
-                    TextButton(onPressed: () => st.logoutUI(), child: Text(t('tanca'))),
+                    TextButton(onPressed: () => st.tancaSessio(), child: Text(t('tanca'))),
                   ]),
                 ),
                 Text('${t('hola')}, ${st.user?['nom'] ?? ''}',

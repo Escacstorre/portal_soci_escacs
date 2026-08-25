@@ -1,12 +1,12 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import '../../models.dart';
-import '../../state.dart';
-import '../../widgets.dart';
-class AdminHomeScreen extends StatelessWidget {
-  const AdminHomeScreen({super.key});
+import '../../estat.dart';
+import '../../ginys.dart';
+class AdminIniciPantalla extends StatelessWidget {
+  const AdminIniciPantalla({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -61,14 +61,14 @@ Future<GestorDades> carregaGestor() async {
   return st.gest!;
 }
 
-class PagatScreen extends StatefulWidget {
-  const PagatScreen({super.key});
+class PagatPantalla extends StatefulWidget {
+  const PagatPantalla({super.key});
 
   @override
-  State<PagatScreen> createState() => _PagatScreenState();
+  State<PagatPantalla> createState() => _PagatPantallaState();
 }
 
-class _PagatScreenState extends State<PagatScreen> {
+class _PagatPantallaState extends State<PagatPantalla> {
   late Future<GestorDades> _fut = carregaGestor();
   Timer? _deb;
 
@@ -139,12 +139,12 @@ class _PagatScreenState extends State<PagatScreen> {
                   value: s.estat == 'Actiu',
                   onChanged: (chk) async {
                     if (chk != true) {
-                      Estat.i.ferr(Estat.i.i18n.t('actPend'));
+                      Estat.i.mostraError(Estat.i.i18n.t('actPend'));
                       return;
                     }
                     await Estat.i.call('decidirAltaSoci', [Estat.i.token, s.id, true]);
                     s.estat = 'Actiu';
-                    Estat.i.fok('Actiu ✓');
+                    Estat.i.mostraOk('Actiu ✓');
                     setState(() {});
                   },
                 ),
@@ -175,7 +175,7 @@ class _PagatScreenState extends State<PagatScreen> {
                     );
                     if (ok != true) return;
                     await Estat.i.call('eliminarSoci', [Estat.i.token, s.id]);
-                    Estat.i.buidaCache();
+                    Estat.i.buidaCachu();
                     setState(() => _fut = carregaGestor());
                   },
                 ),
@@ -188,14 +188,14 @@ class _PagatScreenState extends State<PagatScreen> {
   }
 }
 
-class AltaRapidaScreen extends StatefulWidget {
-  const AltaRapidaScreen({super.key});
+class AltaRapidaPantalla extends StatefulWidget {
+  const AltaRapidaPantalla({super.key});
 
   @override
-  State<AltaRapidaScreen> createState() => _AltaRapidaScreenState();
+  State<AltaRapidaPantalla> createState() => _AltaRapidaPantallaState();
 }
 
-class _AltaRapidaScreenState extends State<AltaRapidaScreen> {
+class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
   final n = TextEditingController(), dni = TextEditingController(), tel = TextEditingController();
   final em = TextEditingController(), banc = TextEditingController(), pw = TextEditingController();
   final a1 = TextEditingController(), a2 = TextEditingController(), a3 = TextEditingController();
@@ -239,7 +239,7 @@ class _AltaRapidaScreenState extends State<AltaRapidaScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        msg = st.toastMsg ?? 'Error';
+        msg = st.toastMissatge ?? 'Error';
         err = true;
       });
     }
@@ -283,15 +283,15 @@ class _AltaRapidaScreenState extends State<AltaRapidaScreen> {
   }
 }
 
-class EdicioSociScreen extends StatefulWidget {
-  const EdicioSociScreen({super.key, required this.sociId});
+class EdicioSociPantalla extends StatefulWidget {
+  const EdicioSociPantalla({super.key, required this.sociId});
   final String sociId;
 
   @override
-  State<EdicioSociScreen> createState() => _EdicioSociScreenState();
+  State<EdicioSociPantalla> createState() => _EdicioSociPantallaState();
 }
 
-class _EdicioSociScreenState extends State<EdicioSociScreen> {
+class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
   late Future<Map<String, dynamic>> _fut = _carrega();
   final n = TextEditingController(), dni = TextEditingController(), tel = TextEditingController();
   final em = TextEditingController(), banc = TextEditingController();
@@ -352,8 +352,8 @@ class _EdicioSociScreenState extends State<EdicioSociScreen> {
                 s['id'],
                 {'nom': n.text, 'dni': dni.text, 'telefon': tel.text, 'email': em.text, 'numBanc': banc.text},
               ]);
-              Estat.i.buidaCache();
-              Estat.i.fok();
+              Estat.i.buidaCachu();
+              Estat.i.mostraOk();
             },
           ),
           OutlinedButton.icon(
@@ -361,7 +361,7 @@ class _EdicioSociScreenState extends State<EdicioSociScreen> {
             label: Text(t('restabContra'), style: const TextStyle(fontSize: 13)),
             onPressed: () async {
               await Estat.i.call('restablirContrasenya', [Estat.i.token, s['id']]);
-              Estat.i.fok();
+              Estat.i.mostraOk();
             },
           ),
         ]),
@@ -394,7 +394,7 @@ class _EdicioSociScreenState extends State<EdicioSociScreen> {
                 _chkAny(j['anyVinent'], '${anyFed + 1}'),
                 IconButton(icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey), onPressed: () async {
                   await Estat.i.call('eliminarJugador', [Estat.i.token, j['id']]);
-                  Estat.i.buidaCache();
+                  Estat.i.buidaCachu();
                   _refresca();
                 }),
               ],
@@ -415,8 +415,8 @@ class _EdicioSociScreenState extends State<EdicioSociScreen> {
         value: m['estat'] == 'Validat',
         onChanged: (v) async {
           await Estat.i.call('togglePagament', [Estat.i.token, m['id'], v == true]);
-          Estat.i.buidaCache();
-          Estat.i.fok();
+          Estat.i.buidaCachu();
+          Estat.i.mostraOk();
         },
       ),
     ]);
@@ -454,8 +454,8 @@ class _EdicioSociScreenState extends State<EdicioSociScreen> {
                       value: tr['estat'] == 'Validat',
                       onChanged: (v) async {
                         await Estat.i.call('togglePagament', [Estat.i.token, tr['id'], v == true]);
-                        Estat.i.buidaCache();
-                        Estat.i.fok();
+                        Estat.i.buidaCachu();
+                        Estat.i.mostraOk();
                       },
                     ),
                   ]),
@@ -464,7 +464,7 @@ class _EdicioSociScreenState extends State<EdicioSociScreen> {
                 icon: const Icon(Icons.done_all, size: 20, color: verd),
                 onPressed: () async {
                   await Estat.i.call('validarCursComplet', [Estat.i.token, a['id'], curs.toInt()]);
-                  Estat.i.buidaCache();
+                  Estat.i.buidaCachu();
                   _refresca();
                 },
               ),
@@ -472,7 +472,7 @@ class _EdicioSociScreenState extends State<EdicioSociScreen> {
                 icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey),
                 onPressed: () async {
                   await Estat.i.call('eliminarAlumne', [Estat.i.token, a['id']]);
-                  Estat.i.buidaCache();
+                  Estat.i.buidaCachu();
                   _refresca();
                 },
               ),
@@ -485,16 +485,16 @@ class _EdicioSociScreenState extends State<EdicioSociScreen> {
   }
 }
 
-class JugEditScreen extends StatefulWidget {
-  const JugEditScreen({super.key, required this.jugadorId, required this.sociId});
+class JugadorEdicioPantalla extends StatefulWidget {
+  const JugadorEdicioPantalla({super.key, required this.jugadorId, required this.sociId});
   final String jugadorId;
   final String sociId;
 
   @override
-  State<JugEditScreen> createState() => _JugEditScreenState();
+  State<JugadorEdicioPantalla> createState() => _JugadorEdicioPantallaState();
 }
 
-class _JugEditScreenState extends State<JugEditScreen> {
+class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
   final nom = TextEditingController(), cog = TextEditingController(), dn = TextEditingController();
   final dni = TextEditingController(), adr = TextEditingController();
   Map<String, dynamic>? fotoNova;
@@ -556,8 +556,8 @@ class _JugEditScreenState extends State<JugEditScreen> {
                     if (fotoNova != null) 'foto': fotoNova,
                   },
                 ]);
-                Estat.i.buidaCache();
-                Estat.i.fok();
+                Estat.i.buidaCachu();
+                Estat.i.mostraOk();
                 Estat.i.go('edicioSoci', widget.sociId);
               }, child: Text(t('guardar')))),
             ]),
@@ -568,16 +568,16 @@ class _JugEditScreenState extends State<JugEditScreen> {
   }
 }
 
-class AlumneEditScreen extends StatefulWidget {
-  const AlumneEditScreen({super.key, required this.alumneId, required this.sociId});
+class AlumneEdicioPantalla extends StatefulWidget {
+  const AlumneEdicioPantalla({super.key, required this.alumneId, required this.sociId});
   final String alumneId;
   final String sociId;
 
   @override
-  State<AlumneEditScreen> createState() => _AlumneEditScreenState();
+  State<AlumneEdicioPantalla> createState() => _AlumneEdicioPantallaState();
 }
 
-class _AlumneEditScreenState extends State<AlumneEditScreen> {
+class _AlumneEdicioPantallaState extends State<AlumneEdicioPantalla> {
   final nom = TextEditingController(), tel = TextEditingController(), em = TextEditingController();
 
   @override
@@ -616,8 +616,8 @@ class _AlumneEditScreenState extends State<AlumneEditScreen> {
                   widget.alumneId,
                   {'nom': nom.text, 'telefon': tel.text, 'email': em.text},
                 ]);
-                Estat.i.buidaCache();
-                Estat.i.fok();
+                Estat.i.buidaCachu();
+                Estat.i.mostraOk();
                 Estat.i.back();
               }, child: Text(t('guardar')))),
             ]),
@@ -628,14 +628,14 @@ class _AlumneEditScreenState extends State<AlumneEditScreen> {
   }
 }
 
-class EscolaScreen extends StatefulWidget {
-  const EscolaScreen({super.key});
+class EscolaPantalla extends StatefulWidget {
+  const EscolaPantalla({super.key});
 
   @override
-  State<EscolaScreen> createState() => _EscolaScreenState();
+  State<EscolaPantalla> createState() => _EscolaPantallaState();
 }
 
-class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderStateMixin {
+class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProviderStateMixin {
   late Future<GestorDades> _fut = carregaGestor();
   late final TabController _tabs = TabController(length: 4, vsync: this, initialIndex: _idx0());
 
@@ -713,9 +713,9 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
                   final v = ctrl.text.trim();
                   if (v.isEmpty) return;
                   await Estat.i.call('setFestiu', [Estat.i.token, v]);
-                  Estat.i.buidaCache();
+                  Estat.i.buidaCachu();
                   ctrl.clear();
-                  Estat.i.fok();
+                  Estat.i.mostraOk();
                   setState(() => _fut = carregaGestor());
                 },
               ),
@@ -735,8 +735,8 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
               Expanded(child: Text(f)),
               IconButton(icon: const Icon(Icons.delete_outline, color: Colors.grey), onPressed: () async {
                 await Estat.i.call('esborrarFestiu', [Estat.i.token, f]);
-                Estat.i.buidaCache();
-                Estat.i.fok();
+                Estat.i.buidaCachu();
+                Estat.i.mostraOk();
                 setState(() => _fut = carregaGestor());
               }),
             ])),
@@ -757,8 +757,8 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
             FilledButton(
               onPressed: () async {
                 await Estat.i.call('setPreuDivendres', [Estat.i.token, preuDive.text]);
-                Estat.i.buidaCache();
-                Estat.i.fok();
+                Estat.i.buidaCachu();
+                Estat.i.mostraOk();
               },
               child: Text(t('guardar')),
             ),
@@ -792,8 +792,8 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
                   Estat.i.token,
                   {for (final k in claus) k: ctrls[k]!.text},
                 ]);
-                Estat.i.buidaCache();
-                Estat.i.fok();
+                Estat.i.buidaCachu();
+                Estat.i.mostraOk();
               },
               child: Text(Estat.i.i18n.t('guardar')),
             ),
@@ -817,8 +817,8 @@ class _EscolaScreenState extends State<EscolaScreen> with SingleTickerProviderSt
             FilledButton(
               onPressed: () async {
                 await Estat.i.call('setClasseConfig', [Estat.i.token, {'hora': hora.text, 'lloc': lloc.text}]);
-                Estat.i.buidaCache();
-                Estat.i.fok();
+                Estat.i.buidaCachu();
+                Estat.i.mostraOk();
               },
               child: Text(t('guardar')),
             ),

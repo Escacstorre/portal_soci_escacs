@@ -1,21 +1,21 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 
-import 'i18n.dart';
-import 'screens/auth.dart';
-import 'screens/config.dart';
-import 'screens/gestor.dart';
-import 'screens/profe.dart';
-import 'screens/soci.dart';
-import 'state.dart';
-import 'widgets.dart';
-import 'bridge.dart';
+import 'traduccions.dart';
+import 'pantalles/acces.dart';
+import 'pantalles/configuracio.dart';
+import 'pantalles/gestor.dart';
+import 'pantalles/profe.dart';
+import 'pantalles/soci.dart';
+import 'estat.dart';
+import 'ginys.dart';
+import 'pont.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Bridge.instance.init('$appsScriptUrl?page=bridge');
+  Pont.instance.init('$urlAppsScript?page=bridge');
   unawaited(Estat.i.arrenca());
   runApp(const PortalApp());
 }
@@ -70,53 +70,53 @@ class _ArrelState extends State<Arrel> {
   Widget _vista(String v) {
     switch (v) {
       case 'login':
-        return const LoginScreen();
+        return const IniciSessioPantalla();
       case 'registre':
-        return const RegistreScreen();
+        return const RegistrePantalla();
       case 'selector':
-        return const SelectorScreen();
+        return const SelectorPantalla();
       case 'homeSoci':
-        return const HomeSociScreen();
+        return const IniciSociPantalla();
       case 'classesHome':
-        return const ClassesHomeScreen();
+        return const ClassesIniciPantalla();
       case 'classesAlta':
-        return const ClassesAltaScreen();
+        return const ClassesAltaPantalla();
       case 'classesAlumnes':
-        return const ClassesAlumnesScreen();
+        return const ClassesAlumnesPantalla();
       case 'trimestres':
-        return TrimestresScreen(alumneId: Estat.i.vistaActual.dades as String);
+        return TrimestresPantalla(alumneId: Estat.i.vistaActual.dades as String);
       case 'fitxaHome':
-        return const FitxaHomeScreen();
+        return const FitxaIniciPantalla();
       case 'jugadorAlta':
-        return const JugadorAltaScreen();
+        return const JugadorAltaPantalla();
       case 'jugadors':
-        return const JugadorsScreen();
+        return const JugadorsPantalla();
       case 'jugadorAnys':
-        return JugadorAnysScreen(jugadorId: Estat.i.vistaActual.dades as String);
+        return JugadorAnysPantalla(jugadorId: Estat.i.vistaActual.dades as String);
       case 'profe':
-        return const ProfeScreen();
+        return const ProfePantalla();
       case 'profeAlumnes':
-        return const ProfeAlumnesScreen();
+        return const ProfeAlumnesPantalla();
       case 'adminHome':
-        return const AdminHomeScreen();
+        return const AdminIniciPantalla();
       case 'escola':
-        return const EscolaScreen();
+        return const EscolaPantalla();
       case 'pagat':
-        return const PagatScreen();
+        return const PagatPantalla();
       case 'edicioSoci':
-        return EdicioSociScreen(sociId: Estat.i.vistaActual.dades as String);
+        return EdicioSociPantalla(sociId: Estat.i.vistaActual.dades as String);
       case 'jugEdit':
         final d = (Estat.i.vistaActual.dades as Map).cast<String, dynamic>();
-        return JugEditScreen(jugadorId: d['id'] as String, sociId: d['sociId'] as String);
+        return JugadorEdicioPantalla(jugadorId: d['id'] as String, sociId: d['sociId'] as String);
       case 'alumneEdit':
         final d = (Estat.i.vistaActual.dades as Map).cast<String, dynamic>();
-        return AlumneEditScreen(alumneId: d['id'] as String, sociId: d['sociId'] as String);
+        return AlumneEdicioPantalla(alumneId: d['id'] as String, sociId: d['sociId'] as String);
       case 'altaRapida':
-        return const AltaRapidaScreen();
+        return const AltaRapidaPantalla();
       case 'config':
-        return const ConfigScreen();
+        return const ConfiguracioPantalla();
       default:
-        return const LoginScreen();
+        return const IniciSessioPantalla();
     }
   }
 
@@ -128,7 +128,7 @@ class _ArrelState extends State<Arrel> {
       appBar: _appBar(vista.nom),
       body: Stack(
         children: [
-          KeyedSubtree(key: ValueKey('${vista.nom}#${st.stack.length}#${I18n.instance.lang}'), child: _vista(vista.nom)),
+          KeyedSubtree(key: ValueKey('${vista.nom}#${st.stack.length}#${Traduccions.instance.lang}'), child: _vista(vista.nom)),
           if (st.ocupats > 0)
             const Positioned(
               top: 0,
@@ -136,7 +136,7 @@ class _ArrelState extends State<Arrel> {
               right: 0,
               child: LinearProgressIndicator(minHeight: 3),
             ),
-          if (st.toastMsg != null)
+          if (st.toastMissatge != null)
             Positioned(
               bottom: 16,
               left: 16,
@@ -146,11 +146,11 @@ class _ArrelState extends State<Arrel> {
                   constraints: const BoxConstraints(maxWidth: 560),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: st.toastOk ? verd : vermell,
+                      color: st.toastCorrecte ? verd : vermell,
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [BoxShadow(color: Colors.black.withOpacity(.2), blurRadius: 8)],
                   ),
-                  child: Text(st.toastMsg!,
+                  child: Text(st.toastMissatge!,
                       style: const TextStyle(color: Colors.white, fontSize: 14),
                       textAlign: TextAlign.center),
                 ),
@@ -163,6 +163,6 @@ class _ArrelState extends State<Arrel> {
 
   PreferredSizeWidget? _appBar(String v) {
     if (v == 'login' || v == 'selector') return null;
-    return Hdr(torna: !const ['homeSoci', 'classesHome', 'fitxaHome', 'adminHome', 'profe'].contains(v));
+    return Capcalera(torna: !const ['homeSoci', 'classesHome', 'fitxaHome', 'adminHome', 'profe'].contains(v));
   }
 }
