@@ -15,6 +15,7 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
   final u = TextEditingController();
   final p = TextEditingController();
   String? err;
+  bool _veuContra = false;
 
   Future<void> _ferLogin() async {
     final st = Estat.i;
@@ -83,12 +84,16 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                       const SizedBox(height: 12),
                       TextField(
                         controller: p,
-                        obscureText: true,
+                        obscureText: !_veuContra,
                         textInputAction: TextInputAction.done,
                         onSubmitted: (_) => _ferLogin(),
                         decoration: InputDecoration(
                           labelText: t('contra'),
                           prefixIcon: const Icon(Icons.lock_outline, size: 20),
+                          suffixIcon: IconButton(
+                            icon: Icon(_veuContra ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 20, color: textCol),
+                            onPressed: () => setState(() => _veuContra = !_veuContra),
+                          ),
                           isDense: true,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(radiBoto)),
                         ),

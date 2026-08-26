@@ -22,6 +22,12 @@ class _ConfiguracioPantallaState extends State<ConfiguracioPantalla> with Single
   }
 
   @override
+  void dispose() {
+    _tabs.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
     final admin = _isAdmin();
@@ -179,25 +185,62 @@ class _PestanyaUsuarisState extends State<PestanyaUsuaris> {
             setState(() => nouVisible = false);
             _carrega();
           }),
-        ...u.map((usr) => ItemLlista(children: [
-              Expanded(child: Text('${usr['email']}', style: const TextStyle(fontWeight: FontWeight.bold))),
-              Flexible(
-                child: Text('${usr['rol']}',
-                    style: const TextStyle(fontSize: 12.5, color: textCol), overflow: TextOverflow.ellipsis),
-              ),
-              IconButton(icon: const Icon(Icons.edit, size: 20), onPressed: () async {
-                final fet = await showDialog<bool>(
-                  context: context,
-                  builder: (_) => Dialog(child: Padding(padding: const EdgeInsets.all(16), child: FormulariUsuari(existent: usr))),
-                );
-                if (fet == true) _carrega();
-              }),
-              IconButton(icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey), onPressed: () async {
-                await Estat.i.call('eliminarUsuari', [Estat.i.token, usr['email']]);
-                Estat.i.mostraOk();
-                _carrega();
-              }),
-            ])),
+        ...u.map((usr) => Carda(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(children: [
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('${usr['email']}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: pri.withValues(alpha: .08),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text('${usr['rol']}', style: const TextStyle(fontSize: 11.5, color: pri)),
+                    ),
+                  ]),
+                ),
+                const SizedBox(width: 12),
+                IconButton(
+                  tooltip: t('modifica'),
+                  icon: const Icon(Icons.edit_outlined, size: 20, color: pri),
+                  onPressed: () async {
+                    final fet = await showDialog<bool>(
+                      context: context,
+                      builder: (ctx2) => Dialog(
+                        backgroundColor: Colors.white,
+                        surfaceTintColor: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Row(children: [
+                              Expanded(child: Text(t('edicio'), style: const TextStyle(fontWeight: FontWeight.bold, color: titol))),
+                              IconButton(icon: const Icon(Icons.close, size: 20), onPressed: () => Navigator.pop(ctx2)),
+                            ]),
+                            const SizedBox(height: 8),
+                            FormulariUsuari(existent: usr),
+                          ]),
+                        ),
+                      ),
+                    );
+                    if (fet == true) _carrega();
+                  },
+                ),
+                IconButton(
+                  tooltip: t('elimina'),
+                  icon: Icon(Icons.delete_outline, size: 20, color: Colors.grey.shade400),
+                  onPressed: () async {
+                    final ok = await confirmaEliminacio(context, '${usr['email']} — eliminar?');
+                    if (ok != true) return;
+                    await Estat.i.call('eliminarUsuari', [Estat.i.token, usr['email']]);
+                    Estat.i.mostraOk();
+                    _carrega();
+                  },
+                ),
+              ]),
+            )),
       ],
     );
   }

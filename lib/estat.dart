@@ -136,14 +136,44 @@ class Estat {
 
   /// Rep el control quan l'usuari fa enrere/avançant al navegador.
   void onPopState() {
-    final prof = html.window.history.state;
-    final idx = (prof is num) ? prof.toInt() : null;
-    if (idx == null || idx < 1 || idx > stack.length - 1) {
+    final raw = html.window.history.state;
+    int? idx;
+    if (raw is num) {
+      idx = raw.toInt();
+    } else if (raw is String) {
+      idx = int.tryParse(raw);
+    } else if (raw != null) {
+      idx = int.tryParse(raw.toString());
+    }
+
+    if (idx == null) {
+      final h = html.window.location.hash.replaceFirst('#', '');
+      if (h.isEmpty) {
+        idx = 1;
+      } else {
+        final pos = stack.lastIndexWhere((v) => v.nom == h);
+        if (pos >= 0) {
+          idx = pos + 1;
+        } else {
+          // hash desconegut (p. ex. forward a entrada obsoleta) — no toquem l'stack
+          refres();
+          return;
+        }
+      }
+    }
+
+    if (idx >= 1 && idx <= stack.length) {
+      while (stack.length > idx) {
+        stack.removeLast();
+      }
+    } else if (idx < 1) {
       while (stack.length > 1) {
         stack.removeLast();
       }
+    } else if (idx > stack.length) {
+      // forward cap a estat futur desconegut — ignorem per evitar el salt a l'inici
     } else {
-      while (stack.length > idx) {
+      while (stack.length > 1) {
         stack.removeLast();
       }
     }

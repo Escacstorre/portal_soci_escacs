@@ -60,6 +60,13 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
 
   void _tab(int i) => Estat.i.pagatTab = i;
 
+  @override
+  void dispose() {
+    _tabs.dispose();
+    _deb?.cancel();
+    super.dispose();
+  }
+
   List<SociGestor> _filtra(List<SociGestor> socis) {
     final st = Estat.i;
     final q = st.pagatText.trim().toLowerCase();
@@ -830,6 +837,12 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
   }
 
   @override
+  void dispose() {
+    _tabs.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
     return FutureBuilder<GestorDades>(
@@ -1164,14 +1177,14 @@ class _TabFitxesState extends State<_TabFitxes> {
                 .toList(),
             onChanged: (v) => setState(() => filtre = v ?? ''),
           ),
-        ]),
-        const SizedBox(height: 4),
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          const SizedBox(width: 8),
           FilledButton.tonal(
             onPressed: () async {
               await showDialog<bool>(
                 context: context,
                 builder: (_) => Dialog(
+                  backgroundColor: Colors.white,
+                  surfaceTintColor: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: _FormulariRapidFitxa(socis: widget.d.socis),

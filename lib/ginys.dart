@@ -160,7 +160,7 @@ class ItemLlista extends StatelessWidget {
   }
 }
 
-class CampText extends StatelessWidget {
+class CampText extends StatefulWidget {
   const CampText({
     super.key,
     required this.controller,
@@ -184,21 +184,34 @@ class CampText extends StatelessWidget {
   final bool obligatori;
 
   @override
+  State<CampText> createState() => _CampTextState();
+}
+
+class _CampTextState extends State<CampText> {
+  late bool _amaga = widget.obscure;
+
+  @override
   Widget build(BuildContext context) {
-    final etiqueta = obligatori && hint != null ? '$hint *' : hint;
+    final etiqueta = widget.obligatori && widget.hint != null ? '${widget.hint} *' : widget.hint;
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: TextField(
-        controller: controller,
-        obscureText: obscure,
-        keyboardType: teclat,
-        maxLines: obscure ? 1 : linies,
-        onChanged: onChanged,
+        controller: widget.controller,
+        obscureText: _amaga,
+        keyboardType: widget.teclat,
+        maxLines: _amaga ? 1 : widget.linies,
+        onChanged: widget.onChanged,
         decoration: InputDecoration(
           labelText: etiqueta,
-          suffixText: sufix,
+          suffixText: widget.sufix,
           isDense: true,
-          errorText: error,
+          errorText: widget.error,
+          suffixIcon: widget.obscure
+              ? IconButton(
+                  icon: Icon(_amaga ? Icons.visibility_outlined : Icons.visibility_off_outlined, size: 20, color: textCol),
+                  onPressed: () => setState(() => _amaga = !_amaga),
+                )
+              : null,
         ),
       ),
     );

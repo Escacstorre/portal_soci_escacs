@@ -38,12 +38,28 @@ class PortalApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: pri),
+        colorScheme: ColorScheme.fromSeed(seedColor: pri, primary: pri),
         scaffoldBackgroundColor: suau,
         useMaterial3: true,
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
           isDense: true,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: titol,
+          surfaceTintColor: Colors.white,
+          elevation: 0.5,
+        ),
+        tabBarTheme: TabBarThemeData(
+          indicatorColor: pri,
+          indicatorSize: TabBarIndicatorSize.tab,
+          labelColor: pri,
+          unselectedLabelColor: textCol,
+          overlayColor: WidgetStatePropertyAll(pri.withValues(alpha: .08)),
+          dividerColor: Colors.transparent,
+          labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
         ),
         filledButtonTheme: FilledButtonThemeData(
           style: FilledButton.styleFrom(
