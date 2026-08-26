@@ -91,8 +91,15 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                           labelText: t('contra'),
                           prefixIcon: const Icon(Icons.lock_outline, size: 20),
                           suffixIcon: IconButton(
-                            icon: Icon(_veuContra ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 20, color: textCol),
-                            onPressed: () => setState(() => _veuContra = !_veuContra),
+                            icon: Icon(_veuContra ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 20, color: pri),
+                            splashRadius: 20,
+                            onPressed: () {
+                              final sel = p.selection;
+                              setState(() => _veuContra = !_veuContra);
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (mounted) p.selection = sel;
+                              });
+                            },
                           ),
                           isDense: true,
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(radiBoto)),
