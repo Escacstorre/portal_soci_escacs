@@ -266,6 +266,12 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
   String? eDe(TextEditingController c) =>
       (intentat && c.text.trim().isEmpty) ? Estat.i.i18n.t('campObligatori') : null;
 
+  Future<void> _imprimeix() async {
+    final d = await Estat.i.call('obtenirDadesFormulari', [Estat.i.token]);
+    if (!mounted) return;
+    imprimirFormulari((d as Map).cast<String, dynamic>());
+  }
+
   Future<void> _desa() async {
     final st = Estat.i;
     final t = st.i18n.t;
@@ -321,7 +327,20 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
           constraints: const BoxConstraints(maxWidth: 470),
           child: Carda(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(t('formulariRapid'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
+              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Expanded(
+                  child: Text(t('formulariRapid'),
+                      style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
+                ),
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.print, size: 18),
+                  label: Text(t('imprimir'), style: const TextStyle(fontSize: 13)),
+                  onPressed: _imprimeix,
+                ),
+              ]),
+              const SizedBox(height: 4),
+              Text('Soci Actiu directe · sense rebuts · correu amb credencials',
+                  style: const TextStyle(fontSize: 12, color: textCol)),
               const SizedBox(height: 12),
               CampText(controller: n, hint: t('nom'), obligatori: true, error: eDe(n)),
               CampText(controller: dni, hint: t('dni'), obligatori: true, error: eDe(dni)),
@@ -1265,59 +1284,80 @@ class _TabAlumnesState extends State<_TabAlumnes> {
   }
 }
 
-class SelectorSoci extends StatelessWidget {
-  SelectorSoci({super.key, required this.socis, required this.onSeleccionat, this.error});
+class SelectorSoci extends StatefulWidget {
+  const SelectorSoci({super.key, required this.socis, required this.onSeleccionat, this.error});
   final List<SociGestor> socis;
   final ValueChanged<SociGestor> onSeleccionat;
   final String? error;
+
+  @override
+  State<SelectorSoci> createState() => _SelectorSociState();
+}
+
+class _SelectorSociState extends State<SelectorSoci> {
   final ctrl = TextEditingController();
+  bool triat = false;
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      TextField(
-        controller: ctrl,
-        decoration: InputDecoration(
-          labelText: 'Soci *',
-          prefixIcon: const Icon(Icons.person_search, size: 20),
-          isDense: true,
-          errorText: error,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        TextField(
+          controller: ctrl,
+          decoration: InputDecoration(
+            labelText: 'Soci *',
+            prefixIcon: const Icon(Icons.person_search, size: 20),
+            isDense: true,
+            errorText: widget.error,
+            suffixIcon: triat
+                ? IconButton(
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.close, size: 18),
+                    onPressed: () => setState(() {
+                      triat = false;
+                      ctrl.clear();
+                    }),
+                  )
+                : null,
+          ),
+          onChanged: (_) => setState(() => triat = false),
         ),
-        onChanged: (_) => (context as Element).markNeedsBuild(),
-      ),
-      if (ctrl.text.trim().isNotEmpty)
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 180),
-          child: Builder(builder: (context) {
-            final q = ctrl.text.trim().toLowerCase();
-            final opts = socis
-                .where((s) =>
-                    s.estat != 'Rebutjat' &&
-                    ('${s.nom} ${s.email} ${s.dni}'.toLowerCase().contains(q)))
-                .take(8)
-                .toList();
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: opts.length,
-              itemBuilder: (_, i) {
-                final s = opts[i];
-                return ListTile(
-                  dense: true,
-                  visualDensity: VisualDensity.compact,
-                  title: Text(s.nom, style: const TextStyle(fontSize: 13.5)),
-                  subtitle: Text(s.email,
-                      style: const TextStyle(fontSize: 11.5, color: textCol)),
-                  onTap: () {
-                    ctrl.text = '${s.nom} (${s.email})';
-                    onSeleccionat(s);
-                    (context as Element).markNeedsBuild();
-                  },
-                );
-              },
-            );
-          }),
-        ),
-    ]);
+        if (!triat && ctrl.text.trim().isNotEmpty)
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 180),
+            child: Builder(builder: (context) {
+              final q = ctrl.text.trim().toLowerCase();
+              final opts = widget.socis
+                  .where((s) =>
+                      s.estat != 'Rebutjat' &&
+                      '${s.nom} ${s.email} ${s.dni}'.toLowerCase().contains(q))
+                  .take(8)
+                  .toList();
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: opts.length,
+                itemBuilder: (_, i) {
+                  final s = opts[i];
+                  return ListTile(
+                    dense: true,
+                    visualDensity: VisualDensity.compact,
+                    title: Text(s.nom, style: const TextStyle(fontSize: 13.5)),
+                    subtitle: Text(s.email, style: const TextStyle(fontSize: 11.5, color: textCol)),
+                    onTap: () {
+                      setState(() {
+                        triat = true;
+                        ctrl.text = '${s.nom} · ${s.email}';
+                      });
+                      widget.onSeleccionat(s);
+                    },
+                  );
+                },
+              );
+            }),
+          ),
+      ]),
+    );
   }
 }
 
@@ -1332,6 +1372,7 @@ class _FormulariRapidFitxa extends StatefulWidget {
 class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
   SociGestor? soci;
   final nom = TextEditingController(), cog = TextEditingController(), dni = TextEditingController(), adr = TextEditingController();
+  final tel = TextEditingController(), em = TextEditingController();
   String dataNaix = '';
   String? msg;
   bool err = false;
@@ -1346,7 +1387,15 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
       await st.call('altaRapidaJugador', [
         st.token,
         soci!.id,
-        {'nom': nom.text, 'cognoms': cog.text, 'dataNaix': dataNaix, 'dni': dni.text, 'adreca': adr.text},
+        {
+          'nom': nom.text,
+          'cognoms': cog.text,
+          'dataNaix': dataNaix,
+          'dni': dni.text,
+          'adreca': adr.text,
+          'telefon': tel.text,
+          'email': em.text,
+        },
       ]);
       if (!mounted) return;
       Navigator.pop(context, true);
@@ -1362,12 +1411,25 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
     final eCamp = Estat.i.i18n.t('campObligatori');
     return SingleChildScrollView(
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Nova fitxa ràpida (federació)',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titol)),
-        const SizedBox(height: 12),
+        Row(children: [
+          Expanded(
+            child: Text('Nova fitxa ràpida (federació)',
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titol)),
+          ),
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+        ]),
+        const SizedBox(height: 4),
         SelectorSoci(
           socis: widget.socis,
-          onSeleccionat: (s) => setState(() => soci = s),
+          onSeleccionat: (s) {
+            tel.text = s.telefon;
+            em.text = s.email;
+            setState(() => soci = s);
+          },
           error: (intentat && soci == null) ? eCamp : null,
         ),
         CampText(controller: nom, hint: t('nomJug'), obligatori: true, error: (intentat && nom.text.trim().isEmpty) ? eCamp : null),
@@ -1384,6 +1446,8 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
         ),
         CampText(controller: dni, hint: t('dni')),
         CampText(controller: adr, hint: t('adreca')),
+        CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
+        CampText(controller: em, hint: t('email'), teclat: TextInputType.emailAddress),
         if (msg != null)
           Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd))),
         SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('desa')))),
@@ -1432,9 +1496,18 @@ class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
     final eCamp = Estat.i.i18n.t('campObligatori');
     return SingleChildScrollView(
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text("Nou alumne ràpid (classes)",
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titol)),
-        const SizedBox(height: 12),
+        Row(children: [
+          Expanded(
+            child: Text("Nou alumne ràpid (classes)",
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titol)),
+          ),
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+        ]),
+        const SizedBox(height: 4),
         SelectorSoci(socis: widget.socis, onSeleccionat: (s) {
           tel.text = s.telefon;
           em.text = s.email;
