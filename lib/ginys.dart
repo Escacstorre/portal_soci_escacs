@@ -187,7 +187,7 @@ class CampText extends StatelessWidget {
   Widget build(BuildContext context) {
     final etiqueta = obligatori && hint != null ? '$hint *' : hint;
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 14),
       child: TextField(
         controller: controller,
         obscureText: obscure,
@@ -327,19 +327,22 @@ class CampData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(8),
-      onTap: () => _tria(context),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: obligatori ? '$etiqueta *' : etiqueta,
-          isDense: true,
-          errorText: error,
-          suffixIcon: const Icon(Icons.calendar_today, size: 18),
-        ),
-        child: Text(
-          valor.isEmpty ? '—' : mostraData(valor),
-          style: TextStyle(fontSize: 15, color: valor.isEmpty ? textCol : titol),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => _tria(context),
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: obligatori ? '$etiqueta *' : etiqueta,
+            isDense: true,
+            errorText: error,
+            suffixIcon: const Icon(Icons.calendar_today, size: 18),
+          ),
+          child: Text(
+            valor.isEmpty ? '—' : mostraData(valor),
+            style: TextStyle(fontSize: 15, color: valor.isEmpty ? textCol : titol),
+          ),
         ),
       ),
     );
@@ -368,7 +371,7 @@ class CampHora extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: 14),
       child: TextField(
         controller: controller,
         keyboardType: TextInputType.number,

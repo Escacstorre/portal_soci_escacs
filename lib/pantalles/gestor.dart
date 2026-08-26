@@ -218,21 +218,31 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
             const SizedBox(height: 12),
             ...llista.map((s) {
               return ItemLlista(children: [
-                if (s.estat != 'Rebutjat') _validacioQuota(s),
                 Expanded(
                   child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () => Estat.i.go('edicioSoci', s.id),
-                    child: Text(s.nom, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(s.nom, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5)),
+                      const SizedBox(height: 3),
+                      Text(s.email,
+                          style: const TextStyle(fontSize: 12, color: textCol), overflow: TextOverflow.ellipsis),
+                    ]),
                   ),
                 ),
-                Flexible(
-                  child: Text(s.email,
-                      style: const TextStyle(fontSize: 12, color: textCol), overflow: TextOverflow.ellipsis),
-                ),
+                const SizedBox(width: 10),
+                if (s.estat != 'Rebutjat') _validacioQuota(s),
                 if (s.rebutQuota != null)
-                  IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl(s.rebutQuota!.url)),
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    tooltip: t('rebutAlta'),
+                    icon: const Icon(Icons.attach_file, size: 20),
+                    onPressed: () => obrirUrl(s.rebutQuota!.url),
+                  ),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.grey),
+                  visualDensity: VisualDensity.compact,
+                  tooltip: t('elimina'),
+                  icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey),
                   onPressed: () async {
                     final ok = await confirmaEliminacio(context, '${s.nom} — eliminar?');
                     if (ok != true) return;
@@ -421,26 +431,23 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     return Carda(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('${s['nom']} · ${t('edicio')}', style: const TextStyle(fontWeight: FontWeight.bold, color: titol)),
-        const SizedBox(height: 10),
+        const SizedBox(height: 16),
         CampText(controller: n, hint: t('nom')),
         CampText(controller: dni, hint: t('dni')),
         CampText(controller: tel, hint: t('telefon')),
         CampText(controller: em, hint: t('email')),
         CampText(controller: banc, hint: t('banc')),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: CampData(
-            valor: '${s['caducitat'] ?? ''}',
-            etiqueta: 'Caducitat de la quota (renovació)',
-            onCanvi: (v) async {
-              await Estat.i.call('desarCaducitat', [Estat.i.token, s['id'], v]);
-              Estat.i.buidaCachu();
-              Estat.i.mostraOk();
-              _refresca();
-            },
-          ),
+        CampData(
+          valor: '${s['caducitat'] ?? ''}',
+          etiqueta: 'Caducitat de la quota (renovació)',
+          onCanvi: (v) async {
+            await Estat.i.call('desarCaducitat', [Estat.i.token, s['id'], v]);
+            Estat.i.buidaCachu();
+            Estat.i.mostraOk();
+            _refresca();
+          },
         ),
-        Wrap(spacing: 8, runSpacing: 8, children: [
+        Wrap(spacing: 10, runSpacing: 10, children: [
           FilledButton.icon(
             icon: const Icon(Icons.edit, size: 16),
             label: Text(t('editaDades'), style: const TextStyle(fontSize: 13)),
@@ -463,21 +470,25 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
             },
           ),
         ]),
+        const SizedBox(height: 14),
         if (rebut != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: TextButton.icon(
-              icon: const Icon(Icons.attach_file, size: 16),
-              label: Text(t('rebutAlta'), style: const TextStyle(fontSize: 13)),
-              onPressed: () => obrirUrl('${rebut['url']}'),
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
+            icon: const Icon(Icons.attach_file, size: 16),
+            label: Text(t('rebutAlta'), style: const TextStyle(fontSize: 13)),
+            onPressed: () => obrirUrl('${rebut['url']}'),
           )
         else
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text('${t('rebutAlta')}: ${t('noRebut')}',
+          Row(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.attach_file, size: 15, color: textCol),
+            const SizedBox(width: 5),
+            Text('${t('rebutAlta')}: ${t('noRebut')}',
                 style: const TextStyle(fontSize: 12.5, color: textCol)),
-          ),
+          ]),
       ]),
     );
   }
@@ -487,15 +498,19 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     final anyFed = d['anyFed'] as num;
     return Carda(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('FEDERACIÓ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-        const SizedBox(height: 6),
+        const Text('FEDERACIÓ',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: titol, letterSpacing: .5)),
+        const SizedBox(height: 10),
         if (jugadors.isEmpty) const Text('—'),
           ...jugadors.map((j) => ItemLlista(
               onTap: () => Estat.i.go('jugEdit', {'id': j['id'], 'sociId': widget.sociId}),
               children: [
                 Expanded(child: Text('${j['nom'] ?? ''} ${j['cognoms'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold))),
+                const SizedBox(width: 8),
                 _chkAny(j['anyActual'], '${j['id']}', '$anyFed'),
+                const SizedBox(width: 14),
                 _chkAny(j['anyVinent'], '${j['id']}', '${anyFed + 1}'),
+                const SizedBox(width: 6),
                 IconButton(icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey), onPressed: () async {
                   await Estat.i.call('eliminarJugador', [Estat.i.token, j['id']]);
                   Estat.i.buidaCachu();
@@ -511,9 +526,11 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     final m = (info as Map?)?.cast<String, dynamic>();
     final validat = m != null && m['estat'] == 'Validat';
     return Row(mainAxisSize: MainAxisSize.min, children: [
-      Text(any, style: const TextStyle(fontSize: 12.5)),
+      Text(any, style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+      const SizedBox(width: 2),
       Checkbox(
         visualDensity: VisualDensity.compact,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         value: validat,
         onChanged: (v) async {
           await Estat.i.call('alternarAnyJugador', [Estat.i.token, jugadorId, any, v == true]);
@@ -525,13 +542,15 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
       if (m != null && m['rebut'] != null)
         IconButton(
           visualDensity: VisualDensity.compact,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
           icon: const Icon(Icons.attach_file, size: 18),
           onPressed: () => obrirUrl('${m['rebut']['url']}'),
         )
       else
         Padding(
-          padding: const EdgeInsets.only(left: 4),
-          child: Text(Estat.i.i18n.t('noRebut'), style: const TextStyle(fontSize: 10.5, color: textCol)),
+          padding: const EdgeInsets.only(left: 2, right: 6),
+          child: Text(Estat.i.i18n.t('noRebut'), style: const TextStyle(fontSize: 10, color: textCol)),
         ),
     ]);
   }
@@ -542,8 +561,9 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     final curs = d['curs'] as num;
     return Carda(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('CLASSES', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-        const SizedBox(height: 6),
+        const Text('CLASSES',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: titol, letterSpacing: .5)),
+        const SizedBox(height: 10),
         if (alumnes.isEmpty) const Text('—'),
         ...alumnes.map((a) {
           final trims = ((a['trims'] as List?) ?? const []).cast<Map>().map((e) => e.cast<String, dynamic>()).toList();
@@ -554,17 +574,24 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
                 Expanded(child: Text('${a['nom'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold))),
                 ...trims.map((tr) {
                   if (tr['rebut'] == null) return const SizedBox.shrink();
-                  return IconButton(icon: const Icon(Icons.attach_file, size: 18), onPressed: () => obrirUrl('${tr['rebut']['url']}'));
+                  return IconButton(
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.attach_file, size: 18),
+                    onPressed: () => obrirUrl('${tr['rebut']['url']}'),
+                  );
                 }),
               ],
             ),
-            Wrap(spacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
+            const SizedBox(height: 6),
+            Wrap(spacing: 12, runSpacing: 6, crossAxisAlignment: WrapCrossAlignment.center, children: [
               for (final tr in trims)
                 if (tr['id'] != null)
                   Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text('${tr['t']}:', style: const TextStyle(fontSize: 12.5)),
+                    Text('${tr['t']}:', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+                    const SizedBox(width: 2),
                     Checkbox(
                       visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       value: tr['estat'] == 'Validat',
                       onChanged: (v) async {
                         await Estat.i.call('alternarPagament', [Estat.i.token, tr['id'], v == true]);
@@ -573,11 +600,16 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
                       },
                     ),
                     if (tr['rebut'] == null)
-                      Text(Estat.i.i18n.t('noRebut'),
-                          style: const TextStyle(fontSize: 10.5, color: textCol))
+                      Padding(
+                        padding: const EdgeInsets.only(left: 2, right: 6),
+                        child: Text(Estat.i.i18n.t('noRebut'),
+                            style: const TextStyle(fontSize: 10, color: textCol)),
+                      )
                     else
                       IconButton(
                         visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
                         icon: const Icon(Icons.attach_file, size: 16),
                         onPressed: () => obrirUrl('${tr['rebut']['url']}'),
                       ),
