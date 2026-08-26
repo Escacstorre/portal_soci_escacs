@@ -149,7 +149,7 @@ class BotoPujaFitxer extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
       icon: Icon(fitxer == null ? Icons.upload_file : Icons.check_circle, color: fitxer == null ? null : verd),
-      label: Text(fitxer == null ? (etiqueta ?? '') : '${fitxer!['name'] ?? ''}'),
+      label: Text(fitxer == null ? (etiqueta ?? '') : '${fitxer?['name'] ?? ''}'),
       onPressed: onTria,
     );
   }

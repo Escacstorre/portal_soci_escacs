@@ -8,7 +8,11 @@ import '../../estils.dart';
 import '../../estat.dart';
 import '../../ginys.dart';
 
-Future<void> pujaFitxer(String token, String col, String id, String periode, {VoidCallback? onFet}) async {
+Future<void> pujaFitxer(String? token, String col, String id, String periode, {VoidCallback? onFet}) async {
+  if (token == null || token.isEmpty) {
+    Estat.i.mostraError('Sessió caducada');
+    return;
+  }
   final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
   if (f == null) return;
   await Estat.i.call('pujarRebut', [token, col, id, periode, f]);
@@ -61,9 +65,12 @@ class IniciSociPantalla extends StatelessWidget {
                       if (vigent && caducitat.isNotEmpty)
                         Text('vigent fins ${mostraData(caducitat)}',
                             style: const TextStyle(fontSize: 12.5, color: verd)),
-                      if (d?.quotaRebut != null)
+                      if (d?.quotaRebut?.url != null)
                         TextButton(
-                          onPressed: () => obrirUrl(d!.quotaRebut!.url),
+                          onPressed: () {
+                            final url = d?.quotaRebut?.url;
+                            if (url != null) obrirUrl(url);
+                          },
                           child: Text('(${t('veureRebut')})', style: const TextStyle(fontSize: 13)),
                         ),
                     ],
@@ -312,7 +319,7 @@ class TrimestresPantalla extends StatelessWidget {
                   OutlinedButton.icon(
                     icon: const Icon(Icons.upload_file, size: 18),
                     label: Text(tr.estat == 'En revisió' ? t('substituir') : '${t('rebut')} 📎'),
-                    onPressed: () => unawaited(pujaFitxer(st.token!, 'Classes', alumneId, '${tr.t}')),
+                    onPressed: () => unawaited(pujaFitxer(st.token, 'Classes', alumneId, '${tr.t}')),
                   ),
                 ]),
             ]),
@@ -404,7 +411,7 @@ class JugadorAnysPantalla extends StatelessWidget {
                   icon: const Icon(Icons.upload_file, size: 18),
                   label: Text(a.estat == 'En revisió' ? t('substituir') : '${t('rebut')} 📎',
                       style: const TextStyle(fontSize: 13)),
-                  onPressed: () => unawaited(pujaFitxer(Estat.i.token!, 'Federacio', jugadorId, a.any)),
+                  onPressed: () => unawaited(pujaFitxer(Estat.i.token, 'Federacio', jugadorId, a.any)),
                 ),
             ])),
       ],

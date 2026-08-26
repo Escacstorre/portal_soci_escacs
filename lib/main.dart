@@ -1,7 +1,9 @@
 ﻿import 'dart:async';
+import 'dart:ui';
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -18,6 +20,13 @@ import 'pont.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterError.onError = (details) {
+    FlutterError.dumpErrorToConsole(details);
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('Unhandled: $error');
+    return true;
+  };
   Pont.instance.init(urlAppsScript);
   unawaited(Estat.i.arrenca());
   runApp(const PortalApp());

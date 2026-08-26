@@ -308,10 +308,12 @@ class Estat {
     try {
       await _carregaTot();
       _silenciToast = false;
+      final ini = inici;
+      if (ini == null) throw Exception('Inici null');
       user = {
-        'nom': inici!.nom,
-        'rols': inici!.rols,
-        'rolActiu': inici!.rolActiu,
+        'nom': ini.nom,
+        'rols': ini.rols,
+        'rolActiu': ini.rolActiu,
       };
       entra();
       return true;

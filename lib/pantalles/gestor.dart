@@ -239,12 +239,15 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
                 ),
                 const SizedBox(width: 10),
                 if (s.estat != 'Rebutjat') _validacioQuota(s),
-                if (s.rebutQuota != null)
+                if (s.rebutQuota?.url != null)
                   IconButton(
                     visualDensity: VisualDensity.compact,
                     tooltip: t('rebutAlta'),
                     icon: const Icon(Icons.attach_file, size: 20),
-                    onPressed: () => obrirUrl(s.rebutQuota!.url),
+                    onPressed: () {
+                      final url = s.rebutQuota?.url;
+                      if (url != null) obrirUrl(url);
+                    },
                   ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
@@ -708,9 +711,12 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
                 Row(children: [
                   TextButton.icon(
                     icon: const Icon(Icons.badge_outlined, size: 18),
-                    label: Text('${t('fotoDni')}: ${fotoActual!['nom'] ?? 'veure'}',
+                    label: Text('${t('fotoDni')}: ${fotoActual?['nom'] ?? 'veure'}',
                         style: const TextStyle(fontSize: 13)),
-                    onPressed: () => obrirUrl('${fotoActual!['url']}'),
+                    onPressed: () {
+                      final url = fotoActual?['url'] as String?;
+                      if (url != null) obrirUrl(url);
+                    },
                   ),
                 ]),
               OutlinedButton.icon(
@@ -718,7 +724,7 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
                     color: fotoNova == null ? null : verd),
                 label: Text(fotoNova == null
                     ? (fotoActual != null ? '${t('substituir')} ${t('fotoDni')}' : t('pujaFitxer'))
-                    : '${fotoNova!['name'] ?? t('fotoDni')}'),
+                    : '${fotoNova?['name'] ?? t('fotoDni')}'),
                 onPressed: () async {
                   final f = await triaArxiu('.jpg,.jpeg,.png');
                   if (mounted) setState(() => fotoNova = f);
@@ -1435,9 +1441,11 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
     if (soci == null || nom.text.trim().isEmpty || cog.text.trim().isEmpty || dataNaix.isEmpty) return;
     setState(() { msg = st.i18n.t('enviant'); err = false; });
     try {
+      final sid = soci?.id;
+      if (sid == null || sid.isEmpty) throw Exception('Soci no seleccionat');
       await st.call('altaRapidaJugador', [
         st.token,
-        soci!.id,
+        sid,
         {
           'nom': nom.text,
           'cognoms': cog.text,
@@ -1452,7 +1460,7 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
       Navigator.pop(context, true);
     } catch (_) {
       if (!mounted) return;
-      setState(() { msg = st.toastMissatge ?? 'Error'; err = true; });
+      setState(() { msg = Estat.i.toastMissatge ?? 'Error'; err = true; });
     }
   }
 
@@ -1528,16 +1536,18 @@ class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
     if (soci == null || nom.text.trim().isEmpty) return;
     setState(() { msg = st.i18n.t('enviant'); err = false; });
     try {
+      final sid = soci?.id;
+      if (sid == null || sid.isEmpty) throw Exception('Soci no seleccionat');
       await st.call('altaRapidaAlumne', [
         st.token,
-        soci!.id,
+        sid,
         {'nom': nom.text, 'telefon': tel.text, 'email': em.text},
       ]);
       if (!mounted) return;
       Navigator.pop(context, true);
     } catch (_) {
       if (!mounted) return;
-      setState(() { msg = st.toastMissatge ?? 'Error'; err = true; });
+      setState(() { msg = Estat.i.toastMissatge ?? 'Error'; err = true; });
     }
   }
 
