@@ -45,6 +45,20 @@ class PortalApp extends StatelessWidget {
           border: OutlineInputBorder(),
           isDense: true,
         ),
+        filledButtonTheme: FilledButtonThemeData(
+          style: FilledButton.styleFrom(
+            backgroundColor: pri,
+            foregroundColor: Colors.white,
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(foregroundColor: pri),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(foregroundColor: pri),
+        ),
+        dialogTheme: const DialogThemeData(backgroundColor: Colors.white, surfaceTintColor: Colors.white),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(backgroundColor: pri, foregroundColor: Colors.white),
       ),
       home: const Arrel(),
     );

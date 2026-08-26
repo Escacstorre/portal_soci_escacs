@@ -437,8 +437,6 @@ void descarregarArxiu(String contingut, String mime, String nom) {
 
 void imprimirFormulari(Map d) async {
   final t = Estat.i.i18n.t;
-  final dynamic w = html.window.open('', '_blank');
-  if (w == null) return;
   final linia = '<div style="border-bottom:1px solid #333;height:26px;margin:14px 0"></div>';
   final sb = StringBuffer();
   sb.write('<html><head><title>${d['club']}</title>');
@@ -461,8 +459,19 @@ void imprimirFormulari(Map d) async {
   sb.write('<tr><td>${t('trimJunts')}</td><td>${d['junts']} €</td></tr>');
   sb.write('<tr><td>${t('serSoci')}</td><td>${d['quota']} €</td></tr></table>');
   sb.write('</body></html>');
-  w.document?.write(sb.toString());
-  w.document?.close();
-  w.focus();
-  w.print();
+
+  final marc = html.IFrameElement()
+    ..srcdoc = sb.toString()
+    ..style.position = 'fixed'
+    ..style.right = '0'
+    ..style.bottom = '0'
+    ..style.width = '0'
+    ..style.height = '0'
+    ..style.border = 'none';
+  html.document.body?.append(marc);
+  marc.onLoad.listen((_) {
+    final cw = marc.contentWindow;
+    if (cw != null) (cw as dynamic).callMethod('print');
+    Future.delayed(const Duration(seconds: 10), () => marc.remove());
+  });
 }

@@ -154,6 +154,19 @@ class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
   bool err = false;
   bool intentat = false;
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ini = Estat.i.inici;
+      if (ini == null || !mounted) return;
+      setState(() {
+        if (tel.text.isEmpty && ini.telefon.isNotEmpty) tel.text = ini.telefon;
+        if (e.text.isEmpty && ini.email.isNotEmpty) e.text = ini.email;
+      });
+    });
+  }
+
   Future<void> _desa() async {
     final st = Estat.i;
     setState(() => intentat = true);
@@ -418,6 +431,19 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
   String? msg;
   bool err = false;
   bool intentat = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ini = Estat.i.inici;
+      if (ini == null || !mounted) return;
+      setState(() {
+        if (tel.text.isEmpty && ini.telefon.isNotEmpty) tel.text = ini.telefon;
+        if (em.text.isEmpty && ini.email.isNotEmpty) em.text = ini.email;
+      });
+    });
+  }
 
   Future<void> _desa() async {
     final st = Estat.i;

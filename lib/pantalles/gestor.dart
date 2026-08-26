@@ -1314,14 +1314,20 @@ class _SelectorSociState extends State<SelectorSoci> {
                 ? IconButton(
                     visualDensity: VisualDensity.compact,
                     icon: const Icon(Icons.close, size: 18),
-                    onPressed: () => setState(() {
-                      triat = false;
-                      ctrl.clear();
-                    }),
+                    onPressed: () {
+                      if (!mounted) return;
+                      setState(() {
+                        triat = false;
+                        ctrl.clear();
+                      });
+                    },
                   )
                 : null,
           ),
-          onChanged: (_) => setState(() => triat = false),
+          onChanged: (_) {
+            if (!mounted) return;
+            setState(() => triat = false);
+          },
         ),
         if (!triat && ctrl.text.trim().isNotEmpty)
           ConstrainedBox(
