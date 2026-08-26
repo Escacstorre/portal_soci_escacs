@@ -53,6 +53,7 @@ Login.html = backup
    sense preflight CORS) cap a l'URL `/exec`; `doPost(e)` del Codi.gs fa dispatch a la funció i respon
    `{ok:true, data:...}` o `{ok:false, data:"#CLAU#"}`. Timeout 90 s → `ExcepcioPortal`.
 4. Si el backend respon `SESSIO_CADUCADA`, l'app fa **logout automàtic** i torna al login.
+5. **Impressió del formulari**: `obtenirDadesFormulari()` aporta club/compte/quota/preus; `imprimirFormulari()` genera un HTML amb logo, capçalera i taula de preus del curs actual i l'obre amb `window.open(Blob)` + `window.print()`.
 
 **Correus i arxius** (via Apps Script):
 - Els correus els envia `enviarCorreu_()` (MailApp) des del backend.
@@ -119,6 +120,7 @@ Documentat al README del projecte principal (`H:\Mi unidad\Web\Soci\README.md`).
 - `Codi.gs` amb `doGet(e)` (serveix `Login.html`, el fallback HTML) i `doPost(e)` (API JSON per al Flutter)
 - **Correus**: `enviarCorreu_()` amb plantilles de la fulla `Config`
 - **Arxius**: `guardarArxiu_()` puja a Google Drive, `obtenirArxiu()` descarrega
+- **Impressió**: `imprimirFormulari()` genera al moment un HTML imprimible (logo SVG, compte, quota i preus base del curs actual) i l'obre en una pestanya nova amb `window.print()` — sense PDF estàtic, sempre adaptat
 - **Menu Sheet**: gestió d'admins, triggers, eines (exportar CSV, estadístiques, netejar sessions)
 - Desplegar sempre amb *Implementar → Nueva versión*
 
