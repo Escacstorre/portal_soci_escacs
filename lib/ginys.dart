@@ -210,13 +210,7 @@ class _CampTextState extends State<CampText> {
               ? IconButton(
                   icon: Icon(_amaga ? Icons.visibility_outlined : Icons.visibility_off_outlined, size: 20, color: pri),
                   splashRadius: 20,
-                  onPressed: () {
-                    final sel = widget.controller.selection;
-                    setState(() => _amaga = !_amaga);
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (mounted) widget.controller.selection = sel;
-                    });
-                  },
+                  onPressed: () => setState(() => _amaga = !_amaga),
                 )
               : null,
         ),

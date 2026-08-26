@@ -3,22 +3,24 @@ import 'package:portal_soci_escacs/traduccions.dart';
 import 'package:portal_soci_escacs/models.dart';
 
 void main() {
-  test('ca i es tenen exactament les mateixes claus', () {
-    expect(Traduccions.es.keys.toSet(), Traduccions.ca.keys.toSet());
-  });
-
-  test('cap clau buida', () {
-    for (final e in Traduccions.ca.entries) {
-      expect(e.value.isNotEmpty, isTrue, reason: 'clau buida: ${e.key}');
-    }
-  });
-
-  test('t() retorna la traduccio segons idioma i cau a CA si falta', () {
+  test('t() retorna la clau si no hi ha lx', () {
     final i = Traduccions.instance;
+    i.setLx({});
     i.lang = 'CA';
-    expect(i.t('guardar'), 'Guardar');
+    expect(i.t('guardar'), 'guardar');
+  });
+
+  test('t() retorna la traduccio del Sheet segons idioma', () {
+    final i = Traduccions.instance;
+    i.setLx({
+      'CA': {'guardar': 'Guardar CA'},
+      'ES': {'guardar': 'Guardar ES'},
+    });
+    i.lang = 'CA';
+    expect(i.t('guardar'), 'Guardar CA');
     i.lang = 'ES';
-    expect(i.t('guardar'), 'Guardar');
+    expect(i.t('guardar'), 'Guardar ES');
+    i.setLx({});
     i.lang = 'CA';
   });
 
@@ -28,6 +30,7 @@ void main() {
     i.setLx({'CA': {'SOCI_JA_EXISTEIX': 'El soci {0} ja existeix'}});
     expect(i.tradueixError('#SOCI_JA_EXISTEIX|Pere#'), 'El soci Pere ja existeix');
     expect(i.tradueixError('error sense format'), 'error sense format');
+    i.setLx({});
   });
 
   test('TotSoci.de mapeja el JSON del backend', () {
