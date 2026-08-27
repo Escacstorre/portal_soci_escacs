@@ -35,12 +35,27 @@ void main() {
 class PortalApp extends StatelessWidget {
   const PortalApp({super.key});
 
+  static const _isoIdiomes = {
+    'CA': 'ca', 'ES': 'es', 'EN': 'en', 'FR': 'fr', 'DE': 'de', 'IT': 'it',
+    'PT': 'pt', 'GL': 'gl', 'EU': 'eu', 'OC': 'oc', 'NL': 'nl', 'PL': 'pl',
+  };
+
+  List<Locale> _localesDisponibles() {
+    final out = <Locale>[];
+    for (final l in Traduccions.instance.langs) {
+      final iso = _isoIdiomes[l];
+      if (iso != null) out.add(Locale(iso));
+    }
+    if (out.isEmpty) out.add(const Locale('es'));
+    return out;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Portal Socis',
       debugShowCheckedModeBanner: false,
-      supportedLocales: const [Locale('ca'), Locale('es')],
+      supportedLocales: _localesDisponibles(),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

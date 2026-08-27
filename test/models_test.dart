@@ -33,6 +33,33 @@ void main() {
     i.setLx({});
   });
 
+  test('nomDe retorna el nom de cada idioma en el seu propi idioma', () {
+    final i = Traduccions.instance;
+    i.setLx({
+      'CA': {'nomIdioma': 'Català'},
+      'ES': {'nomIdioma': 'Español'},
+      'EN': {'nomIdioma': 'English'},
+    });
+    expect(i.nomDe('CA'), 'Català');
+    expect(i.nomDe('ES'), 'Español');
+    expect(i.nomDe('EN'), 'English');
+    expect(i.nomDe('XX'), 'XX');
+    expect(i.langs, containsAll(['CA', 'ES', 'EN']));
+    i.setLx({});
+  });
+
+  test('langs ignora idiomes sense cap traduccio', () {
+    final i = Traduccions.instance;
+    i.setLx({
+      'CA': {'guardar': 'Desa'},
+      'ES': {'guardar': 'Guardar'},
+      'EN': {},
+    });
+    expect(i.langs, isNot(contains('EN')));
+    expect(i.langs, containsAll(['CA', 'ES']));
+    i.setLx({});
+  });
+
   test('TotSoci.de mapeja el JSON del backend', () {
     final tot = TotSoci.de({
       'inici': {

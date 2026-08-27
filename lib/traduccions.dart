@@ -8,11 +8,25 @@
   static const List<String> baseLangs = ['CA', 'ES'];
 
   List<String> get langs {
-    final lls = [...baseLangs];
-    for (final k in lx.keys) {
-      if (!lls.contains(k)) lls.add(k);
+    final lls = <String>[];
+    for (final k in baseLangs) {
+      final d = lx[k];
+      if (d is Map && d.isNotEmpty) lls.add(k);
     }
+    for (final k in lx.keys) {
+      if (!lls.contains(k)) {
+        final d = lx[k];
+        if (d is Map && d.isNotEmpty) lls.add(k);
+      }
+    }
+    if (lls.isEmpty) return const ['CA', 'ES'];
     return lls;
+  }
+
+  String nomDe(String codi) {
+    final d = lx[codi];
+    if (d is Map && d['nomIdioma'] != null) return '${d['nomIdioma']}';
+    return codi;
   }
 
   String t(String k) {

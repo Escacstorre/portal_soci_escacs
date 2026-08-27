@@ -54,6 +54,18 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                     children: [
                       SizedBox(
                         width: double.infinity,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: IdiomaMenu(
+                            onCanvi: (c) {
+                              if (mounted) setState(() => setStateIdiomaLocal(c));
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      SizedBox(
+                        width: double.infinity,
                         child: Column(
                           children: [
                             const IconaClub(mida: 96),
@@ -300,7 +312,10 @@ class SelectorPantalla extends StatelessWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: IdiomaMenu()),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: IdiomaMenu(),
+                    ),
                     TextButton(onPressed: () => st.tancaSessio(), child: Text(t('tanca'))),
                   ]),
                 ),

@@ -9,38 +9,74 @@ import 'estils.dart';
 import 'traduccions.dart';
 import 'estat.dart';
 
-const _nomsIdioma = {'CA': 'Català', 'ES': 'Español'};
-
-String nomIdioma(String codi) => _nomsIdioma[codi] ?? codi;
-
 class IdiomaMenu extends StatelessWidget {
-  const IdiomaMenu({super.key});
+  const IdiomaMenu({super.key, this.onCanvi});
+  final ValueChanged<String>? onCanvi;
 
   @override
   Widget build(BuildContext context) {
     final i18n = Traduccions.instance;
-    return DropdownButton<String>(
-      value: i18n.lang,
-      underline: const SizedBox.shrink(),
-      isDense: true,
-      icon: const Icon(Icons.language, size: 18),
-      items: [
-        for (final l in i18n.langs)
-          DropdownMenuItem(value: l, child: Text(nomIdioma(l), style: const TextStyle(fontSize: 14, color: textCol))),
-      ],
-      onChanged: (l) {
-        if (l == null || l == i18n.lang) return;
+    final actiu = i18n.lang;
+    return PopupMenuButton<String>(
+      tooltip: i18n.nomDe(actiu),
+      padding: EdgeInsets.zero,
+      offset: const Offset(0, 10),
+      position: PopupMenuPosition.under,
+      onSelected: (l) {
+        if (l == actiu) return;
+        if (onCanvi != null) {
+          onCanvi!(l);
+          return;
+        }
         setStateIdioma(l);
       },
+      itemBuilder: (ctx) => [
+        for (final l in i18n.langs)
+          PopupMenuItem(
+            value: l,
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Icon(l == actiu ? Icons.check : Icons.language, size: 16,
+                  color: l == actiu ? pri : null),
+              const SizedBox(width: 8),
+              Text(i18n.nomDe(l),
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: l == actiu ? pri : textCol,
+                      fontWeight: l == actiu ? FontWeight.w700 : FontWeight.w500)),
+            ]),
+          ),
+      ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: pri.withValues(alpha: .08),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: pri.withValues(alpha: .18)),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Text(actiu.isNotEmpty ? actiu.substring(0, 1).toUpperCase() : '',
+              style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.w800, color: pri)),
+          const SizedBox(width: 6),
+          Text(i18n.nomDe(actiu),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: titol)),
+          const SizedBox(width: 2),
+          const Icon(Icons.expand_more, size: 18, color: textCol),
+        ]),
+      ),
     );
   }
 }
 
-void setStateIdioma(String codi) {
+void setStateIdiomaLocal(String codi) {
   final i18n = Traduccions.instance;
   if (!i18n.langs.contains(codi)) return;
   i18n.lang = codi;
   html.window.localStorage['ps_lang'] = codi;
+}
+
+void setStateIdioma(String codi) {
+  setStateIdiomaLocal(codi);
   Estat.i.refres();
 }
 
@@ -66,8 +102,8 @@ class Capcalera extends StatelessWidget implements PreferredSizeWidget {
           : null,
       automaticallyImplyLeading: false,
       actions: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: IdiomaMenu(),
         ),
         if (rols.length > 1)

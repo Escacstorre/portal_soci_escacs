@@ -292,7 +292,7 @@ class Estat {
     if (cfg != null) {
       club = '${cfg['club'] ?? ''}';
       final idioma = '${cfg['idioma'] ?? 'CA'}'.toUpperCase();
-      if (Traduccions.baseLangs.contains(idioma)) i18n.lang = idioma;
+      if (Traduccions.instance.langs.contains(idioma)) i18n.lang = idioma;
       i18n.setLx((cfg['traduccions'] as Map?)?.cast<String, dynamic>());
     }
     final saved = html.window.localStorage['ps_lang'];
