@@ -41,9 +41,11 @@ class AdminIniciPantalla extends StatelessWidget {
 
 Future<GestorDades> carregaGestor() async {
   final st = Estat.i;
-  if (st.gest != null) return st.gest!;
-  st.gest = GestorDades.de(await st.call('obtenirTotGestor', [st.token]));
-  return st.gest!;
+  final g = st.gest;
+  if (g != null) return g;
+  final cargat = GestorDades.de(await st.call('obtenirTotGestor', [st.token]));
+  st.gest = cargat;
+  return cargat;
 }
 
 class PagatPantalla extends StatefulWidget {
@@ -87,8 +89,8 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
     return FutureBuilder<GestorDades>(
       future: _fut,
       builder: (context, snap) {
-        if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-        final d = snap.data!;
+        final d = snap.data;
+        if (d == null) return const Center(child: CircularProgressIndicator());
         return Column(
           children: [
             TabBar(
@@ -376,7 +378,7 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
               if (msg != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(msg!,
+                  child: Text(msg ?? '',
                       style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
                 ),
               SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('desa')))),
@@ -423,8 +425,9 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     return FutureBuilder<Map<String, dynamic>>(
       future: _fut,
       builder: (context, snap) {
-        if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-        final d = snap.data!;
+        final d0 = snap.data;
+        if (d0 == null) return const Center(child: CircularProgressIndicator());
+        final d = d0;
         final s = (d['soci'] as Map).cast<String, dynamic>();
         return ListView(padding: const EdgeInsets.all(16), children: [
           _dades(s),
@@ -854,8 +857,9 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
     return FutureBuilder<GestorDades>(
       future: _fut,
       builder: (context, snap) {
-        if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-        _escola = snap.data!.escola;
+        final data = snap.data;
+        if (data == null) return const Center(child: CircularProgressIndicator());
+        _escola = data.escola;
         return Column(
           children: [
             TabBar(
@@ -971,7 +975,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
   Widget _preus() {
     final t = Estat.i.i18n.t;
     final preuDive =
-        TextEditingController(text: _escola == null ? '' : '${_escola!.preuDivendres}');
+        TextEditingController(text: _escola == null ? '' : '${_escola?.preuDivendres}');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
@@ -1508,7 +1512,7 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
         CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
         CampText(controller: em, hint: t('email'), teclat: TextInputType.emailAddress),
         if (msg != null)
-          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd))),
+          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(msg ?? '', style: TextStyle(fontSize: 13.5, color: err ? vermell : verd))),
         SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('desa')))),
       ]),
     );
@@ -1578,7 +1582,7 @@ class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
         CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
         CampText(controller: em, hint: t('email'), teclat: TextInputType.emailAddress),
         if (msg != null)
-          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd))),
+          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(msg ?? '', style: TextStyle(fontSize: 13.5, color: err ? vermell : verd))),
         SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('desa')))),
       ]),
     );

@@ -223,7 +223,7 @@ class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
               if (msg != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
+                  child: Text(msg ?? '', style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
                 ),
               Row(children: [
                 FilledButton(onPressed: _desa, child: Text(t('guardar'))),
@@ -309,13 +309,19 @@ class TrimestresPantalla extends StatelessWidget {
                 else
                   TextButton.icon(
                     icon: const Icon(Icons.attach_file, size: 18),
-                    label: Text(tr.rebut!.nom, overflow: TextOverflow.ellipsis),
-                    onPressed: () => obrirUrl(tr.rebut!.url),
+                    label: Text(tr.rebut?.nom ?? '', overflow: TextOverflow.ellipsis),
+                    onPressed: () {
+                      final url = tr.rebut?.url;
+                      if (url != null) obrirUrl(url);
+                    },
                   )
               else
                 Wrap(spacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
-                  if (tr.estat == 'En revisió' && tr.rebut != null)
-                    IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl(tr.rebut!.url)),
+                  if (tr.estat == 'En revisió' && tr.rebut?.url != null)
+                    IconButton(icon: const Icon(Icons.attach_file), onPressed: () {
+                      final url = tr.rebut?.url;
+                      if (url != null) obrirUrl(url);
+                    }),
                   OutlinedButton.icon(
                     icon: const Icon(Icons.upload_file, size: 18),
                     label: Text(tr.estat == 'En revisió' ? t('substituir') : '${t('rebut')} 📎'),
@@ -404,8 +410,11 @@ class JugadorAnysPantalla extends StatelessWidget {
               const SizedBox(width: 8),
               XipEstat(estat: a.estat),
               const Spacer(),
-              if (a.estat == 'Validat' && a.rebut != null)
-                IconButton(icon: const Icon(Icons.attach_file), onPressed: () => obrirUrl(a.rebut!.url))
+              if (a.estat == 'Validat' && a.rebut?.url != null)
+                IconButton(icon: const Icon(Icons.attach_file), onPressed: () {
+                  final url = a.rebut?.url;
+                  if (url != null) obrirUrl(url);
+                })
               else
                 OutlinedButton.icon(
                   icon: const Icon(Icons.upload_file, size: 18),
@@ -538,7 +547,7 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
               OutlinedButton.icon(
                 icon: Icon(foto == null ? Icons.upload_file : Icons.check_circle,
                     color: foto == null ? null : verd),
-                label: Text(foto == null ? t('fotoDni') : '${foto!['name'] ?? t('fotoDni')}'),
+                label: Text(foto == null ? t('fotoDni') : '${foto?['name'] ?? t('fotoDni')}'),
                 onPressed: () async {
                   final f = await triaArxiu('.jpg,.jpeg,.png');
                   if (mounted) setState(() => foto = f);
@@ -547,7 +556,7 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
               if (msg != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(msg!, style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
+                  child: Text(msg ?? '', style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
                 ),
               SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('guardar')))),
             ]),

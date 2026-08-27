@@ -103,7 +103,7 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                       if (err != null)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
-                          child: Text(err!, style: estilError),
+                          child: Text(err ?? '', style: estilError),
                         ),
                       const SizedBox(height: 4),
                       SizedBox(
@@ -235,7 +235,7 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
                       OutlinedButton.icon(
                         icon: Icon(rebut == null ? Icons.upload_file : Icons.check_circle,
                             color: rebut == null ? null : verd),
-                        label: Text(rebut == null ? '${t('rebutQuota')} · ${t('rebut')}' : '${rebut!['name'] ?? t('rebut')}'),
+                        label: Text(rebut == null ? '${t('rebutQuota')} · ${t('rebut')}' : '${rebut?['name'] ?? t('rebut')}'),
                         onPressed: () async {
                           final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
                           if (mounted) setState(() => rebut = f);
@@ -246,7 +246,7 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
                       if (msg != null)
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Text(msg!, style: msgErr ? estilError : estilOk),
+                          child: Text(msg ?? '', style: msgErr ? estilError : estilOk),
                         ),
                       const SizedBox(height: 4),
                       SizedBox(

@@ -198,7 +198,7 @@ class _ArrelState extends State<Arrel> {
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: .2), blurRadius: 8)],
                   ),
-                  child: Text(st.toastMissatge!,
+                  child: Text(st.toastMissatge ?? '',
                       style: estilToast,
                       textAlign: TextAlign.center),
                 ),

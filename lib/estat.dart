@@ -224,7 +224,7 @@ class Estat {
   Future<void> _carregaTot() async {
     final d = await call('obtenirTotSoci', [token]);
     tot = TotSoci.de(d);
-    inici = tot!.inici;
+    inici = tot?.inici;
   }
 
   Future<void> carregaInici() async {

@@ -99,26 +99,26 @@ class _EditorBlocState extends State<EditorBloc> {
     return FutureBuilder<Map<String, dynamic>>(
       future: _fut,
       builder: (context, snap) {
-        if (!snap.hasData) return const Center(child: CircularProgressIndicator());
+        final data = snap.data;
+        if (data == null) return const Center(child: CircularProgressIndicator());
         if (ctrls.isEmpty) {
-          snap.data!.forEach((k, v) {
+          data.forEach((k, v) {
             ctrls[k] = TextEditingController(text: '$v');
             valors[k] = v;
           });
         }
-        final claus = ctrls.keys.toList();
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
             Carda(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                for (final k in claus)
+                for (final e in ctrls.entries)
                   CampText(
-                    controller: ctrls[k]!,
-                    hint: _etiquetesConfig[k]?.$1 ?? k,
-                    sufix: _etiquetesConfig[k]?.$2.isEmpty == true ? null : _etiquetesConfig[k]?.$2,
-                    linies: k.startsWith('Correu') ? 4 : 1,
-                    onChanged: (v) => valors[k] = v,
+                    controller: e.value,
+                    hint: _etiquetesConfig[e.key]?.$1 ?? e.key,
+                    sufix: _etiquetesConfig[e.key]?.$2.isEmpty == true ? null : _etiquetesConfig[e.key]?.$2,
+                    linies: e.key.startsWith('Correu') ? 4 : 1,
+                    onChanged: (v) => valors[e.key] = v,
                   ),
                 FilledButton(
                   onPressed: () async {
@@ -272,7 +272,7 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
     await Estat.i.call('desarUsuari', [
       Estat.i.token,
       {
-        if (widget.existent != null) 'idOriginal': widget.existent!['id'],
+        if (widget.existent != null) 'idOriginal': widget.existent?['id'],
         'nom': nom.text,
         'email': email.text,
         'rol': rols.join(','),
@@ -281,7 +281,7 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
     ]);
     Estat.i.mostraOk();
     if (widget.onFet != null) {
-      widget.onFet!();
+      widget.onFet?.call();
     } else if (context.mounted) {
       Navigator.pop(context, true);
     }
@@ -319,7 +319,7 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
           Padding(padding: const EdgeInsets.only(bottom: 6), child: Text(t('triaUnRol'), style: const TextStyle(color: vermell))),
         CampText(controller: pw, hint: t('contrasenyaOpt'), obscure: true),
         if (err != null)
-          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(err!, style: const TextStyle(color: vermell))),
+          Padding(padding: const EdgeInsets.only(bottom: 8), child: Text(err ?? '', style: const TextStyle(color: vermell))),
         SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('guardar')))),
       ],
     );

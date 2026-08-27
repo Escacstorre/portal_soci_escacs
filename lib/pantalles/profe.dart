@@ -12,7 +12,7 @@ Future<void> carregaProfe() async {
   if (st.profeTrim <= 0) {
     final d0 = await st.call('obtenirTotProfe', [st.token, null]);
     st.ptot = ProfeDades.de(d0);
-    st.profeTrim = st.ptot!.trimestre;
+    st.profeTrim = st.ptot?.trimestre ?? 0;
   }
   final d = await st.call('obtenirTotProfe', [st.token, st.profeTrim]);
   st.ptot = ProfeDades.de(d);
