@@ -124,9 +124,40 @@ class Estat {
   // ---------- navegació (sincronitzada amb l'historial del navegador) ----------
   Vista get vistaActual => stack.last;
 
+  String _sid = '';
+
+  Object? _dadesSerialitzable(dynamic x) {
+    if (x is String || x is num || x is bool) return x;
+    if (x is Map) {
+      final out = <String, dynamic>{};
+      for (final e in x.entries) {
+        out['${e.key}'] = _dadesSerialitzable(e.value);
+      }
+      return out;
+    }
+    if (x is List) {
+      final out = <dynamic>[];
+      for (final it in x) {
+        out.add(_dadesSerialitzable(it));
+      }
+      return out;
+    }
+    return null;
+  }
+
+  String _stateSessio() => jsonEncode({
+        's': _sid,
+        'r': [
+          for (final v in stack) [
+            v.nom,
+            if (v.dades != null) _dadesSerialitzable(v.dades),
+          ],
+        ],
+      });
+
   void go(String v, [dynamic d]) {
     stack.add(Vista(v, d));
-    html.window.history.pushState(stack.length, '', '#$v');
+    html.window.history.pushState(_stateSessio(), '', '#$v');
     refres();
   }
 
@@ -137,54 +168,47 @@ class Estat {
   /// Rep el control quan l'usuari fa enrere/avançant al navegador.
   void onPopState() {
     final raw = html.window.history.state;
-    int? idx;
-    if (raw is num) {
-      idx = raw.toInt();
-    } else if (raw is String) {
-      idx = int.tryParse(raw);
-    } else if (raw != null) {
-      idx = int.tryParse(raw.toString());
-    }
-
-    if (idx == null) {
-      final h = html.window.location.hash.replaceFirst('#', '');
-      if (h.isEmpty) {
-        idx = 1;
-      } else {
-        final pos = stack.lastIndexWhere((v) => v.nom == h);
-        if (pos >= 0) {
-          idx = pos + 1;
-        } else {
-          // hash desconegut (p. ex. forward a entrada obsoleta) — no toquem l'stack
-          refres();
-          return;
+    if (raw is String) {
+      try {
+        final obj = jsonDecode(raw);
+        if (obj is Map && obj['s'] == _sid && obj['r'] is List) {
+          final r = obj['r'] as List;
+          if (_restauraRuta(r)) return;
         }
-      }
+      } catch (_) {}
     }
+    _salvador();
+  }
 
-    if (idx >= 1 && idx <= stack.length) {
-      while (stack.length > idx) {
-        stack.removeLast();
-      }
-    } else if (idx < 1) {
-      while (stack.length > 1) {
-        stack.removeLast();
-      }
-    } else if (idx > stack.length) {
-      // forward cap a estat futur desconegut — ignorem per evitar el salt a l'inici
-    } else {
-      while (stack.length > 1) {
-        stack.removeLast();
-      }
+  bool _restauraRuta(List r) {
+    if (r.isEmpty) return false;
+    final nou = <Vista>[];
+    for (final item in r) {
+      if (item is! List || item.isEmpty || item.first is! String) return false;
+      nou.add(Vista(item.first as String, item.length > 1 ? item[1] : null));
     }
+    stack
+      ..clear()
+      ..addAll(nou);
+    refres();
+    return true;
+  }
+
+  void _salvador() {
+    final base = stack.isEmpty ? const Vista('login') : stack.first;
+    stack
+      ..clear()
+      ..add(base);
+    html.window.history.replaceState(_stateSessio(), '', '#${base.nom}');
     refres();
   }
 
   void reset(String v, [dynamic d]) {
+    _sid = '${DateTime.now().microsecondsSinceEpoch}';
     stack
       ..clear()
       ..add(Vista(v, d));
-    html.window.history.replaceState(1, '', '#$v');
+    html.window.history.replaceState(_stateSessio(), '', '#$v');
     refres();
   }
 
