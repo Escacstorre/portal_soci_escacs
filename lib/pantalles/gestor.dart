@@ -86,6 +86,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final t = Estat.i.i18n.t;
     return FutureBuilder<GestorDades>(
       future: _fut,
       builder: (context, snap) {
@@ -99,10 +100,10 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
               unselectedLabelColor: textCol,
               isScrollable: true,
               onTap: _tab,
-              tabs: const [
-                Tab(text: 'SOCIS'),
-                Tab(text: 'FITXES'),
-                Tab(text: 'ALUMNES'),
+              tabs: [
+                Tab(text: t('tabSocis')),
+                Tab(text: t('tabFitxes')),
+                Tab(text: t('tabAlumnes')),
               ],
             ),
             Expanded(
@@ -165,7 +166,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
             children: [
               for (var i = 1; i <= 5; i++)
                 ChoiceChip(
-                  label: Text(i == 1 ? '1 any' : '$i anys'),
+                  label: Text(i == 1 ? '1 ${t('anys')}' : '$i ${t('anys')}'),
                   selected: anys == i,
                   onSelected: (_) => setD(() => anys = i),
                 ),
@@ -210,9 +211,9 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
                 items: [
                   ('', t('actPend')),
                   ('Tots', t('tots')),
-                  ('Pendent', 'Pendent'),
-                  ('Actiu', 'Actiu'),
-                  ('Rebutjat', 'Rebutjat'),
+                  ('Pendent', t('estatPendent')),
+                  ('Actiu', t('estatActiu')),
+                  ('Rebutjat', t('estatRebutjat')),
                 ]
                     .map((o) => DropdownMenuItem(value: o.$1, child: Text(o.$2, style: const TextStyle(fontSize: 13))))
                     .toList(),
@@ -256,7 +257,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
                   tooltip: t('elimina'),
                   icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey),
                   onPressed: () async {
-                    final ok = await confirmaEliminacio(context, '${s.nom} — eliminar?');
+                    final ok = await confirmaEliminacio(context, t('eliminarConfirmacio', [s.nom]));
                     if (ok != true) return;
                     await Estat.i.call('eliminarSoci', [Estat.i.token, s.id]);
                     Estat.i.buidaCachu();
@@ -361,7 +362,7 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
                 ),
               ]),
               const SizedBox(height: 4),
-              Text('Soci Actiu directe · sense rebuts · correu amb credencials',
+              Text(t('altaRapidaDesc'),
                   style: const TextStyle(fontSize: 12, color: textCol)),
               const SizedBox(height: 12),
               CampText(controller: n, hint: t('nom'), obligatori: true, error: eDe(n)),
@@ -452,7 +453,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         CampText(controller: banc, hint: t('banc')),
         CampData(
           valor: '${s['caducitat'] ?? ''}',
-          etiqueta: 'Caducitat de la quota (renovació)',
+          etiqueta: t('caducitatQuota'),
           onCanvi: (v) async {
             await Estat.i.call('desarCaducitat', [Estat.i.token, s['id'], v]);
             Estat.i.buidaCachu();
@@ -512,7 +513,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     final anyFed = d['anyFed'] as num;
     return Carda(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('FEDERACIÓ',
+        Text(Estat.i.i18n.t('federacio'),
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: titol, letterSpacing: .5)),
         const SizedBox(height: 10),
         if (jugadors.isEmpty) const Text('—'),
@@ -575,7 +576,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     final curs = d['curs'] as num;
     return Carda(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('CLASSES',
+        Text(t('classes'),
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: titol, letterSpacing: .5)),
         const SizedBox(height: 10),
         if (alumnes.isEmpty) const Text('—'),
@@ -598,37 +599,47 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
             ),
             const SizedBox(height: 6),
             Wrap(spacing: 12, runSpacing: 6, crossAxisAlignment: WrapCrossAlignment.center, children: [
-              for (final tr in trims)
-                if (tr['id'] != null)
-                  Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text('${tr['t']}:', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
-                    const SizedBox(width: 2),
-                    Checkbox(
-                      visualDensity: VisualDensity.compact,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: tr['estat'] == 'Validat',
-                      onChanged: (v) async {
-                        await Estat.i.call('alternarPagament', [Estat.i.token, tr['id'], v == true]);
-                        Estat.i.buidaCachu();
-                        Estat.i.mostraOk();
-                        _refresca();
-                      },
-                    ),
-                    if (tr['rebut'] == null)
-                      Padding(
+              for (var n = 1; n <= 3; n++)
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  Text('$n:', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+                  const SizedBox(width: 2),
+                  ...() {
+                    final tr = trims.firstWhere((x) => x['t'] == n, orElse: () => {});
+                    if (tr['id'] == null) {
+                      return [Padding(
                         padding: const EdgeInsets.only(left: 2, right: 6),
-                        child: Text(Estat.i.i18n.t('noRebut'),
-                            style: const TextStyle(fontSize: 10, color: textCol)),
-                      )
-                    else
-                      IconButton(
+                        child: Text(t('noPagat'), style: const TextStyle(fontSize: 10, color: textCol)),
+                      )];
+                    }
+                    return [
+                      Checkbox(
                         visualDensity: VisualDensity.compact,
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                        icon: const Icon(Icons.attach_file, size: 16),
-                        onPressed: () => obrirUrl('${tr['rebut']['url']}'),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: tr['estat'] == 'Validat',
+                        onChanged: (v) async {
+                          await Estat.i.call('alternarPagament', [Estat.i.token, tr['id'], v == true]);
+                          Estat.i.buidaCachu();
+                          Estat.i.mostraOk();
+                          _refresca();
+                        },
                       ),
-                  ]),
+                      if (tr['rebut'] == null)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2, right: 6),
+                          child: Text(t('noRebut'),
+                              style: const TextStyle(fontSize: 10, color: textCol)),
+                        )
+                      else
+                        IconButton(
+                          visualDensity: VisualDensity.compact,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                          icon: const Icon(Icons.attach_file, size: 16),
+                          onPressed: () => obrirUrl('${tr['rebut']['url']}'),
+                        ),
+                    ];
+                  }(),
+                ]),
               IconButton(
                 tooltip: t('valida3'),
                 icon: const Icon(Icons.done_all, size: 20, color: verd),
@@ -908,7 +919,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
               width: double.infinity,
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.calendar_today, size: 20),
-                label: Text('Selecciona una data', style: const TextStyle(fontSize: 14)),
+                label: Text(t('seleccionaData'), style: TextStyle(fontSize: 14)),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -958,7 +969,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
                 IconButton(
                   icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey),
                   onPressed: () async {
-                    final ok = await confirmaEliminacio(context, 'Eliminar el festiu $f?');
+                    final ok = await confirmaEliminacio(context, t('eliminarFestiu', [f.toString()]));
                     if (ok != true) return;
                     await Estat.i.call('esborrarFestiu', [Estat.i.token, f]);
                     Estat.i.buidaCachu();
@@ -1048,7 +1059,7 @@ class _TabsTrimsState extends State<_TabsTrims> {
                 Expanded(
                   child: CampDataTrim(
                     valor: valors['Trim${i}Inici'] ?? '',
-                    etiqueta: 'Inici',
+                    etiqueta: Estat.i.i18n.t('inici'),
                     onCanvi: (v) => setState(() => valors['Trim${i}Inici'] = v),
                   ),
                 ),
@@ -1056,7 +1067,7 @@ class _TabsTrimsState extends State<_TabsTrims> {
                 Expanded(
                   child: CampDataTrim(
                     valor: valors['Trim${i}Fi'] ?? '',
-                    etiqueta: 'Fi',
+                    etiqueta: Estat.i.i18n.t('fi'),
                     onCanvi: (v) => setState(() => valors['Trim${i}Fi'] = v),
                   ),
                 ),
@@ -1160,6 +1171,7 @@ class _TabFitxesState extends State<_TabFitxes> {
 
   @override
   Widget build(BuildContext context) {
+    final t = Estat.i.i18n.t;
     final grups = _grups;
     final anyFed = widget.d.anyFed;
     return ListView(
@@ -1169,7 +1181,7 @@ class _TabFitxesState extends State<_TabFitxes> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                  hintText: 'Buscar soci o jugador...',
+                  hintText: t('buscarSociJugador'),
                   prefixIcon: const Icon(Icons.search, size: 20),
                   isDense: true),
               onChanged: (v) => setState(() => q = v),
@@ -1181,10 +1193,10 @@ class _TabFitxesState extends State<_TabFitxes> {
             underline: const SizedBox.shrink(),
             isDense: true,
             items: [
-              ('', 'Totes'),
-              ('cap', "No pagat $anyFed"),
-              ('actual', "Pagat $anyFed"),
-              ('dos', "Pagats $anyFed i ${int.parse(anyFed) + 1}"),
+              ('', t('totes')),
+              ('cap', t('noPagatAny', [anyFed.toString()])),
+              ('actual', t('pagatAny', [anyFed.toString()])),
+              ('dos', t('pagatsDosAnys', [anyFed.toString(), (int.parse(anyFed) + 1).toString()])),
             ]
                 .map((o) => DropdownMenuItem(value: o.$1, child: Text(o.$2, style: const TextStyle(fontSize: 13))))
                 .toList(),
@@ -1206,7 +1218,7 @@ class _TabFitxesState extends State<_TabFitxes> {
               );
               widget.onRefresca();
             },
-            child: const Text('Nova fitxa', style: TextStyle(fontSize: 13)),
+            child: Text(t('novaFitxa'), style: TextStyle(fontSize: 13)),
           ),
         ]),
         const SizedBox(height: 12),
@@ -1275,6 +1287,7 @@ class _TabAlumnesState extends State<_TabAlumnes> {
 
   @override
   Widget build(BuildContext context) {
+    final t = Estat.i.i18n.t;
     final grups = _grups;
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -1283,7 +1296,7 @@ class _TabAlumnesState extends State<_TabAlumnes> {
           Expanded(
             child: TextField(
               decoration: InputDecoration(
-                  hintText: 'Buscar soci o alumne...',
+                  hintText: t('buscarSociAlumne'),
                   prefixIcon: const Icon(Icons.search, size: 20),
                   isDense: true),
               onChanged: (v) => setState(() => q = v),
@@ -1303,7 +1316,7 @@ class _TabAlumnesState extends State<_TabAlumnes> {
               );
               widget.onRefresca();
             },
-            child: const Text('Nou alumne', style: TextStyle(fontSize: 13)),
+            child: Text(t('nouAlumne'), style: TextStyle(fontSize: 13)),
           ),
         ]),
         const SizedBox(height: 12),
@@ -1364,7 +1377,7 @@ class _SelectorSociState extends State<SelectorSoci> {
         TextField(
           controller: ctrl,
           decoration: InputDecoration(
-            labelText: 'Soci *',
+            labelText: '${Estat.i.i18n.t('soci')} *',
             prefixIcon: const Icon(Icons.person_search, size: 20),
             isDense: true,
             errorText: widget.error,
@@ -1479,7 +1492,7 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Expanded(
-            child: Text('Nova fitxa ràpida (federació)',
+            child: Text(t('novaFitxaRapidaFed'),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titol)),
           ),
           IconButton(
@@ -1566,7 +1579,7 @@ class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
           Expanded(
-            child: Text("Nou alumne ràpid (classes)",
+            child: Text(t('nouAlumneRapides'),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: titol)),
           ),
           IconButton(

@@ -64,15 +64,15 @@ class _ConfiguracioPantallaState extends State<ConfiguracioPantalla> with Single
   }
 }
 
-const _etiquetesConfig = <String, (String, String)>{
-  'NomClub': ('Nom del club', ''),
-  'CompteClub': ('Compte bancari del club', ''),
-  'QuotaSoci': ("Preu alta soci (quota anual)", ' €'),
-  'PreuFederacio': ('Preu federació anual', ' €'),
-  'CorreuClub': ('Correu del club (avisos)', ''),
-  'DuradaSessioMinuts': ('Durada de la sessió (minuts)', ''),
-  'IdiomaPerDefecte': ('Idioma per defecte (CA/ES)', ''),
-  'FolderDrive': ('ID carpeta Drive (buit = per defecte)', ''),
+Map<String, (String, String)> _etiquetesConfig(String Function(String) t) => {
+  'NomClub': (t('nomClubConfig'), ''),
+  'CompteClub': (t('compteBancariConfig'), ''),
+  'QuotaSoci': (t('quotaSociConfig'), ' €'),
+  'PreuFederacio': (t('preuFederacioConfig'), ' €'),
+  'CorreuClub': (t('correuClubConfig'), ''),
+  'DuradaSessioMinuts': (t('duradaSessioConfig'), ''),
+  'IdiomaPerDefecte': (t('idiomaDefecteConfig'), ''),
+  'FolderDrive': (t('folderDriveConfig'), ''),
 };
 
 class EditorBloc extends StatefulWidget {
@@ -107,6 +107,7 @@ class _EditorBlocState extends State<EditorBloc> {
             valors[k] = v;
           });
         }
+        final etiquetes = _etiquetesConfig(t);
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -115,8 +116,8 @@ class _EditorBlocState extends State<EditorBloc> {
                 for (final e in ctrls.entries)
                   CampText(
                     controller: e.value,
-                    hint: _etiquetesConfig[e.key]?.$1 ?? e.key,
-                    sufix: _etiquetesConfig[e.key]?.$2.isEmpty == true ? null : _etiquetesConfig[e.key]?.$2,
+                    hint: etiquetes[e.key]?.$1 ?? e.key,
+                    sufix: etiquetes[e.key]?.$2.isEmpty == true ? null : etiquetes[e.key]?.$2,
                     linies: e.key.startsWith('Correu') ? 4 : 1,
                     onChanged: (v) => valors[e.key] = v,
                   ),
@@ -232,7 +233,7 @@ class _PestanyaUsuarisState extends State<PestanyaUsuaris> {
                   tooltip: t('elimina'),
                   icon: Icon(Icons.delete_outline, size: 20, color: Colors.grey.shade400),
                   onPressed: () async {
-                    final ok = await confirmaEliminacio(context, '${usr['email']} — eliminar?');
+                    final ok = await confirmaEliminacio(context, t('eliminarConfirmacio', ['${usr['email']}']));
                     if (ok != true) return;
                     await Estat.i.call('eliminarUsuari', [Estat.i.token, usr['email']]);
                     Estat.i.mostraOk();

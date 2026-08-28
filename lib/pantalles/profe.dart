@@ -26,6 +26,8 @@ class ProfePantalla extends StatefulWidget {
 }
 
 class _ProfePantallaState extends State<ProfePantalla> {
+  bool _mostraLlista = false;
+
   @override
   void initState() {
     super.initState();
@@ -49,36 +51,48 @@ class _ProfePantallaState extends State<ProfePantalla> {
       children: [
         Text('${t('profeBenv')} ${st.user?['nom'] ?? ''}',
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: titol)),
-        const SizedBox(height: 10),
-        Carda(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Text(t('selectorTrim'), style: const TextStyle(fontSize: 14)),
-              const SizedBox(width: 10),
-              for (var n = 1; n <= 3; n++)
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    label: Text('$n'),
-                    selected: st.profeTrim == n,
-                    onSelected: (_) async {
-                      st.profeTrim = n;
-                      await carregaProfe();
-                      st.refres();
-                    },
-                  ),
-                ),
-            ]),
-            const SizedBox(height: 8),
-            if (llista.isEmpty)
-              const Text('—')
-            else
-              ...llista.map((m) => ItemLlista(children: [
-                    Expanded(child: Text('${m['alumne'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold))),
-                    Text('${m['soci'] ?? ''}', style: const TextStyle(fontSize: 13, color: textCol)),
-                  ])),
-          ]),
+        const SizedBox(height: 14),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            BotoGran(titol: t('llista'), icon: Icons.receipt_long, onTap: () => setState(() => _mostraLlista = !_mostraLlista)),
+            const SizedBox(width: 16),
+            BotoGran(titol: t('alumnes'), icon: Icons.school, onTap: () => st.go('profeAlumnes')),
+          ],
         ),
+        if (_mostraLlista) ...[
+          const SizedBox(height: 16),
+          Carda(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Text(t('selectorTrim'), style: const TextStyle(fontSize: 14)),
+                const SizedBox(width: 10),
+                for (var n = 1; n <= 3; n++)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      label: Text('$n'),
+                      selected: st.profeTrim == n,
+                      onSelected: (_) async {
+                        st.profeTrim = n;
+                        await carregaProfe();
+                        st.refres();
+                      },
+                    ),
+                  ),
+              ]),
+              const SizedBox(height: 8),
+              if (llista.isEmpty)
+                const Text('—')
+              else
+                ...llista.map((m) => ItemLlista(children: [
+                      Expanded(child: Text('${m['alumne'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold))),
+                      Text('${m['soci'] ?? ''}', style: const TextStyle(fontSize: 13, color: textCol)),
+                    ])),
+            ]),
+          ),
+        ],
+        const SizedBox(height: 16),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -121,18 +135,11 @@ class _ProfePantallaState extends State<ProfePantalla> {
                   _preuFila(t('trimJunts'), '${p.junts} €'),
                   _preuFila(t('serSoci'), '${p.serSoci} €'),
                   const SizedBox(height: 6),
-                  Wrap(spacing: 8, runSpacing: 8, children: [
-                    OutlinedButton.icon(
-                      icon: const Icon(Icons.print, size: 18),
-                      label: Text(t('imprimir'), style: const TextStyle(fontSize: 13)),
-                      onPressed: () => imprimirFormulari(p.formulari),
-                    ),
-                    OutlinedButton.icon(
-                      icon: const Icon(Icons.list, size: 18),
-                      label: Text(t('alumnes'), style: const TextStyle(fontSize: 13)),
-                      onPressed: () => st.go('profeAlumnes'),
-                    ),
-                  ]),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.print, size: 18),
+                    label: Text(t('imprimir'), style: const TextStyle(fontSize: 13)),
+                    onPressed: () => imprimirFormulari(p.formulari),
+                  ),
                 ]),
               ),
             ),

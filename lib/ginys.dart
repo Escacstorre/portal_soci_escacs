@@ -428,7 +428,7 @@ class CampHora extends StatelessWidget {
         inputFormatters: [FiltreHora()],
         maxLength: 5,
         decoration: InputDecoration(
-          labelText: hint ?? 'Hora',
+          labelText: hint ?? Estat.i.i18n.t('hora'),
           counterText: '',
           isDense: true,
           suffixIcon: IconButton(
@@ -455,7 +455,7 @@ Future<Map<String, dynamic>?> triaArxiu(String accept) async {
         return;
       }
       if (f.size > 5 * 1024 * 1024) {
-        Estat.i.mostraError('Màxim 5 MB');
+        Estat.i.mostraError(Estat.i.i18n.t('maxim5MB'));
         completer.complete(null);
         return;
       }

@@ -29,12 +29,18 @@
     return codi;
   }
 
-  String t(String k) {
-    final dLx = lx[lang];
-    if (dLx is Map && dLx[k] != null) return '${dLx[k]}';
-    final caLx = lx['CA'];
-    if (caLx is Map && caLx[k] != null) return '${caLx[k]}';
-    return k;
+  String t(String k, [List<String>? params]) {
+    var txt = lx[lang] is Map && (lx[lang] as Map)[k] != null
+        ? '${(lx[lang] as Map)[k]}'
+        : (lx['CA'] is Map && (lx['CA'] as Map)[k] != null
+            ? '${(lx['CA'] as Map)[k]}'
+            : k);
+    if (params != null) {
+      for (var i = 0; i < params.length; i++) {
+        txt = txt.replaceAll('{$i}', params[i]);
+      }
+    }
+    return txt;
   }
 
   String tradueixError(String msg) {

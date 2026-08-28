@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'estat.dart';
+
 const pri = Color(0xFF051EF5);
 const titol = Color(0xFF060201);
 const textCol = Color(0xFF666666);
@@ -190,7 +192,7 @@ Future<bool?> confirmaEliminacio(BuildContext context, String missatge) {
     builder: (ctx) => AlertDialog(
       content: Text(missatge),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+        TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(Estat.i.i18n.t('cancel'))),
         TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('OK')),
       ],
     ),

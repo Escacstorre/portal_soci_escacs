@@ -10,7 +10,7 @@ import '../../ginys.dart';
 
 Future<void> pujaFitxer(String? token, String col, String id, String periode, {VoidCallback? onFet}) async {
   if (token == null || token.isEmpty) {
-    Estat.i.mostraError('Sessió caducada');
+    Estat.i.mostraError(Estat.i.i18n.t('sessioCaducada'));
     return;
   }
   final f = await triaArxiu('.jpg,.jpeg,.png,.pdf');
@@ -63,7 +63,7 @@ class IniciSociPantalla extends StatelessWidget {
                       Text('${t('quotaAny')} ${d?.any ?? ''}: '),
                       XipQuota(quota: d?.quota ?? ''),
                       if (vigent && caducitat.isNotEmpty)
-                        Text('vigent fins ${mostraData(caducitat)}',
+                        Text('${t('vigentFins')} ${mostraData(caducitat)}',
                             style: const TextStyle(fontSize: 12.5, color: verd)),
                       if (d?.quotaRebut?.url != null)
                         TextButton(
