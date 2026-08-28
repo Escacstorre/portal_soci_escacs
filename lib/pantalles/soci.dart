@@ -241,6 +241,43 @@ class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
 class ClassesAlumnesPantalla extends StatelessWidget {
   const ClassesAlumnesPantalla({super.key});
 
+  void _obreCalendari(BuildContext context) {
+    final tot = Estat.i.tot;
+    final sessions = tot?.sessions ?? const <String>[];
+    final festius = (tot?.festius ?? const <String>[]).toSet();
+    final anyCurs = tot?.anyCurs != null && tot!.anyCurs != 0 ? tot.anyCurs : (DateTime.now().month >= 8 ? DateTime.now().year : DateTime.now().year - 1);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => Dialog.fullscreen(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            foregroundColor: titol,
+            surfaceTintColor: Colors.white,
+            title: Text(Estat.i.i18n.t('calendari')),
+            leading: IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(ctx)),
+          ),
+          body: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              CalendariGraella(sessions: sessions, festius: festius, anyCurs: anyCurs, mostraHora: false),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.event, size: 18),
+                label: Text(Estat.i.i18n.t('alCal'), style: const TextStyle(fontSize: 13)),
+                onPressed: () async {
+                  final ics = await Estat.i.call('descarregarICSSenseHora', [Estat.i.token]);
+                  descarregarArxiu(ics as String, 'text/calendar', 'classes.ics');
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
@@ -248,7 +285,15 @@ class ClassesAlumnesPantalla extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(t('llistatAlumnes'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
+        Row(children: [
+          Expanded(child: Text(t('llistatAlumnes'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol))),
+          const SizedBox(width: 8),
+          OutlinedButton.icon(
+            icon: const Icon(Icons.calendar_month, size: 18),
+            label: Text(t('calendari'), style: const TextStyle(fontSize: 13)),
+            onPressed: () => _obreCalendari(context),
+          ),
+        ]),
         const SizedBox(height: 10),
         if (alums.isEmpty)
           Center(child: Padding(padding: const EdgeInsets.all(20), child: Text('${t('llistatAlumnes')} — 0'))),

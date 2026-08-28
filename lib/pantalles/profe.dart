@@ -100,12 +100,15 @@ class _ProfePantallaState extends State<ProfePantalla> {
               child: Carda(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(t('calendari'), style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
-                  ...p.sessions.take(12).map((data) => Row(children: [
-                        const Text('✔ ', style: TextStyle(color: verd)),
-                        Expanded(child: Text(mostraData(data), style: const TextStyle(fontSize: 13.5))),
-                      ])),
-                  Text('… ${p.sessions.length} ${t('sessioClasse')}',
+                  const SizedBox(height: 8),
+                  CalendariGraella(
+                    sessions: p.sessions,
+                    festius: p.festius.toSet(),
+                    anyCurs: p.anyCurs != 0 ? p.anyCurs : (DateTime.now().month >= 8 ? DateTime.now().year : DateTime.now().year - 1),
+                    mostraHora: true,
+                  ),
+                  const SizedBox(height: 8),
+                  Text('${p.sessions.length} ${t('sessioClasse')}',
                       style: const TextStyle(fontSize: 12, color: textCol)),
                   const SizedBox(height: 6),
                   OutlinedButton.icon(
@@ -119,6 +122,7 @@ class _ProfePantallaState extends State<ProfePantalla> {
                 ]),
               ),
             ),
+            const SizedBox(width: 16),
             Expanded(
               child: Carda(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

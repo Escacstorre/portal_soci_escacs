@@ -444,6 +444,80 @@ class CampHora extends StatelessWidget {
   }
 }
 
+class CalendariGraella extends StatelessWidget {
+  const CalendariGraella({super.key, required this.sessions, required this.festius, required this.anyCurs, this.mostraHora = true});
+  final List<String> sessions;
+  final Set<String> festius;
+  final int anyCurs;
+  final bool mostraHora;
+
+  String _ymd(int y, int m, int d) => '$y-${m.toString().padLeft(2, '0')}-${d.toString().padLeft(2, '0')}';
+
+  @override
+  Widget build(BuildContext context) {
+    final sessSet = sessions.toSet();
+    final noms = ['', 'gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'];
+    final mesos = [9, 10, 11, 12, 1, 2, 3, 4, 5];
+    return Column(children: [
+      for (final mm in mesos) ...[
+        Builder(builder: (_) {
+          final y = mm >= 9 ? anyCurs : anyCurs + 1;
+          final diesMes = DateTime(y, mm + 1, 0).day;
+          final primer = DateTime(y, mm, 1).weekday;
+          return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 12, bottom: 6),
+              child: Text('${noms[mm]} $y', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: titol)),
+            ),
+            Row(children: const [
+              Expanded(child: Center(child: Text('dl', style: TextStyle(fontSize: 11, color: textCol)))),
+              Expanded(child: Center(child: Text('dt', style: TextStyle(fontSize: 11, color: textCol)))),
+              Expanded(child: Center(child: Text('dc', style: TextStyle(fontSize: 11, color: textCol)))),
+              Expanded(child: Center(child: Text('dj', style: TextStyle(fontSize: 11, color: textCol)))),
+              Expanded(child: Center(child: Text('dv', style: TextStyle(fontSize: 11, color: textCol)))),
+              Expanded(child: Center(child: Text('ds', style: TextStyle(fontSize: 11, color: textCol)))),
+              Expanded(child: Center(child: Text('dg', style: TextStyle(fontSize: 11, color: textCol)))),
+            ]),
+            const SizedBox(height: 4),
+            GridView.count(
+              crossAxisCount: 7,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              childAspectRatio: 1.2,
+              children: [
+                for (var i = 1; i < primer; i++) const SizedBox.shrink(),
+                for (var d = 1; d <= diesMes; d++) Builder(builder: (_) {
+                  final ymd = _ymd(y, mm, d);
+                  final esFestiu = festius.contains(ymd);
+                  final esSessio = sessSet.contains(ymd);
+                  Color bg = Colors.transparent;
+                  Color fg = titol;
+                  String marca = '';
+                  if (esFestiu) { bg = vermell.withValues(alpha: .12); fg = vermell; marca = '✖'; }
+                  else if (esSessio) { bg = verd.withValues(alpha: .12); fg = verd; marca = '✔'; }
+                  return Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
+                    child: Stack(alignment: Alignment.center, children: [
+                      Text('$d', style: TextStyle(fontSize: 12, color: fg, fontWeight: esSessio || esFestiu ? FontWeight.bold : FontWeight.normal)),
+                      if (marca.isNotEmpty) Positioned(top: 1, right: 2, child: Text(marca, style: TextStyle(fontSize: 8, color: fg))),
+                    ]),
+                  );
+                }),
+              ],
+            ),
+          ]);
+        }),
+      ],
+      const SizedBox(height: 8),
+      Row(children: const [
+        Icon(Icons.check, size: 12, color: verd), SizedBox(width: 4), Text('sessió', style: TextStyle(fontSize: 11, color: textCol)),
+        SizedBox(width: 12), Icon(Icons.close, size: 12, color: vermell), SizedBox(width: 4), Text('festiu', style: TextStyle(fontSize: 11, color: textCol)),
+      ]),
+    ]);
+  }
+}
+
 Future<Map<String, dynamic>?> triaArxiu(String accept) async {
   final completer = Completer<Map<String, dynamic>?>();
   final inp = html.InputElement(type: 'file')

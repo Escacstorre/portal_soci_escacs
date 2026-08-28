@@ -169,10 +169,13 @@ class IniciSoci {
 }
 
 class TotSoci {
-  const TotSoci({required this.inici, required this.alumnes, required this.jugadors});
+  const TotSoci({required this.inici, required this.alumnes, required this.jugadors, this.sessions = const [], this.festius = const [], this.anyCurs = 0});
   final IniciSoci inici;
   final List<AlumneSoci> alumnes;
   final List<JugadorSoci> jugadors;
+  final List<String> sessions;
+  final List<String> festius;
+  final int anyCurs;
 
   static TotSoci de(dynamic m) {
     final d = _mp(m);
@@ -180,6 +183,9 @@ class TotSoci {
       inici: IniciSoci.de(d['inici']),
       alumnes: _ll(d['alumnes']).map(AlumneSoci.de).toList(),
       jugadors: _ll(d['jugadors']).map(JugadorSoci.de).toList(),
+      sessions: _ll(d['sessions']).map((e) => _s(e)).where((s) => s.isNotEmpty).toList(),
+      festius: _ll(d['festius']).map((e) => _s(e)).toList(),
+      anyCurs: d['any'] is num ? (d['any'] as num).toInt() : int.tryParse(_s(d['any'])) ?? 0,
     );
   }
 }
@@ -327,10 +333,12 @@ class AlumneProfe {
 }
 
 class ProfeDades {
-  const ProfeDades({required this.profe, required this.sessions, required this.alumnes});
+  const ProfeDades({required this.profe, required this.sessions, required this.alumnes, this.festius = const [], this.anyCurs = 0});
   final Map<String, dynamic> profe;
   final List<String> sessions;
   final List<AlumneProfe> alumnes;
+  final List<String> festius;
+  final int anyCurs;
 
   int get trimestre => (profe['trimestre'] is num) ? (profe['trimestre'] as num).toInt() : 1;
   List<num> get bases => _ll(profe['bases']).map((e) => (e is num) ? e : num.tryParse(_s(e)) ?? 0).toList();
@@ -341,10 +349,16 @@ class ProfeDades {
 
   static ProfeDades de(dynamic m) {
     final d = _mp(m);
+    List<String> sess = _ll(d['sessions']).map((e) {
+      if (e is String) return _s(e);
+      return _s(_mp(e)['data']);
+    }).where((s) => s.isNotEmpty).toList();
     return ProfeDades(
       profe: _mp(d['profe']),
-      sessions: _ll(d['sessions']).map((e) => _s(_mp(e)['data'])).where((s) => s.isNotEmpty).toList(),
+      sessions: sess,
       alumnes: _ll(d['alumnes']).map(AlumneProfe.de).toList(),
+      festius: _ll(d['festius']).map((e) => _s(e)).toList(),
+      anyCurs: d['any'] is num ? (d['any'] as num).toInt() : int.tryParse(_s(d['any'])) ?? 0,
     );
   }
 }
