@@ -134,15 +134,14 @@ class Estat {
 
   void go(String v, [dynamic d]) {
     stack.add(Vista(v, d));
-    refres();
     navigatorKey.currentState?.push(_ruta(Vista(v, d)));
+    WidgetsBinding.instance.addPostFrameCallback((_) => refres());
   }
 
   void back() {
     if (stack.length > 1) {
       stack.removeLast();
       navigatorKey.currentState?.pop();
-      refres();
     }
   }
 
