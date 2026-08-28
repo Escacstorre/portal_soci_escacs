@@ -3,9 +3,12 @@ import 'dart:convert';
 // ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
 
+import 'package:flutter/material.dart';
+
 import 'pont.dart';
 import 'traduccions.dart';
 import 'models.dart';
+import 'pantalles/ruta.dart';
 
 const urlAppsScript =
     'https://script.google.com/macros/s/AKfycbyCxdv7MNxrlqhvLBruDEumwxuWN4piXILygFS_YCptt0YDmRQu2HBKxEMlQtP9-FIoTA/exec';
@@ -121,94 +124,36 @@ class Estat {
 
   void mostraOk([String? msg]) => mostraError(msg ?? i18n.t('refrescat'), ok: true);
 
-  // ---------- navegació (sincronitzada amb l'historial del navegador) ----------
+  // ---------- navegació (rutes reals del Navigator) ----------
   Vista get vistaActual => stack.last;
 
-  String _sid = '';
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  Object? _dadesSerialitzable(dynamic x) {
-    if (x is String || x is num || x is bool) return x;
-    if (x is Map) {
-      final out = <String, dynamic>{};
-      for (final e in x.entries) {
-        out['${e.key}'] = _dadesSerialitzable(e.value);
-      }
-      return out;
-    }
-    if (x is List) {
-      final out = <dynamic>[];
-      for (final it in x) {
-        out.add(_dadesSerialitzable(it));
-      }
-      return out;
-    }
-    return null;
-  }
-
-  String _stateSessio() => jsonEncode({
-        's': _sid,
-        'r': [
-          for (final v in stack) [
-            v.nom,
-            if (v.dades != null) _dadesSerialitzable(v.dades),
-          ],
-        ],
-      });
+  MaterialPageRoute _ruta(Vista v) =>
+      MaterialPageRoute(builder: (_) => PantallaRuta(vista: v));
 
   void go(String v, [dynamic d]) {
     stack.add(Vista(v, d));
-    html.window.history.pushState(_stateSessio(), '', '#$v');
     refres();
+    navigatorKey.currentState?.push(_ruta(Vista(v, d)));
   }
 
   void back() {
-    if (stack.length > 1) html.window.history.back();
-  }
-
-  /// Rep el control quan l'usuari fa enrere/avançant al navegador.
-  void onPopState() {
-    final raw = html.window.history.state;
-    if (raw is String) {
-      try {
-        final obj = jsonDecode(raw);
-        if (obj is Map && obj['s'] == _sid && obj['r'] is List) {
-          final r = obj['r'] as List;
-          if (_restauraRuta(r)) return;
-        }
-      } catch (_) {}
+    if (stack.length > 1) {
+      stack.removeLast();
+      navigatorKey.currentState?.pop();
+      refres();
     }
-    _salvador();
-  }
-
-  bool _restauraRuta(List r) {
-    if (r.isEmpty) return false;
-    final nou = <Vista>[];
-    for (final item in r) {
-      if (item is! List || item.isEmpty || item.first is! String) return false;
-      nou.add(Vista(item.first as String, item.length > 1 ? item[1] : null));
-    }
-    stack
-      ..clear()
-      ..addAll(nou);
-    refres();
-    return true;
-  }
-
-  void _salvador() {
-    final base = stack.isEmpty ? const Vista('login') : stack.first;
-    stack
-      ..clear()
-      ..add(base);
-    html.window.history.replaceState(_stateSessio(), '', '#${base.nom}');
-    refres();
   }
 
   void reset(String v, [dynamic d]) {
-    _sid = '${DateTime.now().microsecondsSinceEpoch}';
     stack
       ..clear()
       ..add(Vista(v, d));
-    html.window.history.replaceState(_stateSessio(), '', '#$v');
+    final nav = navigatorKey.currentState;
+    if (nav != null) {
+      nav.pushAndRemoveUntil(_ruta(Vista(v, d)), (r) => false);
+    }
     refres();
   }
 
