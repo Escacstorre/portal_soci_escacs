@@ -628,16 +628,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
 
   Widget _filaTrimestre(List<Map<String, dynamic>> trims, int n, String Function(String) t) {
     final tr = trims.firstWhere((x) => x['t'] == n, orElse: () => {});
-    if (tr['id'] == null) {
-      return Row(mainAxisSize: MainAxisSize.min, children: [
-        Text('$n:', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
-        const SizedBox(width: 2),
-        Padding(
-          padding: const EdgeInsets.only(left: 2, right: 6),
-          child: Text(t('noPagat'), style: const TextStyle(fontSize: 10, color: textCol)),
-        ),
-      ]);
-    }
+    final id = tr['id'];
     return Row(mainAxisSize: MainAxisSize.min, children: [
       Text('$n:', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
       const SizedBox(width: 2),
@@ -645,26 +636,27 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         visualDensity: VisualDensity.compact,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         value: tr['estat'] == 'Validat',
-        onChanged: (v) async {
-          await Estat.i.call('alternarPagament', [Estat.i.token, tr['id'], v == true]);
+        onChanged: id == null ? null : (v) async {
+          await Estat.i.call('alternarPagament', [Estat.i.token, id, v == true]);
           Estat.i.buidaCachu();
           Estat.i.mostraOk();
           _refresca();
         },
       ),
-      if (tr['rebut'] == null)
-        Padding(
-          padding: const EdgeInsets.only(left: 2, right: 6),
-          child: Text(t('noRebut'), style: const TextStyle(fontSize: 10, color: textCol)),
-        )
-      else
-        IconButton(
-          visualDensity: VisualDensity.compact,
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-          icon: const Icon(Icons.attach_file, size: 16),
-          onPressed: () => obrirUrl('${tr['rebut']['url']}'),
-        ),
+      if (id != null)
+        if (tr['rebut'] == null)
+          Padding(
+            padding: const EdgeInsets.only(left: 2, right: 6),
+            child: Text(t('noRebut'), style: const TextStyle(fontSize: 10, color: textCol)),
+          )
+        else
+          IconButton(
+            visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+            icon: const Icon(Icons.attach_file, size: 16),
+            onPressed: () => obrirUrl('${tr['rebut']['url']}'),
+          ),
     ]);
   }
 }
