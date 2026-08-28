@@ -201,7 +201,7 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    final compte = Estat.i.inici?.compte ?? (Estat.i.club.isNotEmpty ? Estat.i.club : '');
+    final compte = Estat.i.compte.isNotEmpty ? Estat.i.compte : (Estat.i.inici?.compte ?? '');
     return Container(
       decoration: const BoxDecoration(gradient: gradientFons),
       child: Center(

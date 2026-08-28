@@ -34,6 +34,7 @@ class Estat {
   String? token;
   String club = '';
   String quota = '';
+  String compte = '';
   Map<String, dynamic>? user;
   IniciSoci? inici;
   TotSoci? tot;
@@ -258,6 +259,7 @@ class Estat {
     if (cfg != null) {
       club = '${cfg['club'] ?? ''}';
       quota = '${cfg['quota'] ?? '25'}';
+      compte = '${cfg['compte'] ?? ''}';
       final idioma = '${cfg['idioma'] ?? 'CA'}'.toUpperCase();
       if (Traduccions.instance.langs.contains(idioma)) i18n.lang = idioma;
       i18n.setLx((cfg['traduccions'] as Map?)?.cast<String, dynamic>());
