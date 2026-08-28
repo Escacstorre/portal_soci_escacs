@@ -103,7 +103,7 @@ class _ProfePantallaState extends State<ProfePantalla> {
                   const SizedBox(height: 6),
                   ...p.sessions.take(12).map((data) => Row(children: [
                         const Text('✔ ', style: TextStyle(color: verd)),
-                        Expanded(child: Text(data, style: const TextStyle(fontSize: 13.5))),
+                        Expanded(child: Text(mostraData(data), style: const TextStyle(fontSize: 13.5))),
                       ])),
                   Text('… ${p.sessions.length} ${t('sessioClasse')}',
                       style: const TextStyle(fontSize: 12, color: textCol)),
