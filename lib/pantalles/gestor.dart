@@ -636,7 +636,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         visualDensity: VisualDensity.compact,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         value: tr['estat'] == 'Validat',
-        onChanged: id == null ? null : (v) async {
+        onChanged: (v) async {
           await Estat.i.call('alternarPagament', [Estat.i.token, id, v == true]);
           Estat.i.buidaCachu();
           Estat.i.mostraOk();
