@@ -600,46 +600,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
             const SizedBox(height: 6),
             Wrap(spacing: 12, runSpacing: 6, crossAxisAlignment: WrapCrossAlignment.center, children: [
               for (var n = 1; n <= 3; n++)
-                Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text('$n:', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
-                  const SizedBox(width: 2),
-                  ...() {
-                    final tr = trims.firstWhere((x) => x['t'] == n, orElse: () => {});
-                    if (tr['id'] == null) {
-                      return [Padding(
-                        padding: const EdgeInsets.only(left: 2, right: 6),
-                        child: Text(t('noPagat'), style: const TextStyle(fontSize: 10, color: textCol)),
-                      )];
-                    }
-                    return [
-                      Checkbox(
-                        visualDensity: VisualDensity.compact,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        value: tr['estat'] == 'Validat',
-                        onChanged: (v) async {
-                          await Estat.i.call('alternarPagament', [Estat.i.token, tr['id'], v == true]);
-                          Estat.i.buidaCachu();
-                          Estat.i.mostraOk();
-                          _refresca();
-                        },
-                      ),
-                      if (tr['rebut'] == null)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 2, right: 6),
-                          child: Text(t('noRebut'),
-                              style: const TextStyle(fontSize: 10, color: textCol)),
-                        )
-                      else
-                        IconButton(
-                          visualDensity: VisualDensity.compact,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
-                          icon: const Icon(Icons.attach_file, size: 16),
-                          onPressed: () => obrirUrl('${tr['rebut']['url']}'),
-                        ),
-                    ];
-                  }(),
-                ]),
+                _filaTrimestre(trims, n, t),
               IconButton(
                 tooltip: t('valida3'),
                 icon: const Icon(Icons.done_all, size: 20, color: verd),
@@ -663,6 +624,48 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         ],
       ),
     );
+  }
+
+  Widget _filaTrimestre(List<Map<String, dynamic>> trims, int n, String Function(String) t) {
+    final tr = trims.firstWhere((x) => x['t'] == n, orElse: () => {});
+    if (tr['id'] == null) {
+      return Row(mainAxisSize: MainAxisSize.min, children: [
+        Text('$n:', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+        const SizedBox(width: 2),
+        Padding(
+          padding: const EdgeInsets.only(left: 2, right: 6),
+          child: Text(t('noPagat'), style: const TextStyle(fontSize: 10, color: textCol)),
+        ),
+      ]);
+    }
+    return Row(mainAxisSize: MainAxisSize.min, children: [
+      Text('$n:', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+      const SizedBox(width: 2),
+      Checkbox(
+        visualDensity: VisualDensity.compact,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        value: tr['estat'] == 'Validat',
+        onChanged: (v) async {
+          await Estat.i.call('alternarPagament', [Estat.i.token, tr['id'], v == true]);
+          Estat.i.buidaCachu();
+          Estat.i.mostraOk();
+          _refresca();
+        },
+      ),
+      if (tr['rebut'] == null)
+        Padding(
+          padding: const EdgeInsets.only(left: 2, right: 6),
+          child: Text(t('noRebut'), style: const TextStyle(fontSize: 10, color: textCol)),
+        )
+      else
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+          icon: const Icon(Icons.attach_file, size: 16),
+          onPressed: () => obrirUrl('${tr['rebut']['url']}'),
+        ),
+    ]);
   }
 }
 
