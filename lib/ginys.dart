@@ -303,8 +303,11 @@ class CampDataTrim extends StatelessWidget {
       final m = int.tryParse(p[0]) ?? 1;
       final d = int.tryParse(p[1]) ?? 1;
       final avui = DateTime.now();
-      final anyCurs = avui.month >= 9 ? avui.year : avui.year - 1;
-      return DateTime(anyCurs, m.clamp(1, 12), d.clamp(1, 28));
+      final curs = avui.month >= 8 ? avui.year : avui.year - 1;
+      final any = m >= 8 ? curs : curs + 1;
+      final mm = m.clamp(1, 12);
+      final ultim = DateTime(any, mm + 1, 0).day;
+      return DateTime(any, mm, d.clamp(1, ultim));
     }
     return DateTime.now();
   }
