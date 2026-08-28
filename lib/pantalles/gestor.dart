@@ -1013,6 +1013,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
         trims: _escola?.trimestres ?? const <String, String>{},
         onRefresca: () {
           Estat.i.buidaCachu();
+          Estat.i.mostraOk();
           setState(() => _fut = carregaGestor());
         },
       );
@@ -1039,6 +1040,14 @@ class _TabsTrims extends StatefulWidget {
 
 class _TabsTrimsState extends State<_TabsTrims> {
   late Map<String, String> valors = {for (final e in widget.trims.entries) e.key: e.value};
+
+  @override
+  void didUpdateWidget(covariant _TabsTrims oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.trims != widget.trims) {
+      valors = {for (final e in widget.trims.entries) e.key: e.value};
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1073,8 +1082,10 @@ class _TabsTrimsState extends State<_TabsTrims> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: () async {
-                  await Estat.i.call('definirTrimestres', [Estat.i.token, valors]);
-                  widget.onRefresca();
+                  try {
+                    await Estat.i.call('definirTrimestres', [Estat.i.token, valors]);
+                    widget.onRefresca();
+                  } catch (_) {}
                 },
                 child: Text(Estat.i.i18n.t('guardar')),
               ),
