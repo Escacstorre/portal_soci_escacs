@@ -472,6 +472,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
               ]);
               Estat.i.buidaCachu();
               Estat.i.mostraOk();
+              _refresca();
             },
           ),
           OutlinedButton.icon(
@@ -610,6 +611,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
                         await Estat.i.call('alternarPagament', [Estat.i.token, tr['id'], v == true]);
                         Estat.i.buidaCachu();
                         Estat.i.mostraOk();
+                        _refresca();
                       },
                     ),
                     if (tr['rebut'] == null)
@@ -989,6 +991,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
                 await Estat.i.call('definirPreuDivendres', [Estat.i.token, preuDive.text]);
                 Estat.i.buidaCachu();
                 Estat.i.mostraOk();
+                setState(() => _fut = carregaGestor());
               },
               child: Text(t('guardar')),
             ),

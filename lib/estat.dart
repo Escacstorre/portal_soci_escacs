@@ -106,9 +106,6 @@ class Estat {
 
   void buidaCachu() {
     _cache.clear();
-    tot = null;
-    gest = null;
-    ptot = null;
   }
 
   void mostraError(String msg, {bool ok = false}) {
