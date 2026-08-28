@@ -5,6 +5,24 @@ Map<String, dynamic> _mp(dynamic v) =>
 
 String _s(dynamic v) => v == null ? '' : '$v';
 
+String _dataTrim(dynamic v) {
+  if (v == null) return '';
+  final s = _s(v);
+  final p = s.split('-');
+  if (p.length == 2 && p[0].length == 2 && p[1].length == 2) return s;
+  if (p.length == 3 && p[1].length == 2 && p[2].length == 2) return '${p[1]}/${p[2]}';
+  final dt = DateTime.tryParse(s);
+  if (dt != null) return '${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+  const mesos = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
+  for (final e in mesos.entries) {
+    if (s.contains(e.key)) {
+      final d2 = RegExp(r'\b(\d{1,2})\b').firstMatch(s.replaceFirst(e.key, ''));
+      if (d2 != null) return '${e.value.toString().padLeft(2, '0')}-${d2.group(0)!.padLeft(2, '0')}';
+    }
+  }
+  return s;
+}
+
 class RebutInfo {
   const RebutInfo({required this.url, this.nom = ''});
   final String url;
@@ -252,7 +270,7 @@ class EscolaConfig {
 
   static EscolaConfig de(dynamic m) {
     final d = _mp(m);
-    final trims = _mp(d['trimestres']).map((k, v) => MapEntry(k, _s(v)));
+    final trims = _mp(d['trimestres']).map((k, v) => MapEntry(k, _dataTrim(v)));
     return EscolaConfig(
       preuDivendres: (d['preuDivendres'] is num) ? d['preuDivendres'] as num : num.tryParse(_s(d['preuDivendres'])) ?? 0,
       festius: _ll(d['festius']).map((e) => _s(e)).toList()..sort(),
