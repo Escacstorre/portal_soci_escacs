@@ -243,6 +243,8 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
                         error: (intentat && c.text != c2.text) ? t('confirma') : errDe(c2),
                       ),
                       Text('${t('compte')} $compte', style: const TextStyle(fontSize: 13, color: textCol)),
+                      const SizedBox(height: 4),
+                      Text('${t('rebutQuota')} ${Estat.i.quota}€', style: const TextStyle(fontSize: 13, color: textCol)),
                       const SizedBox(height: 8),
                       OutlinedButton.icon(
                         icon: Icon(rebut == null ? Icons.upload_file : Icons.check_circle,
