@@ -11,6 +11,7 @@ import 'estat.dart';
 import 'estils.dart';
 import 'pantalles/ruta.dart';
 import 'pont.dart';
+import 'serveis/estat_scope.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,7 @@ void main() {
 
 class PortalApp extends StatelessWidget {
   const PortalApp({super.key});
+  static final _estatNotifier = EstatNotifier(Estat.i);
 
   static const _isoIdiomes = {
     'CA': 'ca', 'ES': 'es', 'EN': 'en', 'FR': 'fr', 'DE': 'de', 'IT': 'it',
@@ -46,7 +48,9 @@ class PortalApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return EstatScope(
+      notifier: _estatNotifier,
+      child: MaterialApp(
       title: 'Portal Socis',
       debugShowCheckedModeBanner: false,
       navigatorKey: Estat.i.navigatorKey,
@@ -96,6 +100,7 @@ class PortalApp extends StatelessWidget {
         floatingActionButtonTheme: const FloatingActionButtonThemeData(backgroundColor: pri, foregroundColor: Colors.white),
       ),
       home: const Arrel(),
+      ),
     );
   }
 }
