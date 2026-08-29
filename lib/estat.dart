@@ -1,7 +1,5 @@
 ﻿import 'dart:async';
 import 'dart:convert';
-// ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
-import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 
@@ -9,6 +7,7 @@ import 'pont.dart';
 import 'traduccions.dart';
 import 'models.dart';
 import 'pantalles/ruta.dart';
+import 'serveis/emmagatzematge.dart';
 
 const urlAppsScript =
     'https://script.google.com/macros/s/AKfycbyCxdv7MNxrlqhvLBruDEumwxuWN4piXILygFS_YCptt0YDmRQu2HBKxEMlQtP9-FIoTA/exec';
@@ -38,8 +37,8 @@ class Estat {
   Map<String, dynamic>? user;
   IniciSoci? inici;
   TotSoci? tot;
-  GestorDades? gest;
-  ProfeDades? ptot;
+  GestorDades? dadesGestor;
+  ProfeDades? dadesProfessor;
 
   int profeTrim = 0;
   int pagatTab = 0;
@@ -60,7 +59,7 @@ class Estat {
   Timer? _toastTimer;
 
   final Map<String, ({dynamic v, DateTime t})> _cache = {};
-  static const duracioCachu = Duration(seconds: 90);
+  static const duracioCau = Duration(seconds: 90);
 
   void _notificaOcupat() => refres();
 
@@ -71,7 +70,7 @@ class Estat {
     if (esLectura) {
       final k = '$fn|${args.map((a) => a.toString()).join('|')}';
       final c = _cache[k];
-      if (c != null && DateTime.now().difference(c.t) < duracioCachu) return c.v;
+      if (c != null && DateTime.now().difference(c.t) < duracioCau) return c.v;
     } else {
       ocupats++;
       _notificaOcupat();
@@ -102,11 +101,11 @@ class Estat {
     posaToken(null);
     user = null;
     inici = null;
-    buidaCachu();
+    buidaCau();
     reset('login');
   }
 
-  void buidaCachu() {
+  void buidaCau() {
     _cache.clear();
   }
 
@@ -156,13 +155,13 @@ class Estat {
   }
 
   // ---------- sessió ----------
-  String? obteToken() => html.window.localStorage['ps_token'];
+  String? obteToken() => Emmagatzematge.llegeix('ps_token');
   void posaToken(String? tk) {
     token = tk;
     if (tk == null) {
-      html.window.localStorage.remove('ps_token');
+      Emmagatzematge.esborra('ps_token');
     } else {
-      html.window.localStorage['ps_token'] = tk;
+      Emmagatzematge.desa('ps_token', tk);
     }
   }
 
@@ -171,7 +170,7 @@ class Estat {
     return r == 'Junta' || r == 'Admin';
   }
 
-  bool isAdmin() => user?['rolActiu'] == 'Admin';
+  bool esAdministrador() => user?['rolActiu'] == 'Admin';
 
   List<String> get rols =>
       ((user?['rols'] as List?) ?? const []).map((e) => e.toString()).toList();
@@ -202,7 +201,7 @@ class Estat {
   Future<void> recarregaTot() => _carregaTot();
 
   Future<void> refrescaUI() async {
-    buidaCachu();
+    buidaCau();
     final v = vistaActual.nom;
     const socil = ['iniciSoci', 'classesInici', 'classesAlta', 'classesAlumnes', 'trimestres', 'fitxaInici', 'jugadorAlta', 'jugadors', 'jugadorAnys'];
     const gestl = ['adminInici', 'escola', 'pagat', 'altaRapida'];
@@ -212,9 +211,9 @@ class Estat {
       if (socil.contains(v)) {
         await recarregaTot();
       } else if (gestl.contains(v)) {
-        gest = GestorDades.de(await call('obtenirTotGestor', [token]));
+        dadesGestor = GestorDades.de(await call('obtenirTotGestor', [token]));
       } else if (v == 'profe' || v == 'profeAlumnes') {
-        ptot = ProfeDades.de(await call('obtenirTotProfe', [token, profeTrim]));
+        dadesProfessor = ProfeDades.de(await call('obtenirTotProfe', [token, profeTrim]));
       }
     } catch (_) {}
     ocupats--;
@@ -227,8 +226,8 @@ class Estat {
     posaToken(null);
     user = null;
     inici = null;
-    buidaCachu();
-    html.window.localStorage.remove('ps_cfg');
+    buidaCau();
+    Emmagatzematge.esborra('ps_cfg');
     if (tk != null) Pont.instance.call('tancarSessio', [tk]);
     reset('login');
   }
@@ -236,7 +235,7 @@ class Estat {
   Future<bool> arrenca() async {
     Map<String, dynamic>? cfg;
     try {
-      final raw = html.window.localStorage['ps_cfg'];
+      final raw = Emmagatzematge.llegeix('ps_cfg');
       if (raw != null) cfg = _parseCfg(raw);
       final t0 = cfg?['t'];
       if (cfg == null ||
@@ -251,7 +250,7 @@ class Estat {
         final d = await Pont.instance.call('obtenirConfigPublic');
         cfg = (d as Map).cast<String, dynamic>();
         cfg['t'] = DateTime.now().millisecondsSinceEpoch;
-        html.window.localStorage['ps_cfg'] = jsonEncode(cfg);
+        Emmagatzematge.desa('ps_cfg', jsonEncode(cfg));
       } catch (_) {
         cfg = null;
       }
@@ -264,7 +263,7 @@ class Estat {
       if (Traduccions.instance.langs.contains(idioma)) i18n.lang = idioma;
       i18n.setLx((cfg['traduccions'] as Map?)?.cast<String, dynamic>());
     }
-    final saved = html.window.localStorage['ps_lang'];
+    final saved = Emmagatzematge.llegeix('ps_lang');
     if (saved != null && saved.isNotEmpty) i18n.lang = saved.toUpperCase();
 
     final tk = obteToken();

@@ -11,11 +11,11 @@ Future<void> carregaProfe() async {
   final st = Estat.i;
   if (st.profeTrim <= 0) {
     final d0 = await st.call('obtenirTotProfe', [st.token, null]);
-    st.ptot = ProfeDades.de(d0);
-    st.profeTrim = st.ptot?.trimestre ?? 0;
+    st.dadesProfessor = ProfeDades.de(d0);
+    st.profeTrim = st.dadesProfessor?.trimestre ?? 0;
   }
   final d = await st.call('obtenirTotProfe', [st.token, st.profeTrim]);
-  st.ptot = ProfeDades.de(d);
+  st.dadesProfessor = ProfeDades.de(d);
 }
 
 class ProfePantalla extends StatefulWidget {
@@ -32,7 +32,7 @@ class _ProfePantallaState extends State<ProfePantalla> {
   void initState() {
     super.initState();
     Future.microtask(() async {
-      if (Estat.i.ptot == null) await carregaProfe();
+      if (Estat.i.dadesProfessor == null) await carregaProfe();
       Estat.i.refres();
     });
   }
@@ -41,7 +41,7 @@ class _ProfePantallaState extends State<ProfePantalla> {
   Widget build(BuildContext context) {
     final st = Estat.i;
     final t = st.i18n.t;
-    final p = st.ptot;
+    final p = st.dadesProfessor;
     if (p == null) return const Center(child: CircularProgressIndicator());
     final llista = p.llista;
     final bases = p.bases;
@@ -170,7 +170,7 @@ class ProfeAlumnesPantalla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    final alumnes = Estat.i.ptot?.alumnes ?? const <AlumneProfe>[];
+    final alumnes = Estat.i.dadesProfessor?.alumnes ?? const <AlumneProfe>[];
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [

@@ -174,6 +174,14 @@ class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
     });
   }
 
+  @override
+  void dispose() {
+    n.dispose();
+    tel.dispose();
+    e.dispose();
+    super.dispose();
+  }
+
   Future<void> _desa() async {
     final st = Estat.i;
     setState(() => intentat = true);
@@ -504,6 +512,17 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
         if (em.text.isEmpty && ini.email.isNotEmpty) em.text = ini.email;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    nom.dispose();
+    cog.dispose();
+    dni.dispose();
+    adr.dispose();
+    tel.dispose();
+    em.dispose();
+    super.dispose();
   }
 
   Future<void> _desa() async {

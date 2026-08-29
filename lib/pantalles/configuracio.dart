@@ -1,4 +1,4 @@
-﻿// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 
 import '../../estils.dart';
@@ -13,9 +13,9 @@ class ConfiguracioPantalla extends StatefulWidget {
 }
 
 class _ConfiguracioPantallaState extends State<ConfiguracioPantalla> with SingleTickerProviderStateMixin {
-  late final TabController _tabs = TabController(length: _isAdmin() ? 5 : 3, vsync: this);
+  late final TabController _tabs = TabController(length: _esAdministrador() ? 5 : 3, vsync: this);
 
-  bool _isAdmin() => Estat.i.isAdmin();
+  bool _esAdministrador() => Estat.i.esAdministrador();
 
   void _tab(int i) {
     Estat.i.cfgTab = ['Club', 'Correus', 'Usuaris', 'Sistema', 'Neteja'][i];
@@ -30,7 +30,7 @@ class _ConfiguracioPantallaState extends State<ConfiguracioPantalla> with Single
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    final admin = _isAdmin();
+    final admin = _esAdministrador();
     return Column(
       children: [
         TabBar(
@@ -40,11 +40,11 @@ class _ConfiguracioPantallaState extends State<ConfiguracioPantalla> with Single
           isScrollable: true,
           onTap: _tab,
           tabs: [
-            Tab(icon: Icon(Icons.tune, size: 20), text: t('clubBloc')),
-            Tab(icon: Icon(Icons.email, size: 20), text: t('correusBloc')),
-            if (admin) Tab(icon: Icon(Icons.people, size: 20), text: t('usuarisBloc')),
-            if (admin) Tab(icon: Icon(Icons.build, size: 20), text: t('sistemaBloc')),
-            if (admin) Tab(icon: Icon(Icons.delete_sweep, size: 20), text: t('netegaBloc')),
+            Tab(icon: const Icon(Icons.tune, size: 20), text: t('clubBloc')),
+            Tab(icon: const Icon(Icons.email, size: 20), text: t('correusBloc')),
+            if (admin) Tab(icon: const Icon(Icons.people, size: 20), text: t('usuarisBloc')),
+            if (admin) Tab(icon: const Icon(Icons.build, size: 20), text: t('sistemaBloc')),
+            if (admin) Tab(icon: const Icon(Icons.delete_sweep, size: 20), text: t('netegaBloc')),
           ],
         ),
         Expanded(
@@ -87,6 +87,14 @@ class _EditorBlocState extends State<EditorBloc> {
   late Future<Map<String, dynamic>> _fut = _carrega();
   Map<String, dynamic> valors = {};
   Map<String, TextEditingController> ctrls = {};
+
+  @override
+  void dispose() {
+    for (final c in ctrls.values) {
+      c.dispose();
+    }
+    super.dispose();
+  }
 
   Future<Map<String, dynamic>> _carrega() async {
     final d = await Estat.i.call('obtenirConfigBloc', [Estat.i.token, widget.bloc]);
@@ -262,6 +270,14 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
   late final pw = TextEditingController();
   late Set<String> rols =
       '${widget.existent?['rol'] ?? ''}'.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toSet();
+
+  @override
+  void dispose() {
+    nom.dispose();
+    email.dispose();
+    pw.dispose();
+    super.dispose();
+  }
   String? err;
   bool intentat = false;
 

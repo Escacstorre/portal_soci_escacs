@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 
@@ -41,10 +41,10 @@ class AdminIniciPantalla extends StatelessWidget {
 
 Future<GestorDades> carregaGestor() async {
   final st = Estat.i;
-  final g = st.gest;
+  final g = st.dadesGestor;
   if (g != null) return g;
   final cargat = GestorDades.de(await st.call('obtenirTotGestor', [st.token]));
-  st.gest = cargat;
+  st.dadesGestor = cargat;
   return cargat;
 }
 
@@ -123,7 +123,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
   }
 
   void _refrescaTot() {
-    Estat.i.buidaCachu();
+    Estat.i.buidaCau();
     setState(() => _fut = carregaGestor());
   }
 
@@ -260,7 +260,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
                     final ok = await confirmaEliminacio(context, t('eliminarConfirmacio', [s.nom]));
                     if (ok != true) return;
                     await Estat.i.call('eliminarSoci', [Estat.i.token, s.id]);
-                    Estat.i.buidaCachu();
+                    Estat.i.buidaCau();
                     setState(() => _fut = carregaGestor());
                   },
                 ),
@@ -285,6 +285,20 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
   String? msg;
   bool err = false;
   bool intentat = false;
+
+  @override
+  void dispose() {
+    n.dispose();
+    dni.dispose();
+    tel.dispose();
+    em.dispose();
+    banc.dispose();
+    pw.dispose();
+    a1.dispose();
+    a2.dispose();
+    a3.dispose();
+    super.dispose();
+  }
 
   String? eDe(TextEditingController c) =>
       (intentat && c.text.trim().isEmpty) ? Estat.i.i18n.t('campObligatori') : null;
@@ -405,6 +419,16 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
   final em = TextEditingController(), banc = TextEditingController();
   bool _init = false;
 
+  @override
+  void dispose() {
+    n.dispose();
+    dni.dispose();
+    tel.dispose();
+    em.dispose();
+    banc.dispose();
+    super.dispose();
+  }
+
   Future<Map<String, dynamic>> _carrega() async {
     final d = ((await Estat.i.call('obtenirEdicioSoci', [Estat.i.token, widget.sociId])) as Map).cast<String, dynamic>();
     if (!_init) {
@@ -456,7 +480,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
           etiqueta: t('caducitatQuota'),
           onCanvi: (v) async {
             await Estat.i.call('desarCaducitat', [Estat.i.token, s['id'], v]);
-            Estat.i.buidaCachu();
+            Estat.i.buidaCau();
             Estat.i.mostraOk();
             _refresca();
           },
@@ -471,7 +495,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
                 s['id'],
                 {'nom': n.text, 'dni': dni.text, 'telefon': tel.text, 'email': em.text, 'numBanc': banc.text},
               ]);
-              Estat.i.buidaCachu();
+              Estat.i.buidaCau();
               Estat.i.mostraOk();
               _refresca();
             },
@@ -514,7 +538,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     return Carda(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(Estat.i.i18n.t('federacio'),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: titol, letterSpacing: .5)),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: titol, letterSpacing: .5)),
         const SizedBox(height: 10),
         if (jugadors.isEmpty) const Text('—'),
           ...jugadors.map((j) => ItemLlista(
@@ -528,7 +552,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
                 const SizedBox(width: 6),
                 IconButton(icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey), onPressed: () async {
                   await Estat.i.call('eliminarJugador', [Estat.i.token, j['id']]);
-                  Estat.i.buidaCachu();
+                  Estat.i.buidaCau();
                   _refresca();
                 }),
               ],
@@ -549,7 +573,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         value: validat,
         onChanged: (v) async {
           await Estat.i.call('alternarAnyJugador', [Estat.i.token, jugadorId, any, v == true]);
-          Estat.i.buidaCachu();
+          Estat.i.buidaCau();
           Estat.i.mostraOk();
           _refresca();
         },
@@ -577,7 +601,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     return Carda(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(t('classes'),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: titol, letterSpacing: .5)),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: titol, letterSpacing: .5)),
         const SizedBox(height: 10),
         if (alumnes.isEmpty) const Text('—'),
         ...alumnes.map((a) {
@@ -606,7 +630,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
                 icon: const Icon(Icons.done_all, size: 20, color: verd),
                 onPressed: () async {
                   await Estat.i.call('validarCursComplet', [Estat.i.token, a['id'], curs.toInt()]);
-                  Estat.i.buidaCachu();
+                  Estat.i.buidaCau();
                   _refresca();
                 },
               ),
@@ -614,7 +638,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
                 icon: const Icon(Icons.delete_outline, size: 20, color: Colors.grey),
                 onPressed: () async {
                   await Estat.i.call('eliminarAlumne', [Estat.i.token, a['id']]);
-                  Estat.i.buidaCachu();
+                  Estat.i.buidaCau();
                   _refresca();
                 },
               ),
@@ -638,7 +662,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         value: tr['estat'] == 'Validat',
         onChanged: (v) async {
           await Estat.i.call('alternarPagament', [Estat.i.token, id, v == true]);
-          Estat.i.buidaCachu();
+          Estat.i.buidaCau();
           Estat.i.mostraOk();
           _refresca();
         },
@@ -675,6 +699,16 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
   final dni = TextEditingController(), adr = TextEditingController();
   Map<String, dynamic>? fotoNova;
   Map<String, dynamic>? fotoActual;
+
+  @override
+  void dispose() {
+    nom.dispose();
+    cog.dispose();
+    dn.dispose();
+    dni.dispose();
+    adr.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -755,7 +789,7 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
                     if (fotoNova != null) 'foto': fotoNova,
                   },
                 ]);
-                Estat.i.buidaCachu();
+                Estat.i.buidaCau();
                 Estat.i.mostraOk();
                 Estat.i.go('edicioSoci', widget.sociId);
               }, child: Text(t('guardar')))),
@@ -778,6 +812,14 @@ class AlumneEdicioPantalla extends StatefulWidget {
 
 class _AlumneEdicioPantallaState extends State<AlumneEdicioPantalla> {
   final nom = TextEditingController(), tel = TextEditingController(), em = TextEditingController();
+
+  @override
+  void dispose() {
+    nom.dispose();
+    tel.dispose();
+    em.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -815,7 +857,7 @@ class _AlumneEdicioPantallaState extends State<AlumneEdicioPantalla> {
                   widget.alumneId,
                   {'nom': nom.text, 'telefon': tel.text, 'email': em.text},
                 ]);
-                Estat.i.buidaCachu();
+                Estat.i.buidaCau();
                 Estat.i.mostraOk();
                 Estat.i.back();
               }, child: Text(t('guardar')))),
@@ -836,11 +878,13 @@ class EscolaPantalla extends StatefulWidget {
 
 class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProviderStateMixin {
   late Future<GestorDades> _fut = carregaGestor();
-  bool get _admin => Estat.i.isAdmin();
+  bool get _admin => Estat.i.esAdministrador();
   List<String> get _nomsTabs => _admin
       ? const ['festius', 'preus', 'trimestres', 'classes']
       : const ['festius', 'trimestres', 'classes'];
   late final TabController _tabs = TabController(length: _nomsTabs.length, vsync: this, initialIndex: _idx0());
+  late final TextEditingController _preuDive = TextEditingController();
+  String _preuDiveLast = '';
 
   int _idx0() {
     final i = _nomsTabs.indexOf(Estat.i.escolaTab);
@@ -853,8 +897,23 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
     Estat.i.escolaTab = _nomsTabs[i];
   }
 
+  void _syncPreuDive() {
+    final cur = _escola == null ? '' : '${_escola!.preuDivendres}';
+    if (_preuDiveLast != cur) {
+      _preuDiveLast = cur;
+      _preuDive.text = cur;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant EscolaPantalla oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _syncPreuDive();
+  }
+
   @override
   void dispose() {
+    _preuDive.dispose();
     _tabs.dispose();
     super.dispose();
   }
@@ -868,6 +927,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
         final data = snap.data;
         if (data == null) return const Center(child: CircularProgressIndicator());
         _escola = data.escola;
+        _syncPreuDive();
         return Column(
           children: [
             TabBar(
@@ -914,7 +974,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
               width: double.infinity,
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.calendar_today, size: 20),
-                label: Text(t('seleccionaData'), style: TextStyle(fontSize: 14)),
+                label: Text(t('seleccionaData'), style: const TextStyle(fontSize: 14)),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -930,7 +990,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
                   if (d != null) {
                     final data = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
                     await Estat.i.call('definirFestiu', [Estat.i.token, data]);
-                    Estat.i.buidaCachu();
+                    Estat.i.buidaCau();
                     Estat.i.mostraOk();
                     setState(() => _fut = carregaGestor());
                   }
@@ -967,7 +1027,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
                     final ok = await confirmaEliminacio(context, t('eliminarFestiu', [f.toString()]));
                     if (ok != true) return;
                     await Estat.i.call('esborrarFestiu', [Estat.i.token, f]);
-                    Estat.i.buidaCachu();
+                    Estat.i.buidaCau();
                     Estat.i.mostraOk();
                     setState(() => _fut = carregaGestor());
                   },
@@ -982,20 +1042,18 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
 
   Widget _preus() {
     final t = Estat.i.i18n.t;
-    final preuDive =
-        TextEditingController(text: _escola == null ? '' : '${_escola?.preuDivendres}');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Carda(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Expanded(child: CampText(controller: preuDive, hint: t('preuDive'), sufix: ' €', teclat: TextInputType.number))
+              Expanded(child: CampText(controller: _preuDive, hint: t('preuDive'), sufix: ' €', teclat: TextInputType.number))
             ]),
             FilledButton(
               onPressed: () async {
-                await Estat.i.call('definirPreuDivendres', [Estat.i.token, preuDive.text]);
-                Estat.i.buidaCachu();
+                await Estat.i.call('definirPreuDivendres', [Estat.i.token, _preuDive.text]);
+                Estat.i.buidaCau();
                 Estat.i.mostraOk();
                 setState(() => _fut = carregaGestor());
               },
@@ -1012,7 +1070,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
   Widget _trims() => _TabsTrims(
         trims: _escola?.trimestres ?? const <String, String>{},
         onRefresca: () {
-          Estat.i.buidaCachu();
+          Estat.i.buidaCau();
           Estat.i.mostraOk();
           setState(() => _fut = carregaGestor());
         },
@@ -1022,7 +1080,7 @@ class _EscolaPantallaState extends State<EscolaPantalla> with SingleTickerProvid
         hora: _escola?.hora ?? '17:00',
         lloc: _escola?.lloc ?? '',
         onRefresca: () {
-          Estat.i.buidaCachu();
+          Estat.i.buidaCau();
           Estat.i.mostraOk();
           setState(() => _fut = carregaGestor());
         },
@@ -1110,6 +1168,20 @@ class _TabsClasses extends StatefulWidget {
 class _TabsClassesState extends State<_TabsClasses> {
   late final hora = TextEditingController(text: widget.hora);
   late final lloc = TextEditingController(text: widget.lloc);
+
+  @override
+  void dispose() {
+    hora.dispose();
+    lloc.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _TabsClasses oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.hora != widget.hora) hora.text = widget.hora;
+    if (oldWidget.lloc != widget.lloc) lloc.text = widget.lloc;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1224,7 +1296,7 @@ class _TabFitxesState extends State<_TabFitxes> {
               );
               widget.onRefresca();
             },
-            child: Text(t('novaFitxa'), style: TextStyle(fontSize: 13)),
+            child: Text(t('novaFitxa'), style: const TextStyle(fontSize: 13)),
           ),
         ]),
         const SizedBox(height: 12),
@@ -1322,7 +1394,7 @@ class _TabAlumnesState extends State<_TabAlumnes> {
               );
               widget.onRefresca();
             },
-            child: Text(t('nouAlumne'), style: TextStyle(fontSize: 13)),
+            child: Text(t('nouAlumne'), style: const TextStyle(fontSize: 13)),
           ),
         ]),
         const SizedBox(height: 12),
@@ -1374,6 +1446,12 @@ class SelectorSoci extends StatefulWidget {
 class _SelectorSociState extends State<SelectorSoci> {
   final ctrl = TextEditingController();
   bool triat = false;
+
+  @override
+  void dispose() {
+    ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1460,6 +1538,17 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
   String? msg;
   bool err = false;
   bool intentat = false;
+
+  @override
+  void dispose() {
+    nom.dispose();
+    cog.dispose();
+    dni.dispose();
+    adr.dispose();
+    tel.dispose();
+    em.dispose();
+    super.dispose();
+  }
 
   Future<void> _desa() async {
     final st = Estat.i;
@@ -1555,6 +1644,14 @@ class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
   String? msg;
   bool err = false;
   bool intentat = false;
+
+  @override
+  void dispose() {
+    nom.dispose();
+    tel.dispose();
+    em.dispose();
+    super.dispose();
+  }
 
   Future<void> _desa() async {
     final st = Estat.i;

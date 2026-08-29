@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import '../../estils.dart';
 import '../../estat.dart';
@@ -134,7 +134,7 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                       Center(
                         child: TextButton(
                           onPressed: () => Estat.i.go('registre'),
-                          child: Text(t('registrar'), style: TextStyle(color: pri, fontSize: 14)),
+                          child: Text(t('registrar'), style: const TextStyle(color: pri, fontSize: 14)),
                         ),
                       ),
                       Center(
@@ -152,6 +152,13 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    u.dispose();
+    p.dispose();
+    super.dispose();
   }
 }
 
@@ -279,7 +286,7 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
                       Center(
                         child: TextButton(
                           onPressed: () => Estat.i.reset('login'),
-                          child: Text(t('inicia'), style: TextStyle(color: pri, fontSize: 14)),
+                          child: Text(t('inicia'), style: const TextStyle(color: pri, fontSize: 14)),
                         ),
                       ),
                     ],
@@ -291,6 +298,18 @@ class _RegistrePantallaState extends State<RegistrePantalla> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    n.dispose();
+    d.dispose();
+    tel.dispose();
+    e.dispose();
+    b.dispose();
+    c.dispose();
+    c2.dispose();
+    super.dispose();
   }
 }
 
@@ -314,8 +333,8 @@ class SelectorPantalla extends StatelessWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
                       child: IdiomaMenu(),
                     ),
                     TextButton(onPressed: () => st.tancaSessio(), child: Text(t('tanca'))),
