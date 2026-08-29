@@ -1,9 +1,9 @@
-// ignore_for_file: avoid_web_libraries_in_flutter, deprecated_member_use
-import 'dart:html' as html;
+import 'emmagatzematge_stub.dart'
+    if (dart.library.html) 'emmagatzematge_web.dart' as impl;
 
 class Emmagatzematge {
   Emmagatzematge._();
-  static String? llegeix(String clau) => html.window.localStorage[clau];
-  static void desa(String clau, String valor) => html.window.localStorage[clau] = valor;
-  static void esborra(String clau) => html.window.localStorage.remove(clau);
+  static String? llegeix(String clau) => impl.EmmagatzematgeImpl.llegeix(clau);
+  static void desa(String clau, String valor) => impl.EmmagatzematgeImpl.desa(clau, valor);
+  static void esborra(String clau) => impl.EmmagatzematgeImpl.esborra(clau);
 }

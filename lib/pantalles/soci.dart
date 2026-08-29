@@ -7,6 +7,7 @@ import '../../models.dart';
 import '../../estils.dart';
 import '../../estat.dart';
 import '../../ginys.dart';
+import '../../widgets/form_scaffold.dart';
 
 Future<void> pujaFitxer(String? token, String col, String id, String periode, {VoidCallback? onFet}) async {
   if (token == null || token.isEmpty) {
@@ -211,37 +212,30 @@ class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 440),
-          child: Carda(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(t('inscriu'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
-              const SizedBox(height: 12),
-              CampText(
-                controller: n,
-                hint: t('nomAlumne'),
-                obligatori: true,
-                error: (intentat && n.text.trim().isEmpty) ? t('campObligatori') : null,
-              ),
-              CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
-              CampText(controller: e, hint: t('email'), teclat: TextInputType.emailAddress),
-              if (msg != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(msg ?? '', style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
-                ),
-              Row(children: [
-                FilledButton(onPressed: _desa, child: Text(t('guardar'))),
-                const SizedBox(width: 10),
-                OutlinedButton(onPressed: () => n.clear(), child: Text(t('altre'))),
-              ]),
-            ]),
-          ),
+    return BastidaFormulari(
+      ampladaMaxima: 440,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(t('inscriu'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
+        const SizedBox(height: 12),
+        CampText(
+          controller: n,
+          hint: t('nomAlumne'),
+          obligatori: true,
+          error: (intentat && n.text.trim().isEmpty) ? t('campObligatori') : null,
         ),
-      ),
+        CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
+        CampText(controller: e, hint: t('email'), teclat: TextInputType.emailAddress),
+        if (msg != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(msg ?? '', style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
+          ),
+        Row(children: [
+          FilledButton(onPressed: _desa, child: Text(t('guardar'))),
+          const SizedBox(width: 10),
+          OutlinedButton(onPressed: () => n.clear(), child: Text(t('altre'))),
+        ]),
+      ]),
     );
   }
 }
@@ -571,18 +565,13 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 460),
-          child: Carda(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(t('alta'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
-              const SizedBox(height: 12),
-              CampText(controller: nom, hint: t('nomJug'), obligatori: true, error: (intentat && nom.text.trim().isEmpty) ? t('campObligatori') : null),
-              CampText(controller: cog, hint: t('cognoms'), obligatori: true, error: (intentat && cog.text.trim().isEmpty) ? t('campObligatori') : null),
-              InkWell(
+    return BastidaFormulari(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(t('alta'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol)),
+        const SizedBox(height: 12),
+        CampText(controller: nom, hint: t('nomJug'), obligatori: true, error: (intentat && nom.text.trim().isEmpty) ? t('campObligatori') : null),
+        CampText(controller: cog, hint: t('cognoms'), obligatori: true, error: (intentat && cog.text.trim().isEmpty) ? t('campObligatori') : null),
+        InkWell(
                 onTap: () async {
                   final d = await showDatePicker(
                       context: context,
@@ -624,9 +613,6 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
                 ),
               SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('guardar')))),
             ]),
-          ),
-        ),
-      ),
     );
   }
 }
