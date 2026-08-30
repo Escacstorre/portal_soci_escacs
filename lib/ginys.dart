@@ -12,9 +12,30 @@ export 'serveis/fitxers.dart';
 export 'utils/dates.dart' hide FiltreHora, mostraData, mostraMesDia, normalitzaHora;
 export 'widgets/xip.dart' hide XipEstat, XipQuota;
 
-class IdiomaMenu extends StatelessWidget {
+class IdiomaMenu extends StatefulWidget {
   const IdiomaMenu({super.key, this.onCanvi});
   final ValueChanged<String>? onCanvi;
+
+  @override
+  State<IdiomaMenu> createState() => _IdiomaMenuState();
+}
+
+class _IdiomaMenuState extends State<IdiomaMenu> {
+  late StreamSubscription<void> _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = Estat.i.onCanvi.listen((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +48,8 @@ class IdiomaMenu extends StatelessWidget {
       position: PopupMenuPosition.under,
       onSelected: (l) {
         if (l == actiu) return;
-        if (onCanvi != null) {
-          onCanvi!(l);
+        if (widget.onCanvi != null) {
+          widget.onCanvi!(l);
           return;
         }
         setStateIdioma(l);
