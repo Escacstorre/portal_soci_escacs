@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../estils.dart';
-import '../../estat.dart';
-import '../../ginys.dart';
+import '../estils.dart';
+import '../estat.dart';
+import '../ginys.dart';
 
 class IniciSessioPantalla extends StatefulWidget {
   const IniciSessioPantalla({super.key});

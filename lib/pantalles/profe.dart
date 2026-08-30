@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 
-import '../../models.dart';
-import '../../estils.dart';
-import '../../estat.dart';
-import '../../ginys.dart';
+import '../models.dart';
+import '../estils.dart';
+import '../estat.dart';
+import '../ginys.dart';
 
 Future<void> carregaProfe() async {
   final st = Estat.i;

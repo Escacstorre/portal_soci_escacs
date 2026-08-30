@@ -164,13 +164,14 @@ class TotSoci {
 
   static TotSoci de(dynamic m) {
     final d = _mp(m);
+    final anyRaw = d['anyCurs'] ?? d['any'] ?? d['curs'];
     return TotSoci(
       inici: IniciSoci.de(d['inici']),
       alumnes: _ll(d['alumnes']).map(AlumneSoci.de).toList(),
       jugadors: _ll(d['jugadors']).map(JugadorSoci.de).toList(),
       sessions: _ll(d['sessions']).map((e) => _s(e)).where((s) => s.isNotEmpty).toList(),
-      festius: _ll(d['festius']).map((e) => _s(e)).toList(),
-      anyCurs: d['any'] is num ? (d['any'] as num).toInt() : int.tryParse(_s(d['any'])) ?? 0,
+      festius: _ll(d['festius']).map((e) => _s(e)).where((s) => s.isNotEmpty).toList(),
+      anyCurs: anyRaw is num ? anyRaw.toInt() : int.tryParse(_s(anyRaw)) ?? 0,
     );
   }
 }
@@ -338,12 +339,13 @@ class ProfeDades {
       if (e is String) return _s(e);
       return _s(_mp(e)['data']);
     }).where((s) => s.isNotEmpty).toList();
+    final anyRaw = d['anyCurs'] ?? d['any'] ?? d['curs'];
     return ProfeDades(
       profe: _mp(d['profe']),
       sessions: sess,
       alumnes: _ll(d['alumnes']).map(AlumneProfe.de).toList(),
-      festius: _ll(d['festius']).map((e) => _s(e)).toList(),
-      anyCurs: d['any'] is num ? (d['any'] as num).toInt() : int.tryParse(_s(d['any'])) ?? 0,
+      festius: _ll(d['festius']).map((e) => _s(e)).where((s) => s.isNotEmpty).toList(),
+      anyCurs: anyRaw is num ? anyRaw.toInt() : int.tryParse(_s(anyRaw)) ?? 0,
     );
   }
 }

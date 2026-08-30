@@ -3,11 +3,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../../models.dart';
-import '../../../estils.dart';
-import '../../../estat.dart';
-import '../../../ginys.dart';
-import '../../../widgets/form_scaffold.dart';
+import '../../models.dart';
+import '../../estils.dart';
+import '../../estat.dart';
+import '../../ginys.dart';
+import '../../widgets/form_scaffold.dart';
 import 'inici.dart';
 
 class FitxaIniciPantalla extends StatelessWidget {

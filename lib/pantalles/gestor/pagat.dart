@@ -134,8 +134,8 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Desar')),
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t('cancel'))),
+            FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(t('guardar'))),
           ],
         ),
       ),

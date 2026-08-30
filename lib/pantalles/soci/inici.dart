@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../../estils.dart';
-import '../../../estat.dart';
-import '../../../ginys.dart';
+import '../../estils.dart';
+import '../../estat.dart';
+import '../../ginys.dart';
 
 Future<void> pujaFitxer(String? token, String col, String id, String periode, {VoidCallback? onFet}) async {
   if (token == null || token.isEmpty) {

@@ -380,7 +380,7 @@ class _CalendariGraellaState extends State<CalendariGraella> {
     _idx = 0;
     for (var i = 0; i < _mesos.length; i++) {
       final mm = _mesos[i];
-      final y = mm >= 9 ? _anyCurs : _anyCurs + 1;
+      final y = mm >= 8 ? _anyCurs : _anyCurs + 1;
       if (mm == now.month && y == now.year) { _idx = i; break; }
     }
   }
@@ -389,7 +389,7 @@ class _CalendariGraellaState extends State<CalendariGraella> {
   Widget build(BuildContext context) {
     final sessSet = widget.sessions.toSet();
     final mm = _mesos[_idx];
-    final y = mm >= 9 ? _anyCurs : _anyCurs + 1;
+    final y = mm >= 8 ? _anyCurs : _anyCurs + 1;
     final diesMes = DateTime(y, mm + 1, 0).day;
     final primer = DateTime(y, mm, 1).weekday;
     return Column(children: [
