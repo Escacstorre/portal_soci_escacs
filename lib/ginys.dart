@@ -429,7 +429,7 @@ class _CalendariGraellaState extends State<CalendariGraella> {
           visualDensity: VisualDensity.compact,
         ),
       ]),
-      SizedBox(height: 4),
+      const SizedBox(height: 4),
       Row(children: [
         for (final d in _clauDies)
           Expanded(child: Center(child: Text(t(d), style: const TextStyle(fontSize: 11, color: textCol)))),
@@ -462,7 +462,7 @@ class _CalendariGraellaState extends State<CalendariGraella> {
           }),
         ],
       ),
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
       Row(children: [
         const Icon(Icons.check, size: 12, color: verd), const SizedBox(width: 4), Text(t('sessio'), style: const TextStyle(fontSize: 11, color: textCol)),
         const SizedBox(width: 12), const Icon(Icons.close, size: 12, color: vermell), const SizedBox(width: 4), Text(t('festiu'), style: const TextStyle(fontSize: 11, color: textCol)),

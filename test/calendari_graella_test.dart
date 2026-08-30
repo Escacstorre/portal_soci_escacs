@@ -27,7 +27,7 @@ void main() {
   group('CalendariGraella', () {
     testWidgets('mostra capçalera setembre 2026 amb sessió i festiu', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: SingleChildScrollView(
               child: CalendariGraella(
@@ -54,7 +54,7 @@ void main() {
 
     testWidgets('botons navegació canvien de mes', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: SingleChildScrollView(
               child: CalendariGraella(
@@ -89,7 +89,7 @@ void main() {
 
     testWidgets('sessio verd i festiu vermell amb llegenda', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: SingleChildScrollView(
               child: CalendariGraella(
