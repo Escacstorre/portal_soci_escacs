@@ -118,7 +118,7 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
       ]);
       if (!mounted) return;
       setState(() {
-        msg = 'OK';
+        msg = t('refrescat');
         err = false;
       });
       for (final c in [n, dni, tel, em, banc, pw, a1, a2, a3]) {
@@ -127,7 +127,7 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        msg = st.toastMissatge ?? 'Error';
+        msg = st.toastMissatge ?? t('errGen');
         err = true;
       });
     }

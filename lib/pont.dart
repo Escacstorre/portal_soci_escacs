@@ -41,6 +41,6 @@ class Pont {
       throw ExcepcioPortal('#SESSIO_CADUCADA#');
     }
     if (m['ok'] == true) return m['data'];
-    throw ExcepcioPortal('${m['data'] ?? 'Error'}');
+    throw ExcepcioPortal('${m['data'] ?? '#ERRORT#'}');
   }
 }

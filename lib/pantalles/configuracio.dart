@@ -67,12 +67,12 @@ class _ConfiguracioPantallaState extends State<ConfiguracioPantalla> with Single
 Map<String, (String, String)> _etiquetesConfig(String Function(String) t) => {
   'NomClub': (t('nomClubConfig'), ''),
   'CompteClub': (t('compteBancariConfig'), ''),
-  'QuotaSoci': (t('quotaSociConfig'), ' €'),
+  'QuotaSoci': (t('preuAltaSociConfig'), ' €'),
   'PreuFederacio': (t('preuFederacioConfig'), ' €'),
   'CorreuClub': (t('correuClubConfig'), ''),
   'DuradaSessioMinuts': (t('duradaSessioConfig'), ''),
   'IdiomaPerDefecte': (t('idiomaDefecteConfig'), ''),
-  'FolderDrive': (t('folderDriveConfig'), ''),
+  'FolderDrive': (t('carpetaDriveConfig'), ''),
 };
 
 class EditorBloc extends StatefulWidget {
@@ -282,6 +282,7 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
   bool intentat = false;
 
   static const totsRols = ['Admin', 'Junta', 'Profe', 'Soci'];
+  static const clauRols = {'Admin': 'rolAdmin', 'Junta': 'rolJunta', 'Profe': 'rolProfe', 'Soci': 'rolSoci'};
 
   Future<void> _desa() async {
     setState(() => intentat = true);
@@ -323,7 +324,7 @@ class _FormulariUsuariState extends State<FormulariUsuari> {
         for (final r in totsRols)
           CheckboxListTile(
             dense: true,
-            title: Text(r),
+            title: Text(t(clauRols[r] ?? r)),
             value: rols.contains(r),
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,

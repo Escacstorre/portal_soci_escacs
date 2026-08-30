@@ -61,7 +61,7 @@ class IniciSociPantalla extends StatelessWidget {
                       Text('${t('quotaAny')} ${d?.any ?? ''}: '),
                       XipQuota(quota: d?.quota ?? ''),
                       if (vigent && caducitat.isNotEmpty)
-                        Text('${t('vigentFins')} ${mostraData(caducitat)}',
+                        Text(t('vigentFins', [mostraData(caducitat)]),
                             style: const TextStyle(fontSize: 12.5, color: verd)),
                       if (d?.quotaRebut?.url != null)
                         TextButton(

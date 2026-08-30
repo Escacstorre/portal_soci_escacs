@@ -79,14 +79,18 @@ class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
       unawaited(st.recarregaTot());
       if (!mounted) return;
       setState(() {
-        msg = 'OK';
+        msg = '✓ ${st.i18n.t('desatOk')}';
         err = false;
+        intentat = false;
       });
       n.clear();
+      Future.delayed(const Duration(seconds: 3), () {
+        if (mounted) setState(() => msg = null);
+      });
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        msg = st.toastMissatge ?? 'Error';
+        msg = st.toastMissatge ?? st.i18n.t('errGen');
         err = true;
       });
     }
@@ -109,15 +113,22 @@ class _ClassesAltaPantallaState extends State<ClassesAltaPantalla> {
         CampText(controller: tel, hint: t('telefon'), teclat: TextInputType.phone),
         CampText(controller: e, hint: t('email'), teclat: TextInputType.emailAddress),
         if (msg != null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(msg ?? '', style: TextStyle(fontSize: 13.5, color: err ? vermell : verd)),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.only(bottom: 8),
+            decoration: BoxDecoration(
+              color: (err ? vermell : verd).withValues(alpha: .12),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: err ? vermell : verd),
+            ),
+            child: Row(children: [
+              Icon(err ? Icons.error_outline : Icons.check_circle, color: err ? vermell : verd, size: 20),
+              const SizedBox(width: 8),
+              Expanded(child: Text(msg ?? '', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: err ? vermell : verd))),
+            ]),
           ),
-        Row(children: [
-          FilledButton(onPressed: _desa, child: Text(t('guardar'))),
-          const SizedBox(width: 10),
-          OutlinedButton(onPressed: () => n.clear(), child: Text(t('altre'))),
-        ]),
+        SizedBox(width: double.infinity, child: FilledButton(onPressed: _desa, child: Text(t('guardar')))),
       ]),
     );
   }

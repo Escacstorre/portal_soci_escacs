@@ -306,7 +306,7 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
         if ('${x['id']}' == widget.jugadorId) {
           nom.text = '${x['nom'] ?? ''}';
           cog.text = '${x['cognoms'] ?? ''}';
-          dn.text = '${x['dataNaix'] ?? ''}';
+          dn.text = '${x['dataNaix'] ?? ''}'.split('T').first.split(' ').first;
           dni.text = '${x['dni'] ?? ''}';
           adr.text = '${x['adreca'] ?? ''}';
           fotoActual = (x['foto'] as Map?)?.cast<String, dynamic>();
@@ -338,7 +338,7 @@ class _JugadorEdicioPantallaState extends State<JugadorEdicioPantalla> {
           Row(children: [
             TextButton.icon(
               icon: const Icon(Icons.badge_outlined, size: 18),
-              label: Text('${t('fotoDni')}: ${fotoActual?['nom'] ?? 'veure'}',
+              label: Text('${t('fotoDni')}: ${fotoActual?['nom'] ?? t('veureRebut')}',
                   style: const TextStyle(fontSize: 13)),
               onPressed: () {
                 final url = fotoActual?['url'] as String?;

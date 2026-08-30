@@ -153,7 +153,8 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
         cog.text.trim().isEmpty ||
         dataNaix.isEmpty ||
         dni.text.trim().isEmpty ||
-        adr.text.trim().isEmpty) {
+        adr.text.trim().isEmpty ||
+        foto == null) {
       return;
     }
     setState(() {
@@ -177,13 +178,13 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
       unawaited(st.recarregaTot());
       if (!mounted) return;
       setState(() {
-        msg = 'OK';
+        msg = st.i18n.t('refrescat');
         err = false;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        msg = st.toastMissatge ?? 'Error';
+        msg = st.toastMissatge ?? st.i18n.t('errGen');
         err = true;
       });
     }
@@ -227,12 +228,17 @@ class _JugadorAltaPantallaState extends State<JugadorAltaPantalla> {
               OutlinedButton.icon(
                 icon: Icon(foto == null ? Icons.upload_file : Icons.check_circle,
                     color: foto == null ? null : verd),
-                label: Text(foto == null ? t('fotoDni') : '${foto?['name'] ?? t('fotoDni')}'),
+                label: Text(foto == null ? '${t('anversDni')} *' : '${foto?['name'] ?? t('anversDni')}'),
                 onPressed: () async {
                   final f = await triaArxiu('.jpg,.jpeg,.png');
                   if (mounted) setState(() => foto = f);
                 },
               ),
+              if (intentat && foto == null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Text(t('campObligatori'), style: const TextStyle(fontSize: 12, color: vermell)),
+                ),
               if (msg != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),

@@ -127,7 +127,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
             children: [
               for (var i = 1; i <= 5; i++)
                 ChoiceChip(
-                  label: Text(i == 1 ? '1 ${t('anys')}' : '$i ${t('anys')}'),
+                  label: Text(i == 1 ? '1 ${t('any')}' : '$i ${t('anys')}'),
                   selected: anys == i,
                   onSelected: (_) => setD(() => anys = i),
                 ),
@@ -589,7 +589,7 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
       Navigator.pop(context, true);
     } catch (_) {
       if (!mounted) return;
-      setState(() { msg = Estat.i.toastMissatge ?? 'Error'; err = true; });
+      setState(() { msg = Estat.i.toastMissatge ?? Estat.i.i18n.t('errGen'); err = true; });
     }
   }
 
@@ -684,7 +684,7 @@ class _FormulariRapidAlumneState extends State<_FormulariRapidAlumne> {
       Navigator.pop(context, true);
     } catch (_) {
       if (!mounted) return;
-      setState(() { msg = Estat.i.toastMissatge ?? 'Error'; err = true; });
+      setState(() { msg = Estat.i.toastMissatge ?? Estat.i.i18n.t('errGen'); err = true; });
     }
   }
 

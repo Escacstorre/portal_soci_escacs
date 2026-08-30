@@ -368,7 +368,8 @@ class _CalendariGraellaState extends State<CalendariGraella> {
   late final int _anyCurs;
   late int _idx;
   final _mesos = const [9, 10, 11, 12, 1, 2, 3, 4, 5];
-  final _noms = const ['', 'gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'];
+  static const _clauMesos = ['', 'mesGener', 'mesFebrer', 'mesMarc', 'mesAbril', 'mesMaig', 'mesJuny', 'mesJuliol', 'mesAgost', 'mesSetembre', 'mesOctubre', 'mesNovembre', 'mesDesembre'];
+  static const _clauDies = ['diaDl', 'diaDt', 'diaDc', 'diaDj', 'diaDv', 'diaDs', 'diaDg'];
 
   String _ymd(int y, int m, int d) => '$y-${m.toString().padLeft(2, '0')}-${d.toString().padLeft(2, '0')}';
 
@@ -387,6 +388,7 @@ class _CalendariGraellaState extends State<CalendariGraella> {
 
   @override
   Widget build(BuildContext context) {
+    final t = Estat.i.i18n.t;
     final sessSet = widget.sessions.toSet();
     final mm = _mesos[_idx];
     final y = mm >= 8 ? _anyCurs : _anyCurs + 1;
@@ -399,22 +401,17 @@ class _CalendariGraellaState extends State<CalendariGraella> {
           onPressed: _idx > 0 ? () => setState(() => _idx--) : null,
           visualDensity: VisualDensity.compact,
         ),
-        Expanded(child: Center(child: Text('${_noms[mm]} $y', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: titol)))),
+        Expanded(child: Center(child: Text('${t(_clauMesos[mm])} $y', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: titol)))),
         IconButton(
           icon: const Icon(Icons.chevron_right, size: 20),
           onPressed: _idx < _mesos.length - 1 ? () => setState(() => _idx++) : null,
           visualDensity: VisualDensity.compact,
         ),
       ]),
-      const SizedBox(height: 4),
-      const Row(children: [
-        Expanded(child: Center(child: Text('dl', style: TextStyle(fontSize: 11, color: textCol)))),
-        Expanded(child: Center(child: Text('dt', style: TextStyle(fontSize: 11, color: textCol)))),
-        Expanded(child: Center(child: Text('dc', style: TextStyle(fontSize: 11, color: textCol)))),
-        Expanded(child: Center(child: Text('dj', style: TextStyle(fontSize: 11, color: textCol)))),
-        Expanded(child: Center(child: Text('dv', style: TextStyle(fontSize: 11, color: textCol)))),
-        Expanded(child: Center(child: Text('ds', style: TextStyle(fontSize: 11, color: textCol)))),
-        Expanded(child: Center(child: Text('dg', style: TextStyle(fontSize: 11, color: textCol)))),
+      SizedBox(height: 4),
+      Row(children: [
+        for (final d in _clauDies)
+          Expanded(child: Center(child: Text(t(d), style: const TextStyle(fontSize: 11, color: textCol)))),
       ]),
       const SizedBox(height: 4),
       GridView.count(
@@ -444,10 +441,10 @@ class _CalendariGraellaState extends State<CalendariGraella> {
           }),
         ],
       ),
-      const SizedBox(height: 8),
-      const Row(children: [
-        Icon(Icons.check, size: 12, color: verd), SizedBox(width: 4), Text('sessió', style: TextStyle(fontSize: 11, color: textCol)),
-        SizedBox(width: 12), Icon(Icons.close, size: 12, color: vermell), SizedBox(width: 4), Text('festiu', style: TextStyle(fontSize: 11, color: textCol)),
+      SizedBox(height: 8),
+      Row(children: [
+        const Icon(Icons.check, size: 12, color: verd), const SizedBox(width: 4), Text(t('sessio'), style: const TextStyle(fontSize: 11, color: textCol)),
+        const SizedBox(width: 12), const Icon(Icons.close, size: 12, color: vermell), const SizedBox(width: 4), Text(t('festiu'), style: const TextStyle(fontSize: 11, color: textCol)),
       ]),
     ]);
   }

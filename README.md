@@ -13,19 +13,27 @@ i retorna la confirmació a Flutter (snackbar).
 
 ```text
 lib/
-├─ main.dart         → arrencada, tema, router de vistes + overlays globals (progrés/toast)
-├─ estat.dart        → Estat singleton: sessió, caché de lectures, navegació, crides
-├─ pont.dart         → transport cap a Apps Script (HTTP POST → doPost)
-├─ models.dart       → models tipats (DadesSoci, GestorDades, ProfeDades…)
+├─ main.dart         → arrencada, tema, router + EstatScope (InheritedNotifier)
+├─ estat.dart        → Estat singleton + EstatScope: sessió, caché 90s, navegació, crides
+├─ pont.dart         → transport Apps Script (POST text/plain → doPost)
+├─ models.dart       → models tipats (DadesSoci, GestorDades, ProfeDades amb sessions/festius/anyCurs)
 ├─ traduccions.dart  → traduccions: Apps Script > fallback local
-├─ estils.dart       → colors del club, TextStyles, decoracions i widgets (IconaClub SVG, Carda, BotoGran…)
-├─ ginys.dart        → Capcalera, IdiomaMenu, xips, CampText, selector d'arxius…
+├─ estils.dart       → colors, TextStyles, decoCard, IconaClub, Carda, BotoGran
+├─ ginys.dart        → Capcalera, IdiomaMenu, Xips, CampText, CampDataTrim/Data (anyCurs>=8, Feb29), CalendariGraella per mes (✔/✖, navegació), selectors d'arxius (via serveis/fitxers.dart)
+├─ serveis/
+│  ├─ emmagatzematge.dart → abstracció localStorage (web/stub) per wasm
+│  ├─ fitxers.dart         → triaArxiu/obrirUrl/descarregarArxiu/imprimirFormulari (web/stub)
+│  └─ estat_scope.dart     → InheritedNotifier per Estat
+├─ utils/dates.dart  → mostraData, normalitzaHora, DateUtils (cursAny, Feb29)
+├─ widgets/
+│  ├─ xip.dart, form_scaffold.dart (BastidaFormulari), pagament_toggle.dart (CommutadorPagament)
+│  └─ filtra.dart
 └─ pantalles/
-   ├─ acces.dart       → IniciSessioPantalla · RegistrePantalla · SelectorPantalla
-   ├─ soci.dart        → IniciSociPantalla, ClassesInici/Alta/AlumnesPantalla, TrimestresPantalla, FitxaIniciPantalla, Jugadors/Anys/AltaPantalla
-   ├─ profe.dart       → ProfePantalla, ProfeAlumnesPantalla, FilaDataInici
-   ├─ gestor.dart      → AdminIniciPantalla (amb ⚙), PagatPantalla (3 pestanyes: Socis · Fitxes · Alumnes + altes ràpides), EdicioSociPantalla, JugadorEdicioPantalla, AlumneEdicioPantalla, AltaRapidaPantalla, EscolaPantalla
-   └─ configuracio.dart → ConfiguracioPantalla, EditorBloc, PestanyaUsuaris, PestanyaNeteja, FormulariUsuari
+   ├─ acces.dart       → IniciSessio, Registre (compte/quota 25€), Selector
+   ├─ soci/            → inici.dart (IniciSoci, quotaVigent, vigentFins {0}), classes.dart (ClassesInici/Alta/Alumnes amb Calendari fullscreen sense hora + Al meu calendari sense hora), fitxa.dart (Fitxa, Jugadors, JugadorAnys/Alta amb Anvers DNI obligatori)
+   ├─ profe.dart       → ProfePantalla (FutureBuilder, LLISTA toggle, CalendariGraella per mes amb hora + gap 16px amb €PREUS), ProfeAlumnes, FilaDataInici
+   ├─ gestor/          → pagat.dart, escola.dart (Trimestres amb text @STRING@), fitxa.dart (EdicioSoci amb _filaTrimestre sempre visible, dataNaix split T), alumne.dart, comu.dart (AltaRapida)
+   └─ configuracio.dart → Club/Correus/Usuaris/Sistema/Neteja
 ```
 
 ### Arquitectura Backend
@@ -124,8 +132,18 @@ Documentat al README del projecte principal (`H:\Mi unidad\Web\Soci\README.md`).
 - **Menu Sheet**: gestió d'admins, triggers, eines (exportar CSV, estadístiques, netejar sessions)
 - Desplegar sempre amb *Implementar → Nueva versión*
 
+## Disseny actualitzat 2026-09
+
+- **Profe:** `CalendariGraella` per mes amb `< >`, per defecte mes actual, gap 16px, `FutureBuilder` fix càrrega.
+- **Soci:** `Classes→Alumnes` botó `Calendari` → `Dialog.fullscreen` (només `X`) sense hora + `descarregarICSSenseHora`.
+- **Trimestres:** `CampDataTrim` anyCurs `>=8` + `ultimDia` Feb29, `definirCfg @STRING@` fixa inversió.
+- **Alta alumne:** `✓ Desat correctament` verd, `intentat=false` després de guardar.
+- **Alta jugador:** Anvers DNI obligatori.
+- **Fitxa:** `dataNaix split T` fixa `29T22.../04/2010`.
+- **Inici:** `vigentFins {0}` amb params.
+
 ## Millores futures opcionals
 
-- Migrar `dart:html` → `package:web` + `dart:js_interop` (requisit per a WASM)
+- Migrar `dart:html` → `package:web` + `dart:js_interop` (requisit per a WASM) — parcialment fet via `serveis/*_web/_stub`
 - go_router per deep-links complets
-- Tests de widget per a les pantalles crítiques
+- Tests de widget per a les pantalles crítiques — fet parcial (22 tests)

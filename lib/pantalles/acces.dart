@@ -71,7 +71,7 @@ class _IniciSessioPantallaState extends State<IniciSessioPantalla> {
                             const IconaClub(mida: 96),
                             const SizedBox(height: 14),
                             Text(
-                              Estat.i.club.isNotEmpty ? Estat.i.club : 'Portal Socis',
+                              Estat.i.club.isNotEmpty ? Estat.i.club : t('portalSocis'),
                               style: estilTitol,
                               textAlign: TextAlign.center,
                             ),

@@ -110,7 +110,7 @@ class Estat {
   }
 
   void mostraError(String msg, {bool ok = false}) {
-    toastMissatge = msg.isEmpty ? 'Error' : msg;
+    toastMissatge = msg.isEmpty ? i18n.t('errGen') : msg;
     toastCorrecte = ok;
     refres();
     _toastTimer?.cancel();

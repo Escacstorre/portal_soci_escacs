@@ -76,23 +76,23 @@ void imprimirFormulari(Map d) {
   const logoSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 53.89 31.46" class="logo"><path fill="#051EF5" d="m50.39,25v-3.25l-1.25-1.25V0h-2v1.58h-1.75V0h-1.75v1.67l-1.92.08V0h-1.58v1.58l-1.83-.08V0h-1.83v1.67h-1.75V0h-1.67v20.5l-1.58.83v3.67l-3.08.08v6.25h3.26v-2.83h2.83v2.83h3.54v-2.83h2.83v2.83h3.44v-2.83h2.83v2.83h3.67v-2.83h2.83v2.83h.25v-6.33h-3.5Zm-18.92,3.08h-2.83v-2.83h2.83v2.83Zm6.22,0h-2.83v-2.83h2.83v2.83Zm6.25,0h-2.83v-2.83h2.83v2.83Zm6.38,0h-2.83v-2.83h2.83v2.83Z"/></svg>';
 
   sb.write('<div class="cap">$logoSvg<div><h1>${d['club']} — ${t('portalSocis')}</h1><p>${t('compte')} <b>${d['compte']}</b></p></div></div>');
-  sb.write('<h2>SOCI</h2><div class="grid2">');
-  for (final camp in ['Nom', 'DNI', 'Telèfon', 'Email', 'Núm. Banc', 'Contrasenya']) {
+  sb.write('<h2>${t('soci')}</h2><div class="grid2">');
+  for (final camp in [t('nom'), t('dni'), t('telefon'), t('email'), t('banc'), t('contra')]) {
     sb.write('<div class="camp"><b>$camp</b>$linia</div>');
   }
   sb.write('</div>');
-  sb.write('<h2>ALUMNES</h2>');
+  sb.write('<h2>${t('alumnes')}</h2>');
   for (var i = 1; i <= 3; i++) {
-    sb.write('<p><b>Alumne $i</b>$linia</p><p style="font-size:13px;color:#36424E">[ 1r ] &nbsp; [ 2n ] &nbsp; [ 3r ] &nbsp; <span style="color:#999">marqueu els trimestres pagats</span></p>');
+    sb.write('<p><b>${t('alumneU')} $i</b>$linia</p><p style="font-size:13px;color:#36424E">[ 1r ] &nbsp; [ 2n ] &nbsp; [ 3r ] &nbsp; <span style="color:#999">${t('marqueuTrimestres')}</span></p>');
   }
-  sb.write('<h2>PREUS ${DateTime.now().year}/${DateTime.now().year + 1}</h2><table class="preu">');
+  sb.write('<h2>${t('preus')} ${DateTime.now().year}/${DateTime.now().year + 1}</h2><table class="preu">');
   final bases = (d['bases'] as List?) ?? const [];
   for (var i = 0; i < 3 && i < bases.length; i++) {
-    sb.write('<tr><td>Base ${i + 1}${i == 0 ? 'r' : i == 1 ? 'n' : 'r'} trimestre</td><td>${bases[i]} €</td></tr>');
+    sb.write('<tr><td>${t('baseTrim')} ${i + 1}${i == 0 ? 'r' : i == 1 ? 'n' : 'r'} ${t('trimestre')}</td><td>${bases[i]} €</td></tr>');
   }
   sb.write('<tr><td>${t('trimJunts')}</td><td>${d['junts']} €</td></tr>');
   sb.write('<tr><td>${t('serSoci')}</td><td>${d['quota']} €</td></tr></table>');
-  sb.write('<p style="margin-top:22px;font-size:11px;color:#999;text-align:center">Document generat el ${DateTime.now().day.toString().padLeft(2, '0')}/${DateTime.now().month.toString().padLeft(2, '0')}/${DateTime.now().year} — ${d['club']}</p>');
+  sb.write('<p style="margin-top:22px;font-size:11px;color:#999;text-align:center">${t('documentGenerat')} ${DateTime.now().day.toString().padLeft(2, '0')}/${DateTime.now().month.toString().padLeft(2, '0')}/${DateTime.now().year} — ${d['club']}</p>');
   sb.write('<script>window.onload=function(){setTimeout(function(){window.print()},300)}</script>');
   sb.write('</body></html>');
 

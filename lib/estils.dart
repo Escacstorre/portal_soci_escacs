@@ -193,7 +193,7 @@ Future<bool?> confirmaEliminacio(BuildContext context, String missatge) {
       content: Text(missatge),
       actions: [
         TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(Estat.i.i18n.t('cancel'))),
-        TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('OK')),
+        TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text(Estat.i.i18n.t('guardar'))),
       ],
     ),
   );

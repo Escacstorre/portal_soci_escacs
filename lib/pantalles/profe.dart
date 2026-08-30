@@ -27,129 +27,134 @@ class ProfePantalla extends StatefulWidget {
 
 class _ProfePantallaState extends State<ProfePantalla> {
   bool _mostraLlista = false;
+  late final Future<void> _fut = _carrega();
 
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() async {
-      if (Estat.i.dadesProfessor == null) await carregaProfe();
-      Estat.i.refres();
-    });
+  Future<void> _carrega() async {
+    if (Estat.i.dadesProfessor == null) await carregaProfe();
   }
 
   @override
   Widget build(BuildContext context) {
-    final st = Estat.i;
-    final t = st.i18n.t;
-    final p = st.dadesProfessor;
-    if (p == null) return const Center(child: CircularProgressIndicator());
-    final llista = p.llista;
-    final bases = p.bases;
-    String base(int i) => i < bases.length ? '${bases[i]}' : '';
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Text('${t('profeBenv')} ${st.user?['nom'] ?? ''}',
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: titol)),
-        const SizedBox(height: 14),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return FutureBuilder<void>(
+      future: _fut,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final st = Estat.i;
+        final t = st.i18n.t;
+        final p = st.dadesProfessor;
+        if (p == null) return Center(child: Text(t('error')));
+        final llista = p.llista;
+        final bases = p.bases;
+        String base(int i) => i < bases.length ? '${bases[i]}' : '';
+        return ListView(
+          padding: const EdgeInsets.all(16),
           children: [
-            BotoGran(titol: t('llista'), icon: Icons.receipt_long, onTap: () => setState(() => _mostraLlista = !_mostraLlista)),
-            const SizedBox(width: 16),
-            BotoGran(titol: t('alumnes'), icon: Icons.school, onTap: () => st.go('profeAlumnes')),
-          ],
-        ),
-        if (_mostraLlista) ...[
-          const SizedBox(height: 16),
-          Carda(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(children: [
-                Text(t('selectorTrim'), style: const TextStyle(fontSize: 14)),
-                const SizedBox(width: 10),
-                for (var n = 1; n <= 3; n++)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ChoiceChip(
-                      label: Text('$n'),
-                      selected: st.profeTrim == n,
-                      onSelected: (_) async {
-                        st.profeTrim = n;
-                        await carregaProfe();
-                        st.refres();
-                      },
-                    ),
-                  ),
-              ]),
-              const SizedBox(height: 8),
-              if (llista.isEmpty)
-                const Text('—')
-              else
-                ...llista.map((m) => ItemLlista(children: [
-                      Expanded(child: Text('${m['alumne'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold))),
-                      Text('${m['soci'] ?? ''}', style: const TextStyle(fontSize: 13, color: textCol)),
-                    ])),
-            ]),
-          ),
-        ],
-        const SizedBox(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Carda(
+            Text('${t('profeBenv')} ${st.user?['nom'] ?? ''}',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: titol)),
+            const SizedBox(height: 14),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                BotoGran(titol: t('llista'), icon: Icons.receipt_long, onTap: () => setState(() => _mostraLlista = !_mostraLlista)),
+                const SizedBox(width: 16),
+                BotoGran(titol: t('alumnes'), icon: Icons.school, onTap: () => st.go('profeAlumnes')),
+              ],
+            ),
+            if (_mostraLlista) ...[
+              const SizedBox(height: 16),
+              Carda(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(t('calendari'), style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Row(children: [
+                    Text(t('selectorTrim'), style: const TextStyle(fontSize: 14)),
+                    const SizedBox(width: 10),
+                    for (var n = 1; n <= 3; n++)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: ChoiceChip(
+                          label: Text('$n'),
+                          selected: st.profeTrim == n,
+                          onSelected: (_) async {
+                            st.profeTrim = n;
+                            await carregaProfe();
+                            st.refres();
+                            if (mounted) setState(() {});
+                          },
+                        ),
+                      ),
+                  ]),
                   const SizedBox(height: 8),
-                  CalendariGraella(
-                    sessions: p.sessions,
-                    festius: p.festius.toSet(),
-                    anyCurs: p.anyCurs != 0 ? p.anyCurs : (DateTime.now().month >= 8 ? DateTime.now().year : DateTime.now().year - 1),
-                    mostraHora: true,
-                  ),
-                  const SizedBox(height: 8),
-                  Text('${p.sessions.length} ${t('sessioClasse')}',
-                      style: const TextStyle(fontSize: 12, color: textCol)),
-                  const SizedBox(height: 6),
-                  OutlinedButton.icon(
-                    icon: const Icon(Icons.event, size: 18),
-                    label: Text(t('alCal'), style: const TextStyle(fontSize: 13)),
-                    onPressed: () async {
-                      final ics = await st.call('descarregarICS', [st.token]);
-                      descarregarArxiu(ics as String, 'text/calendar', 'clases.ics');
-                    },
-                  ),
+                  if (llista.isEmpty)
+                    const Text('—')
+                  else
+                    ...llista.map((m) => ItemLlista(children: [
+                          Expanded(child: Text('${m['alumne'] ?? ''}', style: const TextStyle(fontWeight: FontWeight.bold))),
+                          Text('${m['soci'] ?? ''}', style: const TextStyle(fontSize: 13, color: textCol)),
+                        ])),
                 ]),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Carda(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(t('preus'), style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
-                  for (var i = 0; i < 3; i++)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                        Text('${t('baseTrim')} ${i + 1}', style: const TextStyle(fontSize: 13.5)),
-                        Text('${base(i)} €', style: const TextStyle(fontWeight: FontWeight.bold)),
-                      ]),
-                    ),
-                  _preuFila(t('trimJunts'), '${p.junts} €'),
-                  _preuFila(t('serSoci'), '${p.serSoci} €'),
-                  const SizedBox(height: 6),
-                  OutlinedButton.icon(
-                    icon: const Icon(Icons.print, size: 18),
-                    label: Text(t('imprimir'), style: const TextStyle(fontSize: 13)),
-                    onPressed: () => imprimirFormulari(p.formulari),
+            ],
+            const SizedBox(height: 16),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Carda(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(t('calendari'), style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      CalendariGraella(
+                        sessions: p.sessions,
+                        festius: p.festius.toSet(),
+                        anyCurs: p.anyCurs != 0 ? p.anyCurs : (DateTime.now().month >= 8 ? DateTime.now().year : DateTime.now().year - 1),
+                        mostraHora: true,
+                      ),
+                      const SizedBox(height: 8),
+                      Text('${p.sessions.length} ${t('sessioClasse')}',
+                          style: const TextStyle(fontSize: 12, color: textCol)),
+                      const SizedBox(height: 6),
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.event, size: 18),
+                        label: Text(t('alCal'), style: const TextStyle(fontSize: 13)),
+                        onPressed: () async {
+                          final ics = await st.call('descarregarICS', [st.token]);
+                          descarregarArxiu(ics as String, 'text/calendar', 'clases.ics');
+                        },
+                      ),
+                    ]),
                   ),
-                ]),
-              ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Carda(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(t('preus'), style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 6),
+                      for (var i = 0; i < 3; i++)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                            Text('${t('baseTrim')} ${i + 1}', style: const TextStyle(fontSize: 13.5)),
+                            Text('${base(i)} €', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          ]),
+                        ),
+                      _preuFila(t('trimJunts'), '${p.junts} €'),
+                      _preuFila(t('serSoci'), '${p.serSoci} €'),
+                      const SizedBox(height: 6),
+                      OutlinedButton.icon(
+                        icon: const Icon(Icons.print, size: 18),
+                        label: Text(t('imprimir'), style: const TextStyle(fontSize: 13)),
+                        onPressed: () => imprimirFormulari(p.formulari),
+                      ),
+                    ]),
+                  ),
+                ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 

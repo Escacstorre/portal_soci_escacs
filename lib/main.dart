@@ -51,7 +51,7 @@ class PortalApp extends StatelessWidget {
     return EstatScope(
       notifier: _estatNotifier,
       child: MaterialApp(
-      title: 'Portal Socis',
+      title: Estat.i.i18n.t('portalSocis'),
       debugShowCheckedModeBanner: false,
       navigatorKey: Estat.i.navigatorKey,
       supportedLocales: _localesDisponibles(),
