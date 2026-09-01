@@ -132,6 +132,16 @@ Documentat al README del projecte principal (`H:\Mi unidad\Web\Soci\README.md`).
 - **Menu Sheet**: gestió d'admins, triggers, eines (exportar CSV, estadístiques, netejar sessions)
 - Desplegar sempre amb *Implementar → Nueva versión*
 
+### Permisos Drive
+
+Quan un usuari rep els rols **Admin** o **Junta**, automàticament se li comparteix la carpeta
+`Portal Socis - Arxius` del Google Drive del club (`addViewer`). Així pot veure els enllaços
+de fitxers (rebuts, fotos DNI, etc.) directament al navegador.
+
+Quan es treu un rol Admin/Junta (o s'elimina l'usuari), es deixa de compartir (`removeViewer`).
+
+**Requisit:** L'usuari ha d'estar logat amb el compte de Google que rep el shared folder.
+
 ## Disseny actualitzat 2026-09
 
 - **Profe:** `CalendariGraella` per mes amb `< >`, per defecte mes actual, gap 16px, `FutureBuilder` fix càrrega.
