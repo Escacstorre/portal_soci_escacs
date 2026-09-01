@@ -54,25 +54,37 @@ class IniciSociPantalla extends StatelessWidget {
                   Text('${t('benvingut')} ${d?.nom ?? ''}',
                       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: titol)),
                   const SizedBox(height: 10),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    spacing: 6,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('${t('quotaAny')} ${d?.any ?? ''}: '),
                       XipQuota(quota: d?.quota ?? ''),
-                      if (vigent && caducitat.isNotEmpty)
-                        Text(t('vigentFins', [mostraData(caducitat)]),
-                            style: const TextStyle(fontSize: 12.5, color: verd)),
-                      if (d?.quotaRebut?.url != null)
-                        TextButton(
-                          onPressed: () {
-                            final url = d?.quotaRebut?.url;
-                            if (url != null) obrirUrl(url);
-                          },
-                          child: Text('(${t('veureRebut')})', style: const TextStyle(fontSize: 13)),
-                        ),
                     ],
                   ),
+                  if (vigent && caducitat.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      decoration: decoXip(verd),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.verified, size: 16, color: verd),
+                          const SizedBox(width: 6),
+                          Text(t('vigentFins', [mostraData(caducitat)]),
+                              style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: verd)),
+                        ],
+                      ),
+                    ),
+                  ],
+                  if (d?.quotaRebut?.url != null) ...[
+                    const SizedBox(height: 6),
+                    TextButton.icon(
+                      onPressed: () => obrirUrl(d!.quotaRebut!.url),
+                      icon: const Icon(Icons.description, size: 16),
+                      label: Text(t('veureRebut'), style: const TextStyle(fontSize: 13)),
+                    ),
+                  ],
                   if (!vigent) ...[
                     const SizedBox(height: 14),
                     Container(
