@@ -53,7 +53,7 @@ void descarregarArxiu(String contingut, String mime, String nom) {
 
 void imprimirFormulari(Map d) {
   final t = Estat.i.i18n.t;
-  final linia = '<div style="border-bottom:1px solid #c9c9c9;height:30px;margin:14px 0"></div>';
+  final linia = '<div style="border-bottom:1px solid #c9c9c9;height:24px;margin:10px 0"></div>';
   final sb = StringBuffer();
   sb.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>${d['club']}</title>');
   sb.write('<style>');
@@ -63,7 +63,7 @@ void imprimirFormulari(Map d) {
   sb.write('.cap h1{margin:0;font-size:22px;color:#060201}');
   sb.write('.cap p{margin:2px 0 0;color:#666;font-size:13px}');
   sb.write('.logo{width:54px;height:31px;flex-shrink:0}');
-  sb.write('h2{font-size:15px;color:#051EF5;border-bottom:1px solid #e6e6e6;padding-bottom:6px;margin-top:22px}');
+  sb.write('h2{font-size:15px;color:#051EF5;border-bottom:1px solid #e6e6e6;padding-bottom:6px;margin-top:16px}');
   sb.write('.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}');
   sb.write('.camp{margin:10px 0 0}');
   sb.write('.camp b{font-size:13px;color:#36424E}');
@@ -92,7 +92,7 @@ void imprimirFormulari(Map d) {
   }
   sb.write('<tr><td>${t('trimJunts')}</td><td>${d['junts']} €</td></tr>');
   sb.write('<tr><td>${t('serSoci')}</td><td>${d['quota']} €</td></tr></table>');
-  sb.write('<p style="margin-top:22px;font-size:11px;color:#999;text-align:center">${t('documentGenerat')} ${DateTime.now().day.toString().padLeft(2, '0')}/${DateTime.now().month.toString().padLeft(2, '0')}/${DateTime.now().year} — ${d['club']}</p>');
+  sb.write('<p style="margin-top:14px;font-size:11px;color:#999;text-align:center">${t('documentGenerat')} ${DateTime.now().day.toString().padLeft(2, '0')}/${DateTime.now().month.toString().padLeft(2, '0')}/${DateTime.now().year} — ${d['club']}</p>');
   sb.write('<script>window.onload=function(){setTimeout(function(){window.print()},300)}</script>');
   sb.write('</body></html>');
 
