@@ -60,7 +60,7 @@ class AltaRapidaPantalla extends StatefulWidget {
 class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
   final n = TextEditingController(), dni = TextEditingController(), tel = TextEditingController();
   final em = TextEditingController(), banc = TextEditingController(), pw = TextEditingController();
-  final a1 = TextEditingController(), a2 = TextEditingController(), a3 = TextEditingController();
+  final a1 = TextEditingController(), a2 = TextEditingController();
   String? msg;
   bool err = false;
   bool intentat = false;
@@ -73,9 +73,8 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
     em.dispose();
     banc.dispose();
     pw.dispose();
-    a1.dispose();
-    a2.dispose();
-    a3.dispose();
+      a1.dispose();
+      a2.dispose();
     super.dispose();
   }
 
@@ -112,7 +111,6 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
           'alumnes': [
             {'nom': a1.text},
             {'nom': a2.text},
-            {'nom': a3.text},
           ],
         },
       ]);
@@ -121,7 +119,7 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
         msg = t('refrescat');
         err = false;
       });
-      for (final c in [n, dni, tel, em, banc, pw, a1, a2, a3]) {
+      for (final c in [n, dni, tel, em, banc, pw, a1, a2]) {
         c.clear();
       }
     } catch (_) {
@@ -164,7 +162,6 @@ class _AltaRapidaPantallaState extends State<AltaRapidaPantalla> {
         Text(t('alumnesOpt'), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
         CampText(controller: a1, hint: '${t('alumneU')} 1'),
         CampText(controller: a2, hint: '${t('alumneU')} 2'),
-        CampText(controller: a3, hint: '${t('alumneU')} 3'),
         if (msg != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),

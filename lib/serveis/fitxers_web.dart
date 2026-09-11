@@ -82,7 +82,7 @@ void imprimirFormulari(Map d) {
   }
   sb.write('</div>');
   sb.write('<h2>${t('alumnes')}</h2>');
-  for (var i = 1; i <= 3; i++) {
+  for (var i = 1; i <= 2; i++) {
     sb.write('<p><b>${t('alumneU')} $i</b>$linia</p><p style="font-size:13px;color:#36424E">[ 1r ] &nbsp; [ 2n ] &nbsp; [ 3r ] &nbsp; <span style="color:#999">${t('marqueuTrimestres')}</span></p>');
   }
   sb.write('<h2>${t('preus')} ${DateTime.now().year}/${DateTime.now().year + 1}</h2><table class="preu">');
