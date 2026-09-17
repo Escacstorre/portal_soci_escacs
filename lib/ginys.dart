@@ -299,7 +299,7 @@ class CampData extends StatelessWidget {
     final d = await showDatePicker(
       context: context,
       initialDate: _inicial(),
-      firstDate: DateTime(2020),
+      firstDate: DateTime(1920),
       lastDate: DateTime(2100),
       locale: Locale(Estat.i.i18n.lang.toLowerCase()),
     );
