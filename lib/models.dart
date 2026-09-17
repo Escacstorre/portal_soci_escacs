@@ -177,7 +177,7 @@ class TotSoci {
 }
 
 class SociGestor {
-  SociGestor({required this.id, required this.nom, required this.dni, required this.telefon, required this.email, required this.rol, required this.estat, required this.caducitat, required this.rebutQuota});
+  SociGestor({required this.id, required this.nom, required this.dni, required this.telefon, required this.email, required this.rol, required this.estat, required this.caducitat, required this.rebutQuota, this.numBanc = ''});
   final String id;
   final String nom;
   final String dni;
@@ -187,6 +187,7 @@ class SociGestor {
   String estat;
   final String caducitat;
   final RebutInfo? rebutQuota;
+  final String numBanc;
 
   static SociGestor de(dynamic m) {
     final d = _mp(m);
@@ -200,6 +201,7 @@ class SociGestor {
       estat: _s(d['estat']),
       caducitat: _s(d['caducitat']),
       rebutQuota: RebutInfo.de(d['rebutQuota']),
+      numBanc: _s(d['numBanc']),
     );
   }
 }

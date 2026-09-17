@@ -73,6 +73,9 @@ Map<String, (String, String)> _etiquetesConfig(String Function(String) t) => {
   'DuradaSessioMinuts': (t('duradaSessioConfig'), ''),
   'IdiomaPerDefecte': (t('idiomaDefecteConfig'), ''),
   'FolderDrive': (t('carpetaDriveConfig'), ''),
+  'AdrecaClub': (t('adrecaClubConfig'), ''),
+  'PaisClub': (t('paisClubConfig'), ''),
+  'CredId': (t('credIdConfig'), ''),
 };
 
 class EditorBloc extends StatefulWidget {

@@ -6,6 +6,7 @@ import '../../estils.dart';
 import '../../estat.dart';
 import '../../ginys.dart';
 import '../../models.dart';
+import '../../serveis/sepa.dart';
 import '../../utils/filtra.dart';
 import 'comu.dart';
 
@@ -86,6 +87,42 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
   void _refrescaTot() {
     Estat.i.buidaCau();
     setState(() => _fut = carregaGestor());
+  }
+
+  bool _potRemesa(GestorDades d) {
+    final st = Estat.i;
+    final ibanClub = st.compte;
+    if (ibanClub.isEmpty) return false;
+    final quota = num.tryParse(st.quota) ?? 0;
+    if (quota <= 0) return false;
+    return d.socis.any((s) => s.estat == 'Actiu' && s.numBanc.trim().isNotEmpty);
+  }
+
+  Future<void> _descarregaRemesa(GestorDades d) async {
+    final st = Estat.i;
+    try {
+      final cfgRaw = await st.call('obtenirConfigBloc', [st.token, 'Club']);
+      final cfg = (cfgRaw as Map).cast<String, dynamic>();
+      final quotaRaw = (cfg['QuotaSoci'] ?? '').toString().replaceAll(RegExp(r'[^0-9.,]'), '').replaceAll(',', '.');
+      final quota = num.tryParse(quotaRaw) ?? 0;
+      final socisRemesa = d.socis
+          .where((s) => s.estat == 'Actiu' && s.numBanc.trim().isNotEmpty)
+          .map((s) => SociRemesa(nom: s.nom, iban: s.numBanc.trim()))
+          .toList();
+      final dades = DadesRemesa(
+        nomClub: (cfg['NomClub'] ?? '').toString(),
+        adrecaClub: (cfg['AdrecaClub'] ?? '').toString(),
+        paisClub: (cfg['PaisClub'] ?? 'ES').toString(),
+        credId: (cfg['CredId'] ?? '').toString(),
+        ibanClub: (cfg['CompteClub'] ?? st.compte).toString(),
+        socis: socisRemesa,
+        quota: quota,
+      );
+      if (!dades.valid) return;
+      final xml = dades.generaXML();
+      descarregarArxiu(xml, 'application/xml', dades.nomFitxer);
+      st.mostraOk();
+    } catch (_) {}
   }
 
   Widget _validacioQuota(SociGestor s) {
@@ -184,6 +221,11 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
               FilledButton.tonal(
                 onPressed: () => Estat.i.go('altaRapida'),
                 child: Text(t('altaRapida'), style: const TextStyle(fontSize: 13)),
+              ),
+              const SizedBox(width: 8),
+              FilledButton.tonal(
+                onPressed: _potRemesa(d) ? () => _descarregaRemesa(d) : null,
+                child: Text(t('remesaSEPA'), style: const TextStyle(fontSize: 13)),
               ),
             ]),
             const SizedBox(height: 12),
