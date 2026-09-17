@@ -1,0 +1,2963 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.008.001.02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <CstmrDrctDbtInitn>
+    <GrpHdr>
+      <!--Capçalera del missatge-->
+      <!--Id del missatge-->
+      <MsgId>2026-09-01T10:13:51</MsgId>
+      <!--Data i Hora de creació del missatge-->
+      <CreDtTm>2026-09-01T10:13:51</CreDtTm>
+      <!--Número d'operacions individuals que conte el missatge-->
+      <NbOfTxs>74</NbOfTxs>
+      <!--Suma total de tots els imports inclosos al missatge-->
+      <CtrlSum>8872.19</CtrlSum>
+      <!--Initiating Party (presentador del missatge)-->
+      <InitgPty>
+        <!--Nom del presentador. MaxLength:70-->
+        <Nm>LABORATORI INFORMATIC TECNIC PER EMPRESES, S.L.L.</Nm>
+        <!--Identifiació de la persona-->
+        <Id>
+          <OrgId>
+            <Othr>
+              <!--NIF-->
+              <Id>ES63003B43652361</Id>
+            </Othr>
+          </OrgId>
+        </Id>
+      </InitgPty>
+    </GrpHdr>
+    <!--Informació del pagament-->
+    <PmtInf>
+      <!--Identificació del bloc d'informació del pagament dintre del missatge-->
+      <PmtInfId>BMr124197</PmtInfId>
+      <!--Métode de pagament, només deixa DD-->
+      <PmtMtd>DD</PmtMtd>
+      <!--Número d'operacions individuals inclosos en el bloc d'Informació del pagament-->
+      <NbOfTxs>74</NbOfTxs>
+      <!--Suma total de tots els imports inclosos en el bloc d'Informació del pagament-->
+      <CtrlSum>8872.19</CtrlSum>
+      <!--Elements utilitzats per especificar el detall de la operació-->
+      <PmtTpInf>
+        <SvcLvl>
+          <!--Regles en que s'ha de processar la informació-->
+          <Cd>SEPA</Cd>
+        </SvcLvl>
+        <LclInstrm>
+          <!--Esquema en que s'ha de processar la operació-->
+          <Cd>CORE</Cd>
+        </LclInstrm>
+        <!--Tipus de seqüència-->
+        <SeqTp>OOFF</SeqTp>
+      </PmtTpInf>
+      <!--Data de cobrament-->
+      <ReqdColltnDt>2026-09-01</ReqdColltnDt>
+      <!--Dades del acreedor-->
+      <Cdtr>
+        <!--Nom. MaxLength:70-->
+        <Nm>LABORATORI INFORMATIC TECNIC PER EMPRESES, S.L.L.</Nm>
+      </Cdtr>
+      <!--Dades de la compte del acreedor-->
+      <CdtrAcct>
+        <Id>
+          <IBAN>ES5601824395580200245707</IBAN>
+        </Id>
+        <Ccy>EUR</Ccy>
+      </CdtrAcct>
+      <!--Dades de l'entitad bancaria-->
+      <CdtrAgt>
+        <FinInstnId>
+          <BIC>BBVAESMMXXX</BIC>
+        </FinInstnId>
+      </CdtrAgt>
+      <!--Especifica quines parts correran amb els gastos del tractament de la operació. Només es pot posar 'SLEV'. Les comisions i gastos venen acordats per l'esquema-->
+      <ChrgBr>SLEV</ChrgBr>
+      <CdtrSchmeId>
+        <!--Identificació de l'acreedor-->
+        <Id>
+          <PrvtId>
+            <Othr>
+              <Id>ES63003B43652361</Id>
+            </Othr>
+          </PrvtId>
+        </Id>
+      </CdtrSchmeId>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510377</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510377</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">18.15</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.1-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Internacional Pizza SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2800810321570001482353</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>MANTENIMIENTO</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510378</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510378</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">51.27</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.2-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>MARGARITA YXART MONTANES</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES0701821238610208503695</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>MANTENIMENT</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510379</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510379</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">51.27</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.3-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>MIREIA ESPEJO IGLESIAS</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES9101826240630000202893</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>MANTENIMENT</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510380</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510380</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">30.25</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.4-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId />
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>PAULA FERNANDEZ BENAVENTE</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES0721003500122200420698</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>LLOGUER BDP</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510381</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510381</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">30.25</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.5-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>El bruixot d altafulla, sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES9301822609560200080881</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV BDP</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510382</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510382</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">118.58</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.6-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>PATRICI BONAVENTURE CASAS (PIZZERIA LINA POBLE)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES3900492611882614714863</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + HANDY + 2 IMPRESORAS + 2 PDA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510383</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510383</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">121.00</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.7-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Internacional Pizza SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2800810321570001482353</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>ALQUILER  3 TPV + 1 PDA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510384</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510384</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">70.18</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.8-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>OFICINA 2012, SCP</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES9621000172180200667720</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + IMPRESORA + HANDY</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510385</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510385</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">118.58</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.9-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Pizzeria la trattoria de torredembarra sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES1101824206010201529557</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + PDA 2 + HANDY + IMPRESORA 2</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510386</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510386</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">73.81</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.10-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Giner Nonell Silvia (Floristeria Pobla Plant)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2501824395510201547475</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP NET COMERC + CALAIX + IMPRESSORA + VERY FACTU (LA POBLA)</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510387</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510387</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">60.50</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.11-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>AIDA RUIZ MARTINEZ (FRANKFURT S BOCAITO)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES6521001438060200200397</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP </Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510388</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510388</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">60.50</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.12-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Forn cristia sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES4121000477340200428800</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + IMPRESORA + BDP NET + CALAIX</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510389</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510389</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">60.50</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.13-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>REINA DANIELA ALEJANDRA MIRANDA (UTOPIA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES1501822609550200099018</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + CAJON</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510390</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510390</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">60.50</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.14-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>POPUESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Miquel Salvat, SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES5900750986110601163759</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + CALAIX + IMPRESSORA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510391</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510391</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">72.60</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.15-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>El bruixot d altafulla, sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES9301822609560200080881</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + CALAIX + 2 IMPRESORAS   (LA BRUIXOTA)</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510392</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510392</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">44.99</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.16-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>MI CASA INTERIORISMO TORREDEMBARRA SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES1100492611852914628941</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>ANTIVIRUS ESET Internet Security2 LICENCIAS ANUAL</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510393</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510393</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">94.38</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.17-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>RUTILIA SOCOREC QUEL (CAFETERIA AQUA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES3400810321550001855890</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CAJON + BDP + IMPRESORA 2 + HANDY + PDA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510394</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510394</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">104.06</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.18-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Croissanteria la palmera S.C.P.</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES3521003884760100641089</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + HANDY + AUTOCOMANDA + PDA + IMPRESSORA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510395</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510395</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">167.25</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.19-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Perez palomo S.C.P. (EL LLAGAR)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES6801820250210201655899</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + HANDY + 6 PDA + 3 IMPRESORA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510396</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510396</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.20-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Sune Romeu Bibiana</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES9100492611822114686690</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + CALAIX + IMPRESSORA + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510397</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510397</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.21-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Gutierrez Sandez Araceli</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES8921003290432200473696</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + CAJON + IMPRESORA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510398</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510398</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">37.51</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.22-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Swimsmoda SL.</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES8621003180352200206587</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>BDP TALLA I COLORS</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510399</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510399</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">77.44</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.23-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>ANA SILVA ARNEDO (LA GRESCA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES8721001438040200147622</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>ALQUILER BDP + TPV + HANDY</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510400</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510400</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.24-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Kellouai Khalid (SHISHA ALADDIN)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES9221000155930200359999</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + IMPRESORA + BDP</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510401</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510401</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">89.54</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.25-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Monica Igual Parra (S.A. BURGUER)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES4601828149790201799181</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + IMPRESORA + CAJON + HANDY + PDA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510402</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510402</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">154.88</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.26-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Meraki consumer S.L.</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES1700810142700002138824</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>LLOGUER TPV</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510403</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510403</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">49.61</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.27-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>PEDRO TORRES GONZALVO (CAN BOTER)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES5600810321520001905499</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>BDP + IMPRESSORA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510404</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510404</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">113.74</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.28-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Club de Futbol Reddis (VAR)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2021000550010200229362</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CALAIX + BDP + HANDY + 2 IMPRESSORA + 2 PDA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510405</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510405</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">37.51</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.29-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Gomez Toro Mario (LLENYA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES7100815258490001205924</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>BDP</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510406</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510406</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.30-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Restauracions serrano gallart SL (ROQUES PLANES)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES4121000172160200349193</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CALAIX + IMPRESSORA + BDP + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510407</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510407</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">156.09</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.31-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>La cassoleta d arros sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES0301824395590201620035</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV (CALAIX,IMPRESORA,TECLAT, RATOLI)+ BDP + HANDY + 2 IMPRESORA + 2 PDA + EQUIP INFORMATIC CUINA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510408</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510408</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">217.80</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.32-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Lavadero camarles truck, sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES9601822833760201856745</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>PROGRAMA DE FACTURACIO CONTASIMPLE</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510409</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510409</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.33-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>JAMES LOPEZ QUINONES (OFICINA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES7200495350772816097492</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CALAIX + IMPRESSORA + BDP + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510410</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510410</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">25.00</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.34-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Internacional Pizza SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2800810321570001482353</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>BDP NET CONNECTOR SINQRO</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510411</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510411</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">186.34</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.35-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Elite club amp;restaurant sociedad limitada (KALAVIA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES1101823304310203508725</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + HANDY + BDP + 5 IMPRESORA + 4 PDA + VERIFACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510412</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510412</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">174.24</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.36-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>S s mata sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES0621003381512200102715</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CALAIX + BDP NET + HANDY + VERIFACTU + 4 PDA + 4 IMPRESSORES</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510413</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510413</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">38.72</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.37-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Pneumatics sant jordi S.C.P.</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES6001824395540200042131</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>4 USUSARIS JORNADA LABORAL </Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510414</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510414</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">9.68</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.38-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>ELECTRO METAL GUARDIA</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES0321003758112200007212</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>1 USUARIS JORNADA LABORAL</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510415</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510415</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.39-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>PERRUQUERIA MOMENTS, SCP</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES6600810321540001793283</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CALAIX + IMPRESSORA + BDP  NET + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510416</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510416</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.40-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>DOLORES ASENCIO RUIZ (ROSTISSERIA SARA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES1021000477300200497260</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP NET + CALAIX + IMPRESSORA + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510417</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510417</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">37.51</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.41-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>VACHAGAN GHARIBYAN (DE LA MONA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES6921000172110201183134</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>SOFTWARE BDP NET</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510418</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510418</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.42-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>CRISTINA RODRIGUEZ MORGADO (PUPI FLORS)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES7021000172130200639721</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CALAIX + IMPRESORA + BDP NET + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510419</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510419</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.43-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>LLENYES DEL GAIA, SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES6300810331250001551758</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CALAIX + IMPRESSORA + BDP NET COMERC I GESTIO + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510420</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510420</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">125.84</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.44-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>TORRE BARRILERO TRADE, SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES5821000172150201197298</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP NET + 2PDA + HANDY + 3 IMPRESSORES + CALAIX + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510421</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510421</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">53.24</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.45-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>MANEL GUASCH GIBERT (RESTAURANT BAR TENNIS)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES0500810321530001370346</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>BDP NET + HANDY + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510422</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510422</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.46-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>ALEX JORDAN MEJIA (RELAXSOL)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2921000172130201182010</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP NET + CALAIX + IMPRESORA + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510423</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510423</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">191.18</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.47-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>SILVESTRE MORROS RIMBAU</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES6900810321590001812287</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>2 TPV + 2 CALAIX + 3 IMPRESSORA + 2 BDP NET + 2 VERI FACTU + 2 PDA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510424</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510424</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">40.00</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.48-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Blaix 2014 sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES7901823304350203481794</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>CONTROL HORARI 5 USUARIS</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510425</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510425</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.49-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>BIANCA SANCHEZ CAPDEVILA (UNA MES BAR)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES1701824395590201633363</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CALAIX + BDP NET HOSTELERIA + IMPRESORA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510426</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510426</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.50-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Nudaxa capital grup sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES3521000299190200385872</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>BDP + TPV + CALAIX + IMPRESORA + VERI FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510427</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510427</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.51-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>PABLO FERNANDEZ PELAEZ (CAMPING L ALBA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES8121000172190201220065</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP + CALAIX + LECTOR DE CODIC DE BARRES + IMPRESORA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510428</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510428</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">101.64</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.52-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Francesc Macia Sendra Alasa (Xiringuito Les Dunes de Creixell)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES8800492611852914711848</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + CALAIX + BDP NET HOSTELERIA + VERI FACTU + HANDY + 2 IMPRESORA + 1 PDA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510429</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510429</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">119.79</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.53-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>PABLO FERNANDEZ PELAEZ (CAMPING L ALBA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES1721000172150201219861</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>BDP + HANDY + 3 PDA + 3 IMPRESORAS</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510430</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510430</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">73.81</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.54-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Giner Nonell Silvia (Floristeria Pobla Plant)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2501824395510201547475</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP NET COMERC + CALAIX + IMPRESORA + VERY FACTU (TORREDEMBARRA)</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510431</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510431</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">77.44</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.55-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>De Palacio Panellas Marc (QUIJOTE BEACH)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES8421001438090200097864</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP NET HOSTELERIA + HANDY</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510432</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510432</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.56-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Internacional Pizza SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2800810321570001482353</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + BDP NET + VERY FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510433</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510433</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">67.76</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.57-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Formas 89, sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES3401824395590201632087</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>ALQUILER TPV + BDP NET + CALAIX + IMPRESORA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510434</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510434</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">77.44</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.58-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Cielo cambrils 3000, S.L.</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES4021004932732200105246</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV  CALAIX  BDP  IMPRESSORA  HANDY   VERY FACTU</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510435</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510435</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">77.44</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.59-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>CHAPEAU, SCP</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES3821006912640100028794</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>TPV + IMPRESORA + BDP + VERI FACTU + HANDY</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510436</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510436</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">89.54</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.60-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Brave   lebowski, sociedad limitada (CABARET SECRET)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES9601824395570201633882</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>LLOGUER TPV + BDP NET PUBS Y DISCOTECAS + CALAIX + IMPRESORA + VERI FACTU + HANDY + 1 PDA</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510437</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510437</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">217.80</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.61-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId />
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>ALEJANDRO DONOSO DIAZ</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2915830001109041880264</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>PROGRAMARI CONTASIMPLE</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510438</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510438</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">50.85</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.62-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Internacional Pizza SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2800810321570001482353</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0877.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510439</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510439</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">210.70</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.63-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>SELECCIONS GASTRONOMIQUES PROEX, SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES8900491583252410316021</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0878.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510440</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510440</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">59.00</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.64-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId />
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>PAULA FERNANDEZ BENAVENTE</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES0721003500122200420698</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0879.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510441</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510441</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">1289.06</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.65-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>MARIA TERESA CASAS PRADES (AGROPINSOS SOLER)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES0700750846910600089232</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0880.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510442</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510442</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">45.78</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.66-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>SILVESTRE MORROS RIMBAU (NO SE)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES6900810321590001812287</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0881.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510443</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510443</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">40.00</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.67-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Electro creixell SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES2101822828230100004249</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0882.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510444</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510444</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">89.20</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.68-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BBVAESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>NETAFE RESTAURACIO, S.L.</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES5101828326680201556525</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0883.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510445</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510445</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">1693.07</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.69-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CASDESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>MERCADE ARQUITECTURA SLP</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES9231834300740000968814</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0884.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510446</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510446</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">124.34</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.70-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>CAIXESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Marsal Pie</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES7221000172130200355960</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0885.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510447</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510447</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">25.20</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.71-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSCHESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>Formas 89, sociedad limitada</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES3401824395590201632087</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0887.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510448</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510448</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">70.01</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.72-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>JAUME GUASCH, SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES8900810321560001644167</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0888.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510449</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510449</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">79.19</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.73-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>BSABESBBXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>RUTILIA SOCOREC QUEL (CAFETERIA AQUA)</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES3400810321550001855890</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0889.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+      <DrctDbtTxInf>
+        <!--Informació de les operacions de adeudo directe-->
+        <PmtId>
+          <!--ID del pagament-->
+          <InstrId>RrI7510450</InstrId>
+          <!--ID de la operació-->
+          <EndToEndId>RrI7510450</EndToEndId>
+        </PmtId>
+        <!--Import en Euros-->
+        <InstdAmt Ccy="EUR">20.00</InstdAmt>
+        <DrctDbtTx>
+          <MndtRltdInf>
+            <!--Informació Mandat-->
+            <MndtId>109459-101.74-20260901-101351</MndtId>
+            <!--Data de signatura del mandat en format YYYY-MM-DD-->
+            <DtOfSgntr>2026-09-01</DtOfSgntr>
+          </MndtRltdInf>
+        </DrctDbtTx>
+        <DbtrAgt>
+          <FinInstnId>
+            <!--BIC de la entitat bancaria del deutor-->
+            <BIC>POPUESMMXXX</BIC>
+          </FinInstnId>
+        </DbtrAgt>
+        <Dbtr>
+          <!--Nom del deutor-->
+          <Nm>AMI TRES, SL</Nm>
+        </Dbtr>
+        <DbtrAcct>
+          <Id>
+            <!--IBAN del deutor-->
+            <IBAN>ES1400750846980600037062</IBAN>
+          </Id>
+        </DbtrAcct>
+        <RmtInf>
+          <!--Concepto de la domiciliación-->
+          <Ustrd>Rebut per la factura numero 2026 0891.</Ustrd>
+        </RmtInf>
+      </DrctDbtTxInf>
+    </PmtInf>
+  </CstmrDrctDbtInitn>
+</Document>
