@@ -100,15 +100,30 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
 
   Future<void> _descarregaRemesa(GestorDades d) async {
     final st = Estat.i;
+    final t = st.i18n.t;
     try {
       final cfgRaw = await st.call('obtenirConfigBloc', [st.token, 'Club']);
       final cfg = (cfgRaw as Map).cast<String, dynamic>();
+      final camps = ['AdrecaClub', 'PaisClub', 'CredId', 'CompteClub'];
+      final buits = camps.where((k) => (cfg[k] ?? '').toString().trim().isEmpty).toList();
+      if (buits.isNotEmpty) {
+        st.mostraError(t('omplirConfig', [buits.join(', ')]));
+        return;
+      }
       final quotaRaw = (cfg['QuotaSoci'] ?? '').toString().replaceAll(RegExp(r'[^0-9.,]'), '').replaceAll(',', '.');
       final quota = num.tryParse(quotaRaw) ?? 0;
+      if (quota <= 0) {
+        st.mostraError(t('error'));
+        return;
+      }
       final socisRemesa = d.socis
           .where((s) => s.estat == 'Actiu' && s.numBanc.trim().isNotEmpty)
           .map((s) => SociRemesa(nom: s.nom, iban: s.numBanc.trim()))
           .toList();
+      if (socisRemesa.isEmpty) {
+        st.mostraError(t('error'));
+        return;
+      }
       final dades = DadesRemesa(
         nomClub: (cfg['NomClub'] ?? '').toString(),
         adrecaClub: (cfg['AdrecaClub'] ?? '').toString(),
@@ -118,11 +133,12 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
         socis: socisRemesa,
         quota: quota,
       );
-      if (!dades.valid) return;
       final xml = dades.generaXML();
       descarregarArxiu(xml, 'application/xml', dades.nomFitxer);
       st.mostraOk();
-    } catch (_) {}
+    } catch (_) {
+      st.mostraError(t('error'));
+    }
   }
 
   Widget _validacioQuota(SociGestor s) {
