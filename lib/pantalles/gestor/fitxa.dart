@@ -243,8 +243,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     final id = tr['id'];
     final rebutUrl = tr['rebut']?['url'] as String?;
     Future<void> commuta(dynamic v) async {
-      await Estat.i.call('alternarPagament',
-          [Estat.i.token, id, v == true, id == null ? alumneId : null, id == null ? curs : null, id == null ? n : null]);
+      await Estat.i.call('alternarPagament', [Estat.i.token, id, v == true, alumneId, curs, n]);
       Estat.i.buidaCau();
       Estat.i.mostraOk();
       _refresca();
