@@ -214,10 +214,20 @@ class FilaDataInici extends StatefulWidget {
 class _FilaDataIniciState extends State<FilaDataInici> {
   late String valor = widget.inicial;
 
+  String _ymd(String v) {
+    if (v.contains('T') || v.contains(' ')) {
+      final d = DateTime.tryParse(v)?.toLocal();
+      if (d != null) {
+        return '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+      }
+    }
+    return v.split('T').first.split(' ').first;
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
-    final ymd = valor.split('T').first.split(' ').first;
+    final ymd = _ymd(valor);
     return Row(children: [
       Expanded(child: Text('${t('dataInici')} ${widget.trim}')),
       OutlinedButton(
@@ -229,7 +239,7 @@ class _FilaDataIniciState extends State<FilaDataInici> {
   }
 
   Future<void> _tria() async {
-    final parts = valor.split('T').first.split(' ').first.split('-');
+    final parts = _ymd(valor).split('-');
     DateTime ini = DateTime.now();
     if (parts.length == 3) {
       ini = DateTime(
