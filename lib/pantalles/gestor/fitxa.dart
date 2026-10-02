@@ -54,9 +54,8 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         final d0 = snap.data;
         if (d0 == null) return const Center(child: CircularProgressIndicator());
         final d = d0;
-        final s = (d['soci'] as Map).cast<String, dynamic>();
         return ListView(padding: const EdgeInsets.all(16), children: [
-          _dades(s),
+          _dades(d),
           _fitxa(d),
           _alumnes(d),
         ]);
@@ -64,9 +63,10 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     );
   }
 
-  Widget _dades(Map<String, dynamic> s) {
+  Widget _dades(Map<String, dynamic> data) {
     final t = Estat.i.i18n.t;
-    final rebut = s['rebutQuota'] as Map?;
+    final s = (data['soci'] as Map).cast<String, dynamic>();
+    final rebut = data['rebutQuota'] as Map?;
     return Carda(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('${s['nom']} · ${t('edicio')}', style: const TextStyle(fontWeight: FontWeight.bold, color: titol)),
@@ -111,7 +111,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
           ),
         ]),
         const SizedBox(height: 14),
-        if (rebut != null)
+        if (rebut != null && rebut['url'] != null)
           TextButton.icon(
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -212,7 +212,7 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
             const SizedBox(height: 6),
             Wrap(spacing: 12, runSpacing: 6, crossAxisAlignment: WrapCrossAlignment.center, children: [
               for (var n = 1; n <= 3; n++)
-                _filaTrimestre(trims, n, t),
+                _filaTrimestre(trims, n, '${a['id']}', curs.toInt()),
               IconButton(
                 tooltip: t('valida3'),
                 icon: const Icon(Icons.done_all, size: 20, color: verd),
@@ -238,10 +238,18 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
     );
   }
 
-  Widget _filaTrimestre(List<Map<String, dynamic>> trims, int n, String Function(String) t) {
+  Widget _filaTrimestre(List<Map<String, dynamic>> trims, int n, String alumneId, int curs) {
     final tr = trims.firstWhere((x) => x['t'] == n, orElse: () => {});
     final id = tr['id'];
     final rebutUrl = tr['rebut']?['url'] as String?;
+    Future<void> commuta(dynamic v) async {
+      await Estat.i.call('alternarPagament',
+          [Estat.i.token, id, v == true, id == null ? alumneId : null, id == null ? curs : null, id == null ? n : null]);
+      Estat.i.buidaCau();
+      Estat.i.mostraOk();
+      _refresca();
+    }
+
     return Row(mainAxisSize: MainAxisSize.min, children: [
       Text('$n:', style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
       const SizedBox(width: 2),
@@ -249,24 +257,14 @@ class _EdicioSociPantallaState extends State<EdicioSociPantalla> {
         CommutadorPagament(
           validat: tr['estat'] == 'Validat',
           rebutUrl: rebutUrl,
-          enCanviar: (v) async {
-            await Estat.i.call('alternarPagament', [Estat.i.token, id, v == true]);
-            Estat.i.buidaCau();
-            Estat.i.mostraOk();
-            _refresca();
-          },
+          enCanviar: commuta,
         )
       else
         Checkbox(
           visualDensity: VisualDensity.compact,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           value: tr['estat'] == 'Validat',
-          onChanged: (v) async {
-            await Estat.i.call('alternarPagament', [Estat.i.token, id, v == true]);
-            Estat.i.buidaCau();
-            Estat.i.mostraOk();
-            _refresca();
-          },
+          onChanged: commuta,
         ),
     ]);
   }

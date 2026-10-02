@@ -239,7 +239,7 @@ class Estat {
       if (raw != null) cfg = _parseCfg(raw);
       final t0 = cfg?['t'];
       if (cfg == null ||
-          DateTime.now().millisecondsSinceEpoch - (t0 as num? ?? 0) > 600000) {
+          DateTime.now().millisecondsSinceEpoch - (t0 as num? ?? 0) > 60000) {
         cfg = null;
       }
     } catch (_) {

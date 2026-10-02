@@ -232,7 +232,10 @@ class TrimestresPantalla extends StatelessWidget {
       children: [
         Center(child: Text(a.nom, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol))),
         const SizedBox(height: 4),
-        Center(child: Text('${t('compte')} ${st.inici?.compte ?? ''}', style: const TextStyle(fontSize: 13))),
+        Center(
+            child: SelectableText(
+                '${t('compte')} ${st.compte.isNotEmpty ? st.compte : (st.inici?.compte ?? '')}',
+                style: const TextStyle(fontSize: 13))),
         const SizedBox(height: 10),
         ...a.trims.map((tr) {
           return Carda(

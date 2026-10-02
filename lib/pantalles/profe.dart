@@ -217,17 +217,19 @@ class _FilaDataIniciState extends State<FilaDataInici> {
   @override
   Widget build(BuildContext context) {
     final t = Estat.i.i18n.t;
+    final ymd = valor.split('T').first.split(' ').first;
     return Row(children: [
       Expanded(child: Text('${t('dataInici')} ${widget.trim}')),
       OutlinedButton(
         onPressed: () => unawaited(_tria()),
-        child: Text(valor.isEmpty ? t('noDefinit') : valor, style: const TextStyle(fontSize: 13.5)),
+        child:
+            Text(valor.isEmpty ? t('noDefinit') : mostraData(ymd), style: const TextStyle(fontSize: 13.5)),
       ),
     ]);
   }
 
   Future<void> _tria() async {
-    final parts = valor.split('-');
+    final parts = valor.split('T').first.split(' ').first.split('-');
     DateTime ini = DateTime.now();
     if (parts.length == 3) {
       ini = DateTime(

@@ -71,12 +71,21 @@ class JugadorAnysPantalla extends StatelessWidget {
     final t = Estat.i.i18n.t;
     final j = _jug;
     if (j == null) return const Center(child: Text('?'));
+    final compte =
+        Estat.i.compte.isNotEmpty ? Estat.i.compte : (Estat.i.inici?.compte ?? '');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Center(child: Text(t('fedEscacs'), style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: titol))),
         const SizedBox(height: 4),
         Center(child: Text('${j.nom} ${j.cognoms}', style: const TextStyle(fontSize: 15))),
+        if (compte.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Center(
+            child: SelectableText('${t('compte')} $compte',
+                style: const TextStyle(fontSize: 13, color: textCol)),
+          ),
+        ],
         const SizedBox(height: 10),
         ...j.anys.map((a) => ItemLlista(children: [
               Text(a.any, style: const TextStyle(fontWeight: FontWeight.bold)),

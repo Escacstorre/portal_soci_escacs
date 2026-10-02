@@ -89,13 +89,18 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
     setState(() => _fut = carregaGestor());
   }
 
+  final Set<String> _seleccionats = {};
+
+  bool _elegibleRemesa(SociGestor s) => s.estat == 'Actiu' && s.numBanc.trim().isNotEmpty;
+
   bool _potRemesa(GestorDades d) {
     final st = Estat.i;
     final ibanClub = st.compte;
     if (ibanClub.isEmpty) return false;
     final quota = num.tryParse(st.quota) ?? 0;
     if (quota <= 0) return false;
-    return d.socis.any((s) => s.estat == 'Actiu' && s.numBanc.trim().isNotEmpty);
+    if (_seleccionats.isEmpty) return false;
+    return d.socis.any((s) => _elegibleRemesa(s) && _seleccionats.contains(s.id));
   }
 
   Future<void> _descarregaRemesa(GestorDades d) async {
@@ -105,7 +110,16 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
       final cfgRaw = await st.call('obtenirConfigBloc', [st.token, 'Club']);
       final cfg = (cfgRaw as Map).cast<String, dynamic>();
       final camps = ['AdrecaClub', 'PaisClub', 'CredId', 'CompteClub'];
-      final buits = camps.where((k) => (cfg[k] ?? '').toString().trim().isEmpty).toList();
+      final etiquetes = {
+        'AdrecaClub': t('adrecaClubConfig'),
+        'PaisClub': t('paisClubConfig'),
+        'CredId': t('credIdConfig'),
+        'CompteClub': t('compteBancariConfig'),
+      };
+      final buits = camps
+          .where((k) => (cfg[k] ?? '').toString().trim().isEmpty)
+          .map((k) => etiquetes[k] ?? k)
+          .toList();
       if (buits.isNotEmpty) {
         st.mostraError(t('omplirConfig', [buits.join(', ')]));
         return;
@@ -117,7 +131,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
         return;
       }
       final socisRemesa = d.socis
-          .where((s) => s.estat == 'Actiu' && s.numBanc.trim().isNotEmpty)
+          .where((s) => _elegibleRemesa(s) && _seleccionats.contains(s.id))
           .map((s) => SociRemesa(nom: s.nom, iban: s.numBanc.trim()))
           .toList();
       if (socisRemesa.isEmpty) {
@@ -238,15 +252,57 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
                 onPressed: () => Estat.i.go('altaRapida'),
                 child: Text(t('altaRapida'), style: const TextStyle(fontSize: 13)),
               ),
-              const SizedBox(width: 8),
+            ]),
+            const SizedBox(height: 12),
+            Row(children: [
+              Builder(builder: (context) {
+                final elegibles = llista.where(_elegibleRemesa).toList();
+                final marcats = elegibles.where((s) => _seleccionats.contains(s.id)).length;
+                final bool? tri = elegibles.isEmpty
+                    ? false
+                    : (marcats == elegibles.length
+                        ? true
+                        : (marcats == 0 ? false : null));
+                return Checkbox(
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  value: tri,
+                  onChanged: elegibles.isEmpty
+                      ? null
+                      : (_) => setState(() {
+                            final tots = tri == true;
+                            for (final s in elegibles) {
+                              if (tots) {
+                                _seleccionats.remove(s.id);
+                              } else {
+                                _seleccionats.add(s.id);
+                              }
+                            }
+                          }),
+                );
+              }),
+              Text(t('seleccionarTots'), style: const TextStyle(fontSize: 13, color: textCol)),
+              const Spacer(),
               FilledButton.tonal(
                 onPressed: _potRemesa(d) ? () => _descarregaRemesa(d) : null,
                 child: Text(t('remesaSEPA'), style: const TextStyle(fontSize: 13)),
               ),
             ]),
-            const SizedBox(height: 12),
+            const SizedBox(height: 4),
             ...llista.map((s) {
+              final eleg = _elegibleRemesa(s);
               return ItemLlista(children: [
+                Checkbox(
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  value: _seleccionats.contains(s.id),
+                  onChanged: eleg
+                      ? (_) => setState(() {
+                            if (!_seleccionats.remove(s.id)) _seleccionats.add(s.id);
+                          })
+                      : null,
+                ),
+                const SizedBox(width: 4),
                 Expanded(
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -674,6 +730,7 @@ class _FormulariRapidFitxaState extends State<_FormulariRapidFitxa> {
           onSeleccionat: (s) {
             tel.text = s.telefon;
             em.text = s.email;
+            dni.text = s.dni;
             setState(() => soci = s);
           },
           error: (intentat && soci == null) ? eCamp : null,
