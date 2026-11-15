@@ -213,6 +213,110 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
     _refrescaTot();
   }
 
+  Future<void> _mostraDialogAltaColaborador() async {
+    final st = Estat.i;
+    final t = st.i18n.t;
+    final nom = TextEditingController(), banc = TextEditingController();
+    final dni = TextEditingController(), tel = TextEditingController();
+    final em = TextEditingController(), notes = TextEditingController();
+    var msg = '';
+
+    Future<bool> _valida() async {
+      if (nom.text.trim().isEmpty) {
+        msg = t('nom') + ' ' + t('campObligatori').toLowerCase();
+        return false;
+      }
+      if (banc.text.trim().isEmpty) {
+        msg = t('banc') + ' ' + t('campObligatori').toLowerCase();
+        return false;
+      }
+      msg = '';
+      return true;
+    }
+
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setD) => AlertDialog(
+          title: Text(t('altaColaborador')),
+          content: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              if (msg.isNotEmpty) ...[
+                Text(msg, style: const TextStyle(color: vermell, fontSize: 12.5)),
+                const SizedBox(height: 8),
+              ],
+              TextField(controller: nom, decoration: InputDecoration(labelText: t('nom'), border: const OutlineInputBorder())),
+              const SizedBox(height: 10),
+              TextField(controller: banc, decoration: InputDecoration(labelText: t('banc'), border: const OutlineInputBorder())),
+              const SizedBox(height: 10),
+              TextField(controller: dni, decoration: InputDecoration(labelText: t('dni'), border: const OutlineInputBorder())),
+              const SizedBox(height: 10),
+              TextField(controller: tel, decoration: InputDecoration(labelText: t('telefon'), border: const OutlineInputBorder())),
+              const SizedBox(height: 10),
+              TextField(controller: em, decoration: InputDecoration(labelText: t('email'), border: const OutlineInputBorder())),
+              const SizedBox(height: 10),
+              TextField(controller: notes, decoration: InputDecoration(labelText: t('notes'), border: const OutlineInputBorder())),
+            ]),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t('cancel'))),
+            FilledButton(
+              onPressed: () async {
+                final v = await _valida();
+                if (!v) {
+                  setD(() {});
+                  return;
+                }
+                try {
+                  await st.call('altaColaborador', [
+                    st.token,
+                    {
+                      'nom': nom.text.trim(),
+                      'numBanc': banc.text.trim(),
+                      'dni': dni.text.trim(),
+                      'telefon': tel.text.trim(),
+                      'email': em.text.trim(),
+                      'notes': notes.text.trim(),
+                    },
+                  ]);
+                  if (ctx.mounted) Navigator.pop(ctx, true);
+                } catch (_) {
+                  setD(() => msg = t('error'));
+                }
+              },
+              child: Text(t('guardar')),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (ok == true) {
+      st.buidaCau();
+      _refrescaTot();
+    }
+  }
+
+  Future<void> _descarregaExcelSoci() async {
+    final st = Estat.i;
+    final t = st.i18n.t;
+    try {
+      final d = await carregaGestor();
+      final sb = StringBuffer();
+      sb.write('\uFEFF');
+      sb.write('${t('nom')};${t('banc')};${t('rol')}\n');
+      for (final s in d.socis.where((x) => x.estat == 'Actiu')) {
+        final nomSegur = '"' + s.nom.replaceAll('"', '""') + '"';
+        final bancSegur = '"' + s.numBanc.replaceAll('"', '""') + '"';
+        final rolSegur = '"' + (s.colaborador ? t('colaborador') : t('rolSoci')) + '"';
+        sb.write('$nomSegur;$bancSegur;$rolSegur\n');
+      }
+      descarregarArxiu(sb.toString(), 'text/csv;charset=utf-8', '${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}_${DateTime.now().day.toString().padLeft(2, '0')}_SociColaboradors.csv');
+      st.mostraOk();
+    } catch (_) {
+      st.mostraError(t('error'));
+    }
+  }
+
   Widget _tabSocis(GestorDades d) {
     final t = Estat.i.i18n.t;
     final llista = _filtra(d.socis);
@@ -252,6 +356,10 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
                 onPressed: () => Estat.i.go('altaRapida'),
                 child: Text(t('altaRapida'), style: const TextStyle(fontSize: 13)),
               ),
+              FilledButton.tonal(
+                onPressed: () => _mostraDialogAltaColaborador(),
+                child: Text(t('altaColaborador'), style: const TextStyle(fontSize: 13)),
+              ),
             ]),
             const SizedBox(height: 12),
             Row(children: [
@@ -286,6 +394,10 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
               FilledButton.tonal(
                 onPressed: _potRemesa(d) ? () => _descarregaRemesa(d) : null,
                 child: Text(t('remesaSEPA'), style: const TextStyle(fontSize: 13)),
+              ),
+              FilledButton.tonal(
+                onPressed: () => _descarregaExcelSoci(),
+                child: Text(t('descarregarExcel'), style: const TextStyle(fontSize: 13)),
               ),
             ]),
             const SizedBox(height: 4),
