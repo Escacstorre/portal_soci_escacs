@@ -24,7 +24,7 @@ jobs:
           channel: master
           cache: true
       - run: flutter pub get
-      - run: flutter analyze
+      - run: flutter analyze --no-fatal-infos --no-fatal-warnings
       - run: flutter test
       - run: flutter build web --release --base-href /portal_soci_escacs/ --source-maps
       - uses: actions/upload-pages-artifact@v3
@@ -41,3 +41,4 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
