@@ -221,13 +221,14 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
     final em = TextEditingController(), notes = TextEditingController();
     var msg = '';
 
-    Future<bool> _valida() async {
+    Future<bool> valida() async {
+      final obligatori = t('campObligatori').toLowerCase();
       if (nom.text.trim().isEmpty) {
-        msg = t('nom') + ' ' + t('campObligatori').toLowerCase();
+        msg = '${t('nom')} $obligatori';
         return false;
       }
       if (banc.text.trim().isEmpty) {
-        msg = t('banc') + ' ' + t('campObligatori').toLowerCase();
+        msg = '${t('banc')} $obligatori';
         return false;
       }
       msg = '';
@@ -262,7 +263,7 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
             TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(t('cancel'))),
             FilledButton(
               onPressed: () async {
-                final v = await _valida();
+                final v = await valida();
                 if (!v) {
                   setD(() {});
                   return;
@@ -305,9 +306,9 @@ class _PagatPantallaState extends State<PagatPantalla> with SingleTickerProvider
       sb.write('\uFEFF');
       sb.write('${t('nom')};${t('banc')};${t('rol')}\n');
       for (final s in d.socis.where((x) => x.estat == 'Actiu')) {
-        final nomSegur = '"' + s.nom.replaceAll('"', '""') + '"';
-        final bancSegur = '"' + s.numBanc.replaceAll('"', '""') + '"';
-        final rolSegur = '"' + (s.colaborador ? t('colaborador') : t('rolSoci')) + '"';
+        final nomSegur = '"${s.nom.replaceAll('"', '""')}"';
+        final bancSegur = '"${s.numBanc.replaceAll('"', '""')}"';
+        final rolSegur = '"${s.colaborador ? t('colaborador') : t('rolSoci')}"';
         sb.write('$nomSegur;$bancSegur;$rolSegur\n');
       }
       descarregarArxiu(sb.toString(), 'text/csv;charset=utf-8', '${DateTime.now().year}_${DateTime.now().month.toString().padLeft(2, '0')}_${DateTime.now().day.toString().padLeft(2, '0')}_SociColaboradors.csv');
